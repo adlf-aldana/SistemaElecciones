@@ -10,6 +10,6 @@ app.use(cors());
 app.use(express.json());
 
 // routes
-app.get('/api/lista_estudiantes', (req, res) => res.send('LISTA DE UNIVERSITARIOS'))
+app.use('/api/lista_estudiantes', require('./routes/universitarios'))
 
 module.exports = app;
