@@ -1,19 +1,27 @@
 import React, { Fragment, useState } from "react";
 
-const RegistroUniversitario = ({estudiantes, guardarEstudiante}) => {
-  
-
-  const [datosEstudiantes, setdatosEstudiantes] = useState()
+const RegistroUniversitario = ({ guardarEstudiante }) => {
+  const [datosEstudiantes, setdatosEstudiantes] = useState({
+    nombre: '',
+    apellido: ''
+  });
 
   const handleChange = (e) => {
     setdatosEstudiantes({
-        ...datosEstudiantes,
-        [e.target.name]: e.target.value})
-  }
+      ...datosEstudiantes,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const { nombre, apellido } = datosEstudiantes;
 
   const onSubmit = (e) => {
     e.preventDefault();
-    guardarEstudiante(datosEstudiantes)
+    guardarEstudiante(datosEstudiantes);
+    setdatosEstudiantes({
+      nombre: "",
+      apellido: "",
+    });
   };
   return (
     <Fragment>
@@ -29,6 +37,7 @@ const RegistroUniversitario = ({estudiantes, guardarEstudiante}) => {
                 placeholder="Nombre"
                 className="form-control"
                 onChange={handleChange}
+                value={nombre}
               />
             </div>
 
@@ -40,6 +49,7 @@ const RegistroUniversitario = ({estudiantes, guardarEstudiante}) => {
                 placeholder="Apellidos"
                 className="form-control"
                 onChange={handleChange}
+                value={apellido}
               />
             </div>
           </div>
