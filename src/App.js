@@ -9,27 +9,30 @@ import ListaUniversitarios from "./Components/Admin/RegistroUniversitario/ListaU
 
 function App() {
   const ListaEstudiantes = [
-    { id: 1, nombre: "Adolfo", apellido: "Aldana" },
-    { id: 2, nombre: "Marcos", apellido: "Rodriguez" },
-    { id: 3, nombre: "Martha", apellido: "Peñaranda" },
+    { id: 0, nombre: "Adolfo", apellido: "Aldana" },
+    { id: 1, nombre: "Marcos", apellido: "Rodriguez" },
+    { id: 2, nombre: "Martha", apellido: "Peñaranda" },
   ];
 
   const [estudiantes, setestudiantes] = useState(ListaEstudiantes);
 
   const guardarEstudiante = (estudiante) => {
-    setestudiantes([
-      ...estudiantes,
-      estudiante,
-    ]);
+    setestudiantes([...estudiantes, estudiante]);
+  };
+
+  const eliminarEstudiante = nombre => {
+    console.log(nombre);
+    const nuevosEstudiantes = estudiantes.filter(estudiante => estudiante.nombre !== nombre)
+    setestudiantes(nuevosEstudiantes)
   };
 
   return (
     <Fragment>
-      <RegistroUniversitario
+      <RegistroUniversitario guardarEstudiante={guardarEstudiante} />
+      <ListaUniversitarios
         estudiantes={estudiantes}
-        guardarEstudiante={guardarEstudiante}
+        eliminarEstudiante={eliminarEstudiante}
       />
-      <ListaUniversitarios estudiantes={estudiantes} />
     </Fragment>
   );
 }

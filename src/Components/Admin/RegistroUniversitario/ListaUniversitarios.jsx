@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
 
-const ListaUniversitarios = ({ estudiantes }) => {
+const ListaUniversitarios = ({ estudiantes, eliminarEstudiante }) => {
+
   return (
     <Fragment>
       <h3 className="text-center">Lista de Estudiantes</h3>
@@ -24,7 +25,7 @@ const ListaUniversitarios = ({ estudiantes }) => {
                 <button type="button" className="btn btn-warning">
                   Editar
                 </button>
-                <button type="button" className="btn btn-danger ml-2">
+                <button type="button" className="btn btn-danger ml-2" onClick={()=>eliminarEstudiante(e.nombre)}>
                   Eliminar
                 </button>
               </td>
