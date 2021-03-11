@@ -1,3 +1,7 @@
+
+// Importando variables de entorno
+require('dotenv').config()
+
 const app = require("./app");
 // Llamando a database, creación y coneccion a la base de datos mongoDB
 require("./database");

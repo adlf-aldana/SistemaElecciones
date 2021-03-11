@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
-const URI = "mongodb://localhost/sistema_elecciones";
+// console.log(process.env.MONGODB_URI);
+const URI = process.env.MONGODB_URI;
 
 // Conectar a mongoDB
 mongoose.connect(URI, {
