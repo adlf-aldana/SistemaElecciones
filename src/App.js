@@ -6,32 +6,42 @@ import "../node_modules/bootstrap/dist/js/bootstrap.min.js";
 import RegistroUniversitario from "./Components/Admin/RegistroUniversitario/RegistroUniversitario";
 import { Fragment, useState } from "react";
 import ListaUniversitarios from "./Components/Admin/RegistroUniversitario/ListaUniversitarios";
+import axios from "axios";
 
 function App() {
-  const ListaEstudiantes = [
-    { id: 0, nombre: "Adolfo", apellido: "Aldana" },
-    { id: 1, nombre: "Marcos", apellido: "Rodriguez" },
-    { id: 2, nombre: "Martha", apellido: "Peñaranda" },
-  ];
+  const URL = "http://localhost:4000/api/lista_estudiantes";
+  const [estudiantes, setestudiantes] = useState([]);
 
-  const [estudiantes, setestudiantes] = useState(ListaEstudiantes);
-
-  const guardarEstudiante = (estudiante) => {
-    setestudiantes([...estudiantes, estudiante]);
+  // OBTENIENDO DATOS
+  const getEstudiantes = async () => {
+    const res = await axios.get(URL);
+    setestudiantes(res.data);
   };
 
-  const eliminarEstudiante = nombre => {
-    console.log(nombre);
-    const nuevosEstudiantes = estudiantes.filter(estudiante => estudiante.nombre !== nombre)
-    setestudiantes(nuevosEstudiantes)
+  // GUARDAR DATOS
+  const postEstudiantes = async (datosEstudiantes) => {
+    await axios.post(URL, datosEstudiantes);
+    getEstudiantes();
+  };
+
+  // Eliminar Dato
+  const eliminarEstudiante = async (id) => {
+    console.log(id);
+    await axios.delete("http://localhost:4000/api/lista_estudiantes/" + id);
+    getEstudiantes();
   };
 
   return (
     <Fragment>
-      <RegistroUniversitario guardarEstudiante={guardarEstudiante} />
+      <RegistroUniversitario
+        // guardarEstudiante={guardarEstudiante}
+        getEstudiantes={getEstudiantes}
+        postEstudiantes={postEstudiantes}
+      />
       <ListaUniversitarios
-        estudiantes={estudiantes}
         eliminarEstudiante={eliminarEstudiante}
+        estudiantes={estudiantes}
+        getEstudiantes={getEstudiantes}
       />
     </Fragment>
   );

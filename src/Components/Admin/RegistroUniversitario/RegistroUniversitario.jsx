@@ -1,9 +1,12 @@
 import React, { Fragment, useState } from "react";
 
-const RegistroUniversitario = ({ guardarEstudiante }) => {
+const RegistroUniversitario = ({
+  getEstudiantes,
+  postEstudiantes,
+}) => {
   const [datosEstudiantes, setdatosEstudiantes] = useState({
-    nombre: '',
-    apellido: ''
+    nombre: "",
+    apellidos: "",
   });
 
   const handleChange = (e) => {
@@ -13,15 +16,17 @@ const RegistroUniversitario = ({ guardarEstudiante }) => {
     });
   };
 
-  const { nombre, apellido } = datosEstudiantes;
+  const { nombre, apellidos } = datosEstudiantes;
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    guardarEstudiante(datosEstudiantes);
+    // guardarEstudiante(datosEstudiantes);
+    postEstudiantes(datosEstudiantes);
     setdatosEstudiantes({
       nombre: "",
-      apellido: "",
+      apellidos: "",
     });
+    // getEstudiantes();
   };
   return (
     <Fragment>
@@ -45,11 +50,11 @@ const RegistroUniversitario = ({ guardarEstudiante }) => {
               <label htmlFor="">Apellidos: </label>
               <input
                 type="text"
-                name="apellido"
+                name="apellidos"
                 placeholder="Apellidos"
                 className="form-control"
                 onChange={handleChange}
-                value={apellido}
+                value={apellidos}
               />
             </div>
           </div>

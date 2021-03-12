@@ -1,19 +1,13 @@
-import axios from "axios";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect } from "react";
 
-const ListaUniversitarios = ({ estudiantes, eliminarEstudiante }) => {
-
-  const [universitarios, setuniversitarios] = useState([]);
+const ListaUniversitarios = ({
+  eliminarEstudiante,
+  estudiantes,
+  getEstudiantes,
+}) => {
 
   useEffect(() => {
-    async function obtData() {
-      const res = await axios.get(
-        "http://localhost:4000/api/lista_estudiantes"
-      );
-      setuniversitarios(res.data);
-    }
-
-    obtData();
+    getEstudiantes();
   }, []);
 
   return (
@@ -30,7 +24,7 @@ const ListaUniversitarios = ({ estudiantes, eliminarEstudiante }) => {
           </tr>
         </thead>
         <tbody>
-          {universitarios.map((e, index) => (
+          {estudiantes.map((e, index) => (
             <tr key={e._id}>
               <td>{index + 1}</td>
               <td>{e.nombre}</td>
@@ -42,7 +36,7 @@ const ListaUniversitarios = ({ estudiantes, eliminarEstudiante }) => {
                 <button
                   type="button"
                   className="btn btn-danger ml-2"
-                  onClick={() => eliminarEstudiante(e.nombre)}
+                  onClick={() => eliminarEstudiante(e._id)}
                 >
                   Eliminar
                 </button>

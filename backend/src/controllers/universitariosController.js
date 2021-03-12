@@ -30,7 +30,7 @@ univerCtrl.getUniversitario = async (req, res) => {
 // ACTUALIZA UN UNIVERSITARIO POR ID
 univerCtrl.updateUniversitario = async (req, res) => {
   const { nombre, apellidos } = req.body;
-  await universitarioModel.findOneAndUpdate(req.params.id, {
+  await universitarioModel.findByIdAndUpdate(req.params.id, {
     nombre,
     apellidos,
   });
@@ -39,7 +39,7 @@ univerCtrl.updateUniversitario = async (req, res) => {
 
 // ELIMINA A UN UNIVERSITARIO POR ID
 univerCtrl.deleteUniversitario = async (req, res) => {
-  await universitarioModel.findOneAndDelete(req.params.id);
+  await universitarioModel.findByIdAndDelete(req.params.id);
   res.json({ msg: "Universitario eliminado" });
 };
 
