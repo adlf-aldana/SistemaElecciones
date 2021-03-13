@@ -9,7 +9,7 @@ import ListaUniversitarios from "./Components/Admin/RegistroUniversitario/ListaU
 import axios from "axios";
 
 function App() {
-  const URL = "http://localhost:4000/api/lista_estudiantes";
+  const URL = "http://localhost:4000/api/lista_estudiantes/";
   const [estudiantes, setestudiantes] = useState([]);
 
   // OBTENIENDO DATOS
@@ -26,8 +26,7 @@ function App() {
 
   // Eliminar Dato
   const eliminarEstudiante = async (id) => {
-    console.log(id);
-    await axios.delete("http://localhost:4000/api/lista_estudiantes/" + id);
+    await axios.delete(URL + id);
     getEstudiantes();
   };
 
@@ -35,7 +34,6 @@ function App() {
     <Fragment>
       <RegistroUniversitario
         // guardarEstudiante={guardarEstudiante}
-        getEstudiantes={getEstudiantes}
         postEstudiantes={postEstudiantes}
       />
       <ListaUniversitarios

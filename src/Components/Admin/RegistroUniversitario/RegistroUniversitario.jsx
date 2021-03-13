@@ -1,7 +1,6 @@
 import React, { Fragment, useState } from "react";
 
 const RegistroUniversitario = ({
-  getEstudiantes,
   postEstudiantes,
 }) => {
   const [datosEstudiantes, setdatosEstudiantes] = useState({
