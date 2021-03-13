@@ -1,9 +1,11 @@
 import React, { Fragment, useEffect } from "react";
+// import { Link } from "react-router-dom";
 
 const ListaUniversitarios = ({
   eliminarEstudiante,
   estudiantes,
   getEstudiantes,
+  editarUniversitario,
 }) => {
 
   useEffect(() => {
@@ -30,7 +32,14 @@ const ListaUniversitarios = ({
               <td>{e.nombre}</td>
               <td>{e.apellidos}</td>
               <td>
-                <button type="button" className="btn btn-warning">
+                {/* <Link className="btn btn-warning" to={"/editar/" + e._id}>
+                  Edit
+                </Link> */}
+                <button
+                  type="button"
+                  className="btn btn-warning"
+                  onClick={() => editarUniversitario(e)}
+                >
                   Editar
                 </button>
                 <button

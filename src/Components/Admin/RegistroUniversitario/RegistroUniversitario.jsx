@@ -1,12 +1,17 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 
-const RegistroUniversitario = ({
-  postEstudiantes,
-}) => {
+const RegistroUniversitario = ({ postEstudiantes, editUni }) => {
   const [datosEstudiantes, setdatosEstudiantes] = useState({
     nombre: "",
     apellidos: "",
   });
+  useEffect(() => {
+    if (editUni.length !== 0)
+      setdatosEstudiantes({
+        nombre: editUni.nombre,
+        apellidos: editUni.apellidos,
+      });
+  }, [editUni]);
 
   const handleChange = (e) => {
     setdatosEstudiantes({
@@ -19,14 +24,13 @@ const RegistroUniversitario = ({
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    // guardarEstudiante(datosEstudiantes);
     postEstudiantes(datosEstudiantes);
     setdatosEstudiantes({
       nombre: "",
       apellidos: "",
     });
-    // getEstudiantes();
   };
+
   return (
     <Fragment>
       <div className="container">
