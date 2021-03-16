@@ -7,10 +7,12 @@ import { Fragment } from "react";
 import ListaUniversitarios from "./Components/Admin/RegistroUniversitario/ListaUniversitarios";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import UniversitarioIndex from "./Components/Admin/RegistroUniversitario/UniversitarioIndex";
+import NavBar from "./Components/Navbar/NavBar";
 
 function App() {
   return (
     <Fragment>
+      <NavBar />
       <BrowserRouter>
         <Switch>
           <Route path="/editar/:id" component={ListaUniversitarios} />
