@@ -11,10 +11,13 @@ univerCtrl.getUniversitarios = async (req, res) => {
 
 // GUARDA UN NUEVO UNIVERSTARIO
 univerCtrl.createUniversitario = async (req, res) => {
-  const { nombre, apellidos } = req.body;
+  const { nombre, apellidos, cu, carrera, cargo } = req.body;
   const newUniversitario = new universitarioModel({
     nombre,
     apellidos,
+    cu,
+    carrera,
+    cargo,
   });
   // console.log(newUniversitario);
   await newUniversitario.save();
@@ -29,10 +32,13 @@ univerCtrl.getUniversitario = async (req, res) => {
 
 // ACTUALIZA UN UNIVERSITARIO POR ID
 univerCtrl.updateUniversitario = async (req, res) => {
-  const { nombre, apellidos } = req.body;
+  const { nombre, apellidos, cu, carrera, cargo } = req.body;
   await universitarioModel.findByIdAndUpdate(req.params.id, {
     nombre,
     apellidos,
+    cu,
+    carrera,
+    cargo
   });
   res.json({ msg: "Universitario actualizado" });
 };

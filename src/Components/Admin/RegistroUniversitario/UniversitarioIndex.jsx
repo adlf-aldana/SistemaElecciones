@@ -16,7 +16,7 @@ const UniversitarioIndex = () => {
 
   // GUARDAR DATOS
   const postEstudiantes = async (datosEstudiantes) => {
-    if (editUni.length !== 0) {
+    if (editUni._id) {
       await axios.put(URL + editUni._id, datosEstudiantes);
     } else {
       await axios.post(URL, datosEstudiantes);
@@ -37,17 +37,19 @@ const UniversitarioIndex = () => {
 
   return (
     <Fragment>
-      <RegistroUniversitario
-        // guardarEstudiante={guardarEstudiante}
-        postEstudiantes={postEstudiantes}
-        editUni={editUni}
-      />
-      <ListaUniversitarios
-        eliminarEstudiante={eliminarEstudiante}
-        estudiantes={estudiantes}
-        getEstudiantes={getEstudiantes}
-        editarUniversitario={editarUniversitario}
-      />
+      <div className="container">
+        <RegistroUniversitario
+          // guardarEstudiante={guardarEstudiante}
+          postEstudiantes={postEstudiantes}
+          editUni={editUni}
+        />
+        <ListaUniversitarios
+          eliminarEstudiante={eliminarEstudiante}
+          estudiantes={estudiantes}
+          getEstudiantes={getEstudiantes}
+          editarUniversitario={editarUniversitario}
+        />
+      </div>
     </Fragment>
   );
 };

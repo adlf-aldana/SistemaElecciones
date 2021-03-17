@@ -13,6 +13,21 @@ const universitarioSchema = new Schema(
       require: true,
       trim: true,
     },
+    cu: {
+      type: Number,
+      require: true,
+      trim: true,
+    },
+    carrera: {
+      type: String,
+      require: true,
+      trim: true,
+    },
+    cargo: {
+      type: String,
+      require: true,
+      trim: true,
+    },
   },
   {
     // fecha y hora de creación o edicion de universitario

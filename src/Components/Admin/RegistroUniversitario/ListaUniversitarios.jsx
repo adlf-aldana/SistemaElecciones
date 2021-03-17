@@ -22,6 +22,9 @@ const ListaUniversitarios = ({
             <th scope="col">#</th>
             <th scope="col">Nombre</th>
             <th scope="col">Apellidos</th>
+            <th scope="col">C.U.</th>
+            <th scope="col">Carrera</th>
+            <th scope="col">Cargo</th>
             <th scope="col">Acciones</th>
           </tr>
         </thead>
@@ -31,6 +34,9 @@ const ListaUniversitarios = ({
               <td>{index + 1}</td>
               <td>{e.nombre}</td>
               <td>{e.apellidos}</td>
+              <td>{e.cu}</td>
+              <td>{e.carrera}</td>
+              <td>{e.cargo}</td>
               <td>
                 {/* <Link className="btn btn-warning" to={"/editar/" + e._id}>
                   Edit
