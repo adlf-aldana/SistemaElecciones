@@ -2,6 +2,22 @@ import React, { Fragment, useState } from "react";
 import ListaFrente from "./ListaFrente";
 
 const RegistroFrente = () => {
+  const [datosForm, setdatosForm] = useState({
+    nombreFrente: "",
+    nombreEncargado: "",
+    apellidosEncargado: "",
+    cuEncargado: "",
+    celularEncargado: "",
+  });
+
+  const {
+    nombreFrente,
+    nombreEncargado,
+    apellidosEncargado,
+    cuEncargado,
+    celularEncargado,
+  } = datosForm;
+
   const [frentes, setfrentes] = useState([
     {
       nombreFrente: "Frente 1",
@@ -26,11 +42,37 @@ const RegistroFrente = () => {
     },
   ]);
 
+  const handleChange = (e) => {
+    setdatosForm({
+      ...datosForm,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    setfrentes([
+      ...frentes,
+      datosForm,
+    ]);
+    cleanForm();
+  };
+
+  const cleanForm = () => {
+    setdatosForm({
+      nombreFrente: "",
+      nombreEncargado: "",
+      apellidosEncargado: "",
+      cuEncargado: "",
+      celularEncargado: "",
+    });
+  };
+
   return (
     <Fragment>
       <div className="container mt-3">
         <h1 className="text-center">Registro Frente</h1>
-        <form>
+        <form onSubmit={onSubmit}>
           <div className="row mt-3">
             <div className="col">
               <label htmlFor="">Nombre del Frente:</label>
@@ -39,6 +81,8 @@ const RegistroFrente = () => {
                 name="nombreFrente"
                 placeholder="Nombre del Frente"
                 className="form-control"
+                onChange={handleChange}
+                value={nombreFrente}
               />
             </div>
 
@@ -49,6 +93,8 @@ const RegistroFrente = () => {
                 name="nombreEncargado"
                 placeholder="Nombre del Encargado"
                 className="form-control"
+                onChange={handleChange}
+                value={nombreEncargado}
               />
             </div>
 
@@ -59,6 +105,8 @@ const RegistroFrente = () => {
                 name="apellidosEncargado"
                 placeholder="Apellidos del Encargado"
                 className="form-control"
+                onChange={handleChange}
+                value={apellidosEncargado}
               />
             </div>
           </div>
@@ -71,6 +119,8 @@ const RegistroFrente = () => {
                 name="cuEncargado"
                 placeholder="Carnet Universitario del Encargado"
                 className="form-control"
+                onChange={handleChange}
+                value={cuEncargado}
               />
             </div>
 
@@ -81,6 +131,8 @@ const RegistroFrente = () => {
                 name="celularEncargado"
                 placeholder="Teléfono Celular del Encargado"
                 className="form-control"
+                onChange={handleChange}
+                value={celularEncargado}
               />
             </div>
 
@@ -95,7 +147,11 @@ const RegistroFrente = () => {
             <button className="btn btn-success mr-2" type="submit">
               Guardar
             </button>
-            <button className="btn btn-primary" type="button">
+            <button
+              className="btn btn-primary"
+              type="button"
+              onClick={cleanForm}
+            >
               Limpiar
             </button>
           </div>
