@@ -1,4 +1,10 @@
 import React, { Fragment } from "react";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  NavLink,
+} from "react-router-dom";
 
 const NavBar = () => {
   return (
@@ -22,16 +28,31 @@ const NavBar = () => {
           {/* 
           LOGO O NOMBRE APP
            */}
-          <a className="navbar-brand">APP</a>
+          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+            {/* 
+                LINK REGISTRO UNIVERSITARIO
+                 */}
+            <li className="nav-item">
+              <NavLink to="/" activeclassName="active">
+                <a className="nav-link">APP</a>
+              </NavLink>
+            </li>
+          </ul>
+
           <div className="collapse navbar-collapse" id="navbarTogglerDemo03">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               {/* 
                 LINK REGISTRO UNIVERSITARIO
                  */}
               <li className="nav-item">
-                <a className="nav-link active" aria-current="page">
-                  REGISTRO UNIVERSITARIO
-                </a>
+                {/* <Link to="/registroUniversitario">
+                  <a className="nav-link active" aria-current="page">
+                    REGISTRO UNIVERSITARIO
+                  </a>
+                </Link> */}
+                <NavLink to="registroUniversitario" activeclassName="active">
+                  <a className="nav-link">Registro Universitario</a>
+                </NavLink>
               </li>
               {/* 
                 LINK REGISTRO FRENTE 

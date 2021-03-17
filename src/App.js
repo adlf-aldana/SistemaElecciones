@@ -5,20 +5,21 @@ import "../node_modules/jquery/dist/jquery.min.js";
 import "../node_modules/bootstrap/dist/js/bootstrap.min.js";
 import { Fragment } from "react";
 import ListaUniversitarios from "./Components/Admin/RegistroUniversitario/ListaUniversitarios";
-import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import UniversitarioIndex from "./Components/Admin/RegistroUniversitario/UniversitarioIndex";
 import NavBar from "./Components/Navbar/NavBar";
+import Login from "./Components/Login/Login";
 
 function App() {
   return (
     <Fragment>
-      <NavBar />
-      <BrowserRouter>
+      <Router>
+          <NavBar />
         <Switch>
-          <Route path="/editar/:id" component={ListaUniversitarios} />
-          <Route path="/" exact component={UniversitarioIndex} />
+          <Route path="/" exact component={Login} />
+          <Route path="/registroUniversitario" exact component={UniversitarioIndex} />
         </Switch>
-      </BrowserRouter>
+      </Router>
     </Fragment>
   );
 }
