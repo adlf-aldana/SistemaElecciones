@@ -18,9 +18,10 @@ const UniversitarioIndex = () => {
   const postEstudiantes = async (datosEstudiantes) => {
     if (editUni._id) {
       await axios.put(URL + editUni._id, datosEstudiantes);
+      seteditUni([]);
     } else {
       await axios.post(URL, datosEstudiantes);
-      getEstudiantes();
+      // getEstudiantes();
     }
   };
 

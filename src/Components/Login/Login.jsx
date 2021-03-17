@@ -1,17 +1,12 @@
 import React, { Fragment } from "react";
 
 const Login = () => {
-  const mystyle = {
-    "max-width": "18rem",
-  };
 
   return (
     <Fragment>
       <div className="row justify-content-md-center">
-        <div className="card m-3" style={mystyle}>
-          {/* <div className="row justify-content-md-center card-body"> */}
+        <div className="card m-3">
           <div className="card-body">
-            {/* <div className="justify-content-md-center"> */}
               <form>
                 <h3 className="text-center m-3">INICIAR SESION</h3>
                 <div className="row">
@@ -44,7 +39,6 @@ const Login = () => {
               </form>
             </div>
           </div>
-        {/* </div> */}
       </div>
     </Fragment>
   );

@@ -9,15 +9,17 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import UniversitarioIndex from "./Components/Admin/RegistroUniversitario/UniversitarioIndex";
 import NavBar from "./Components/Navbar/NavBar";
 import Login from "./Components/Login/Login";
+import RegistroFrente from "./Components/Admin/RegistroFrente/RegistroFrente";
 
 function App() {
   return (
     <Fragment>
       <Router>
-          <NavBar />
+        <NavBar />
         <Switch>
+          <Route path="/registroUniversitario" component={UniversitarioIndex} />
+          <Route path="/registroFrente" component={RegistroFrente} />
           <Route path="/" exact component={Login} />
-          <Route path="/registroUniversitario" exact component={UniversitarioIndex} />
         </Switch>
       </Router>
     </Fragment>
