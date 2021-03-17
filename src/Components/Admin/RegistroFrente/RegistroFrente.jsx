@@ -1,6 +1,31 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
+import ListaFrente from "./ListaFrente";
 
 const RegistroFrente = () => {
+  const [frentes, setfrentes] = useState([
+    {
+      nombreFrente: "Frente 1",
+      nombreEncargado: "Nombre 1",
+      apellidosEncargado: "Apellidos 1",
+      cuEncargado: "123456",
+      celularEncargado: "654321",
+    },
+    {
+      nombreFrente: "Frente 2",
+      nombreEncargado: "Nombre 2",
+      apellidosEncargado: "Apellidos 2",
+      cuEncargado: "456789",
+      celularEncargado: "987654",
+    },
+    {
+      nombreFrente: "Frente 3",
+      nombreEncargado: "Nombre 3",
+      apellidosEncargado: "Apellidos 3",
+      cuEncargado: "159753",
+      celularEncargado: "987321",
+    },
+  ]);
+
   return (
     <Fragment>
       <div className="container mt-3">
@@ -76,6 +101,8 @@ const RegistroFrente = () => {
           </div>
         </form>
       </div>
+
+      <ListaFrente frentes={frentes} />
     </Fragment>
   );
 };
