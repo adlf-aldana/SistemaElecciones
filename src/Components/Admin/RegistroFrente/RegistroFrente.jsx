@@ -20,6 +20,7 @@ const RegistroFrente = () => {
 
   const [frentes, setfrentes] = useState([
     {
+      id: 1,
       nombreFrente: "Frente 1",
       nombreEncargado: "Nombre 1",
       apellidosEncargado: "Apellidos 1",
@@ -27,6 +28,7 @@ const RegistroFrente = () => {
       celularEncargado: "654321",
     },
     {
+      id: 2,
       nombreFrente: "Frente 2",
       nombreEncargado: "Nombre 2",
       apellidosEncargado: "Apellidos 2",
@@ -34,6 +36,7 @@ const RegistroFrente = () => {
       celularEncargado: "987654",
     },
     {
+      id: 3,
       nombreFrente: "Frente 3",
       nombreEncargado: "Nombre 3",
       apellidosEncargado: "Apellidos 3",
@@ -51,11 +54,13 @@ const RegistroFrente = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    setfrentes([
-      ...frentes,
-      datosForm,
-    ]);
+    setfrentes([...frentes, datosForm]);
     cleanForm();
+  };
+
+  const eliminar = (id) => {
+    const frente = frentes.filter((item) => item.id !== id);
+    setfrentes(frente);
   };
 
   const cleanForm = () => {
@@ -158,7 +163,7 @@ const RegistroFrente = () => {
         </form>
       </div>
 
-      <ListaFrente frentes={frentes} />
+      <ListaFrente frentes={frentes} eliminar={eliminar} />
     </Fragment>
   );
 };

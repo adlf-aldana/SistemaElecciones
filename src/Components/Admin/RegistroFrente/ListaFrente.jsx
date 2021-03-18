@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 
-const ListaFrente = ({ frentes }) => {
+const ListaFrente = ({ frentes, eliminar }) => {
   return (
     <Fragment>
       <div className="container mt-3">
@@ -19,7 +19,7 @@ const ListaFrente = ({ frentes }) => {
           </thead>
           <tbody>
             {frentes.map((frente, index) => (
-              <tr key={index}>
+              <tr key={index+1}>
                 <td>{index + 1}</td>
                 <td>{frente.nombreFrente}</td>
                 <td>{frente.nombreEncargado}</td>
@@ -28,7 +28,9 @@ const ListaFrente = ({ frentes }) => {
                 <td>{frente.celularEncargado}</td>
                 <td>
                   <button className="btn btn-warning mr-2">Editar</button>
-                  <button className="btn btn-danger">Eliminar</button>
+                  <button className="btn btn-danger" onClick={()=>eliminar(frente.id)}>
+                    Eliminar
+                  </button>
                 </td>
               </tr>
             ))}
