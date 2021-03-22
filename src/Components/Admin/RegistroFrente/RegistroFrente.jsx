@@ -44,9 +44,9 @@ const RegistroFrente = () => {
     cleanForm();
   };
 
-  const eliminar = (id) => {
-    const frente = frentes.filter((item) => item.id !== id);
-    setfrentes(frente);
+  const eliminar = async (id) => {
+    await axios.delete(URL + id);
+    getFrente();
   };
 
   const editar = (datos) => {
@@ -153,7 +153,12 @@ const RegistroFrente = () => {
         </form>
       </div>
 
-      <ListaFrente getFrente={getFrente} frentes={frentes} eliminar={eliminar} editar={editar} />
+      <ListaFrente
+        getFrente={getFrente}
+        frentes={frentes}
+        eliminar={eliminar}
+        editar={editar}
+      />
     </Fragment>
   );
 };

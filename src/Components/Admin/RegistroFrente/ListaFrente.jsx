@@ -38,7 +38,7 @@ const ListaFrente = ({ getFrente, frentes, eliminar, editar }) => {
                   </button>
                   <button
                     className="btn btn-danger"
-                    onClick={() => eliminar(frente.id)}
+                    onClick={() => eliminar(frente._id)}
                   >
                     Eliminar
                   </button>
