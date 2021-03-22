@@ -1,7 +1,9 @@
+import axios from "axios";
 import React, { Fragment, useState } from "react";
 import ListaFrente from "./ListaFrente";
 
 const RegistroFrente = () => {
+  const URL = "http://localhost:4000/api/frente_universitario/"
   const [datosForm, setdatosForm] = useState({
     nombreFrente: "",
     nombreEncargado: "",
@@ -52,11 +54,12 @@ const RegistroFrente = () => {
     });
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
     if (datosForm.id) {
       console.log("editando");
     } else {
+      await axios.post(URL , datosForm);
       setfrentes([...frentes, datosForm]);
     }
     cleanForm();
