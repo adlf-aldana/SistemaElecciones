@@ -3,7 +3,7 @@ import React, { Fragment, useState } from "react";
 import ListaFrente from "./ListaFrente";
 
 const RegistroFrente = () => {
-  const URL = "http://localhost:4000/api/frente_universitario/"
+  const URL = "http://localhost:4000/api/frente_universitario/";
   const [datosForm, setdatosForm] = useState({
     nombreFrente: "",
     nombreEncargado: "",
@@ -20,32 +20,12 @@ const RegistroFrente = () => {
     celularEncargado,
   } = datosForm;
 
-  const [frentes, setfrentes] = useState([
-    {
-      id: 1,
-      nombreFrente: "Frente 1",
-      nombreEncargado: "Nombre 1",
-      apellidosEncargado: "Apellidos 1",
-      cuEncargado: "123456",
-      celularEncargado: "654321",
-    },
-    {
-      id: 2,
-      nombreFrente: "Frente 2",
-      nombreEncargado: "Nombre 2",
-      apellidosEncargado: "Apellidos 2",
-      cuEncargado: "456789",
-      celularEncargado: "987654",
-    },
-    {
-      id: 3,
-      nombreFrente: "Frente 3",
-      nombreEncargado: "Nombre 3",
-      apellidosEncargado: "Apellidos 3",
-      cuEncargado: "159753",
-      celularEncargado: "987321",
-    },
-  ]);
+  const [frentes, setfrentes] = useState([]);
+
+  const getFrente = async () => {
+    const res = await axios.get(URL);
+    setfrentes(res.data);
+  };
 
   const handleChange = (e) => {
     setdatosForm({
@@ -59,8 +39,7 @@ const RegistroFrente = () => {
     if (datosForm.id) {
       console.log("editando");
     } else {
-      await axios.post(URL , datosForm);
-      setfrentes([...frentes, datosForm]);
+      await axios.post(URL, datosForm);
     }
     cleanForm();
   };
@@ -174,7 +153,7 @@ const RegistroFrente = () => {
         </form>
       </div>
 
-      <ListaFrente frentes={frentes} eliminar={eliminar} editar={editar} />
+      <ListaFrente getFrente={getFrente} frentes={frentes} eliminar={eliminar} editar={editar} />
     </Fragment>
   );
 };

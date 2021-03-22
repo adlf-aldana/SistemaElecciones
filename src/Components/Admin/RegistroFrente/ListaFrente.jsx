@@ -1,6 +1,9 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 
-const ListaFrente = ({ frentes, eliminar, editar }) => {
+const ListaFrente = ({ getFrente, frentes, eliminar, editar }) => {
+  useEffect(() => {
+    getFrente();
+  }, [getFrente]);
   return (
     <Fragment>
       <div className="container mt-3">
