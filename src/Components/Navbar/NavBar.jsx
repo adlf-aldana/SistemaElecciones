@@ -57,6 +57,19 @@ const NavBar = () => {
                   Registro Frente
                 </NavLink>
               </li>
+              {/* 
+              LINK ENCARGADO DE MESA
+               */}
+
+              <li className="nav-item">
+                <NavLink
+                  to="encargadoMesa"
+                  activeClassName="active"
+                  className="nav-link"
+                >
+                  Encargado de Mesa
+                </NavLink>
+              </li>
             </ul>
           </div>
         </div>
