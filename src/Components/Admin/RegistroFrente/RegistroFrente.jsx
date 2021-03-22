@@ -54,13 +54,21 @@ const RegistroFrente = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    setfrentes([...frentes, datosForm]);
+    if (datosForm.id) {
+      console.log("editando");
+    } else {
+      setfrentes([...frentes, datosForm]);
+    }
     cleanForm();
   };
 
   const eliminar = (id) => {
     const frente = frentes.filter((item) => item.id !== id);
     setfrentes(frente);
+  };
+
+  const editar = (datos) => {
+    setdatosForm(datos);
   };
 
   const cleanForm = () => {
@@ -163,7 +171,7 @@ const RegistroFrente = () => {
         </form>
       </div>
 
-      <ListaFrente frentes={frentes} eliminar={eliminar} />
+      <ListaFrente frentes={frentes} eliminar={eliminar} editar={editar} />
     </Fragment>
   );
 };
