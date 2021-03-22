@@ -36,8 +36,8 @@ const RegistroFrente = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    if (datosForm.id) {
-      console.log("editando");
+    if (datosForm._id) {
+      await axios.put(URL + datosForm._id, datosForm);
     } else {
       await axios.post(URL, datosForm);
     }
