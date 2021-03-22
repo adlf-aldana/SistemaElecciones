@@ -16,6 +16,16 @@ const EncargadoMesa = () => {
     carrera: "Carrera votante",
   });
 
+  const [cuVotante, setcuVotante] = useState();
+
+  const handleChange = (e) => {
+    setcuVotante(e.target.value);
+  };
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    console.log(cuVotante);
+  };
   return (
     <Fragment>
       <div className="container mt-3">
@@ -23,24 +33,28 @@ const EncargadoMesa = () => {
 
         <Cards EncargadoMesa={EncargadoMesa} />
 
-        <div className="row mt-3">
-          <div className="col-md-3">
-            <strong>Habilitar a Votante:</strong>
-          </div>
+        <form onSubmit={onSubmit}>
+          <div className="row mt-3">
+            <div className="col-md-3">
+              <strong>Habilitar a Votante:</strong>
+            </div>
 
-          <div className="col-md-5">
-            <input
-              type="text"
-              name=""
-              id=""
-              className="form-control"
-              placeholder="Introduzca carnet universitario"
-            />
+            <div className="col-md-5">
+              <input
+                type="text"
+                name="cuUniversitario"
+                className="form-control"
+                placeholder="Introduzca carnet universitario"
+                onChange={handleChange}
+              />
+            </div>
+            <div className="col-md-4">
+              <button type="submit" className="btn btn-success">
+                Buscar
+              </button>
+            </div>
           </div>
-          <div className="col-md-4">
-            <button className="btn btn-success">Buscar</button>
-          </div>
-        </div>
+        </form>
 
         {votante ? <Cards votante={votante} /> : null}
       </div>
