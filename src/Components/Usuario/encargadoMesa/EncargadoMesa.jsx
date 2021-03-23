@@ -1,7 +1,14 @@
+import axios from "axios";
 import React, { Fragment, useState } from "react";
 import Cards from "./Cards";
 
 const EncargadoMesa = () => {
+  const URL = "http://localhost:4000/api/consulta_universitario_cu/";
+  // DATOS DEL FORMULARIO
+  const [dataForm, setdataForm] = useState({
+    cuUniversitario: "",
+  });
+
   const [EncargadoMesa, setEncargadoMesa] = useState({
     nombre: "Nombre Encargado",
     apellidos: "Apellidos Encargado",
@@ -9,23 +16,23 @@ const EncargadoMesa = () => {
     carrera: "Carrera encargado",
   });
 
-  const [votante, setvotante] = useState({
-    nombre: "Nombre votante",
-    apellidos: "Apellidos votante",
-    cuVotante: "22222",
-    carrera: "Carrera votante",
-  });
-
-  const [cuVotante, setcuVotante] = useState();
+  const [votante, setvotante] = useState();
 
   const handleChange = (e) => {
-    setcuVotante(e.target.value);
+    setdataForm({ [e.target.name]: e.target.value });
   };
 
-  const onSubmit = (e) => {
+  const { cuUniversitario } = dataForm;
+
+  const onSubmit = async (e) => {
     e.preventDefault();
-    console.log(cuVotante);
+    const datos = await axios.get(URL + cuUniversitario);
+    setvotante(datos.data.msg);
+    setdataForm({
+      cuUniversitario: "",
+    });
   };
+
   return (
     <Fragment>
       <div className="container mt-3">
@@ -46,6 +53,7 @@ const EncargadoMesa = () => {
                 className="form-control"
                 placeholder="Introduzca carnet universitario"
                 onChange={handleChange}
+                value={cuUniversitario}
               />
             </div>
             <div className="col-md-4">

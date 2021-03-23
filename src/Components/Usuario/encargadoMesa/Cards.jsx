@@ -31,7 +31,7 @@ const Cards = ({ EncargadoMesa, votante }) => {
             <div className="col">
               <strong>Carnet Universitario: </strong>
               <label htmlFor="">
-                {EncargadoMesa ? EncargadoMesa.cuEncargado : votante.cuVotante}
+                {EncargadoMesa ? EncargadoMesa.cuEncargado : votante.cu}
               </label>
             </div>
             <div className="col">
