@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { Fragment, useState } from "react";
+import FileImage from "./fileImg/FileImage";
 import ListaFrente from "./ListaFrente";
 
 const RegistroFrente = () => {
@@ -130,25 +131,26 @@ const RegistroFrente = () => {
                 value={celularEncargado}
               />
             </div>
-
-            <div className="col">
-              <label htmlFor="">Logo del Frente:</label>
-              <input type="file" name="" id="" />
-              <img src="" width="120px" height="120px" />
-            </div>
           </div>
 
-          <div className="col mt-3 text-right">
-            <button className="btn btn-success mr-2" type="submit">
-              Guardar
-            </button>
-            <button
-              className="btn btn-primary"
-              type="button"
-              onClick={cleanForm}
-            >
-              Limpiar
-            </button>
+          <div className="row mt-3 text-right">
+            <div className="col-md-10">
+              <FileImage />
+            </div>
+            <div className="col-md-1">
+              <button className="btn btn-success mr-2" type="submit">
+                Guardar
+              </button>
+            </div>
+            <div className="col-md-1">
+              <button
+                className="btn btn-primary"
+                type="button"
+                onClick={cleanForm}
+              >
+                Limpiar
+              </button>
+            </div>
           </div>
         </form>
       </div>
