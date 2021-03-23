@@ -12,5 +12,6 @@ app.use(express.json());
 // routes
 app.use("/api/lista_estudiantes", require("./routes/universitarios"));
 app.use("/api/frente_universitario", require("./routes/frente_universitario"));
+app.use("/api/consulta_universitario_cu", require("./routes/consulta_universitario"));
 
 module.exports = app;

@@ -38,7 +38,7 @@ univerCtrl.updateUniversitario = async (req, res) => {
     apellidos,
     cu,
     carrera,
-    cargo
+    cargo,
   });
   res.json({ msg: "Universitario actualizado" });
 };
