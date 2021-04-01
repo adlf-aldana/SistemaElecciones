@@ -1,7 +1,8 @@
 const frenteCtrl = {};
 const frenteModel = require("../models/frenteModel");
 
-const fs = require("fs");
+const { unlink } = require("fs-extra");
+const path = require("path");
 
 frenteCtrl.getFrentes = async (req, res) => {
   const frente = await frenteModel.find();
@@ -59,7 +60,8 @@ frenteCtrl.updateFrente = async (req, res) => {
 };
 
 frenteCtrl.deleteFrente = async (req, res) => {
-  await frenteModel.findByIdAndDelete(req.params.id);
+  const image = await frenteModel.findByIdAndDelete(req.params.id);
+  await unlink(path.resolve("./public/" + image.logoFrente));
   res.json({ msg: "Frente Eliminado" });
 };
 
