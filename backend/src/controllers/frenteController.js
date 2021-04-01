@@ -9,8 +9,8 @@ frenteCtrl.getFrentes = async (req, res) => {
 };
 
 frenteCtrl.createFrente = async (req, res) => {
-  const fileName = `${req.file.path}.${req.file.mimetype.split("/")[1]}`;
-  fs.renameSync(req.file.path, fileName);
+  // const fileName = `${req.file.path}.${req.file.mimetype.split("/")[1]}`;
+  // fs.renameSync(req.file.path, fileName);
 
   const {
     nombreFrente,
@@ -27,10 +27,12 @@ frenteCtrl.createFrente = async (req, res) => {
     apellidosEncargado,
     cuEncargado,
     celularEncargado,
-    logoFrente: fileName,
+    logoFrente: "/images/" + req.file.filename,
   });
   await newFrente.save();
   res.send({ msg: "Frente Guardado" });
+  // console.log(req.file.filename);
+  // console.log(req.file);
 };
 
 frenteCtrl.getFrente = async (req, res) => {

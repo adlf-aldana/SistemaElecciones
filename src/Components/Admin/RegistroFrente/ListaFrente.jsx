@@ -3,7 +3,7 @@ import React, { Fragment, useEffect } from "react";
 const ListaFrente = ({ getFrente, frentes, eliminar, editar }) => {
   useEffect(() => {
     getFrente();
-  }, [getFrente]);
+  }, []);
   return (
     <Fragment>
       <div className="container mt-3">
@@ -17,18 +17,28 @@ const ListaFrente = ({ getFrente, frentes, eliminar, editar }) => {
               <th>Apellidos Encargado</th>
               <th>C.U. Encargado</th>
               <th>Celular Encargado</th>
+              <th>Logo Frente</th>
               <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
             {frentes.map((frente, index) => (
-              <tr key={index + 1}>
+              <tr key={frente._id}>
                 <td>{index + 1}</td>
                 <td>{frente.nombreFrente}</td>
                 <td>{frente.nombreEncargado}</td>
                 <td>{frente.apellidosEncargado}</td>
                 <td>{frente.cuEncargado}</td>
                 <td>{frente.celularEncargado}</td>
+                <td>
+                  {frente.logoFrente}
+                  <img
+                    src={`http://localhost:4000${frente.logoFrente}`}
+                    alt=""
+                    width="200"
+                    height="100"
+                  />
+                </td>
                 <td>
                   <button
                     className="btn btn-warning mr-2"

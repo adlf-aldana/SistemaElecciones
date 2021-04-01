@@ -26,7 +26,11 @@ const RegistroFrente = () => {
   const [frentes, setfrentes] = useState([]);
 
   const getFrente = async () => {
-    const res = await axios.get(URL);
+    const res = await axios.get(URL, {
+      headers: {
+        "content-type": "application/json"
+      }
+    });
     setfrentes(res.data);
   };
 

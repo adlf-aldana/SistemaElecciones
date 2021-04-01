@@ -1,6 +1,8 @@
 const { Router } = require("express");
 const multer = require("multer");
 const router = Router();
+const path = require("path");
+const { v4: uuidv4 } = require("uuid");
 
 const {
   getFrentes,
@@ -10,7 +12,15 @@ const {
   deleteFrente,
 } = require("../controllers/frenteController");
 
-const upload = multer({ dest: `${__dirname}/../../public/images` });
+const storage = multer.diskStorage({
+  destination: path.join(__dirname, "/../../public/images"),
+  filename: (req, file, cb, filename) => {
+    // console.log(file);
+    cb(null, uuidv4() + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({ storage });
 router
   .route("/")
   .get(getFrentes)

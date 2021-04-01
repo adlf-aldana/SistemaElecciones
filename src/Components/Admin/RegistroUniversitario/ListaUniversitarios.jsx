@@ -10,7 +10,7 @@ const ListaUniversitarios = ({
 
   useEffect(() => {
     getEstudiantes();
-  }, [getEstudiantes]);
+  }, []);
 
   return (
     <Fragment>
