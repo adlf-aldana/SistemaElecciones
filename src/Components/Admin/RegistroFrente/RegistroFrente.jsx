@@ -5,8 +5,9 @@ import ListaFrente from "./ListaFrente";
 
 const RegistroFrente = () => {
   const [imgPreview, setImgPreview] = useState(null);
-
+  const [frentes, setfrentes] = useState([]);
   const URL = "http://localhost:4000/api/frente_universitario/";
+
   const [datosForm, setdatosForm] = useState({
     nombreFrente: "",
     nombreEncargado: "",
@@ -24,8 +25,6 @@ const RegistroFrente = () => {
     celularEncargado,
     logoFrente,
   } = datosForm;
-
-  const [frentes, setfrentes] = useState([]);
 
   const getFrente = async () => {
     const res = await axios.get(URL, {
@@ -45,7 +44,6 @@ const RegistroFrente = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-
     const dataimg = new FormData();
     dataimg.append("nombreFrente", nombreFrente);
     dataimg.append("nombreEncargado", nombreEncargado);
@@ -53,14 +51,13 @@ const RegistroFrente = () => {
     dataimg.append("cuEncargado", cuEncargado);
     dataimg.append("celularEncargado", celularEncargado);
     dataimg.append("logoFrente", logoFrente);
-    
-
     if (datosForm._id) {
       await axios.put(URL + datosForm._id, dataimg);
     } else {
       await axios.post(URL, dataimg);
     }
     cleanForm();
+    getFrente();
   };
 
   const eliminar = async (id) => {
@@ -82,7 +79,7 @@ const RegistroFrente = () => {
       celularEncargado: "",
       logoFrente: "",
     });
-    setImgPreview("")
+    setImgPreview("");
   };
 
   return (

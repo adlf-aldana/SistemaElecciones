@@ -4,6 +4,7 @@ const ListaFrente = ({ getFrente, frentes, eliminar, editar }) => {
   useEffect(() => {
     getFrente();
   }, []);
+
   return (
     <Fragment>
       <div className="container mt-3">

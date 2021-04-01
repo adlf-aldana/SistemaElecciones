@@ -6,13 +6,13 @@ import RegistroUniversitario from "./RegistroUniversitario";
 const UniversitarioIndex = () => {
   const URL = "http://localhost:4000/api/lista_estudiantes/";
   const [estudiantes, setestudiantes] = useState([]);
+  const [editUni, seteditUni] = useState([]);
 
   // OBTENIENDO DATOS
   const getEstudiantes = async () => {
     const res = await axios.get(URL);
     setestudiantes(res.data);
   };
-  const [editUni, seteditUni] = useState([]);
 
   // GUARDAR DATOS
   const postEstudiantes = async (datosEstudiantes) => {
@@ -21,8 +21,8 @@ const UniversitarioIndex = () => {
       seteditUni([]);
     } else {
       await axios.post(URL, datosEstudiantes);
-      // getEstudiantes();
     }
+    getEstudiantes();
   };
 
   // ELIMINAR DATO
