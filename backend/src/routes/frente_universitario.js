@@ -10,12 +10,12 @@ const {
   getFrente,
   updateFrente,
   deleteFrente,
+  deleteImage,
 } = require("../controllers/frenteController");
 
 const storage = multer.diskStorage({
   destination: path.join(__dirname, "/../../public/images"),
   filename: (req, file, cb, filename) => {
-    // console.log(file);
     cb(null, uuidv4() + path.extname(file.originalname));
   },
 });
@@ -26,6 +26,10 @@ router
   .get(getFrentes)
   .post(upload.single("logoFrente"), createFrente);
 
-router.route("/:id").get(getFrente).put(updateFrente).delete(deleteFrente);
+router
+  .route("/:id")
+  .get(getFrente)
+  .put(upload.single("logoFrente"), updateFrente)
+  .delete(deleteFrente)
 
 module.exports = router;

@@ -31,11 +31,10 @@ const ListaFrente = ({ getFrente, frentes, eliminar, editar }) => {
                 <td>{frente.cuEncargado}</td>
                 <td>{frente.celularEncargado}</td>
                 <td>
-                  {frente.logoFrente}
                   <img
                     src={`http://localhost:4000${frente.logoFrente}`}
                     alt=""
-                    width="200"
+                    width="80"
                     height="100"
                   />
                 </td>

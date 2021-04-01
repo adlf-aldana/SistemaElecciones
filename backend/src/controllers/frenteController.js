@@ -42,20 +42,34 @@ frenteCtrl.getFrente = async (req, res) => {
 };
 
 frenteCtrl.updateFrente = async (req, res) => {
+
+  if (req.file) {
+    // ELIMINANDO IMAGEN PASADA
+    const { logoFrente } = await frenteModel.findById(req.params.id);
+    await unlink(path.resolve("./public/" + logoFrente));
+  }
+  
   const {
     nombreFrente,
     nombreEncargado,
     apellidosEncargado,
     cuEncargado,
     celularEncargado,
+    logoFrente,
   } = req.body;
+
+  // const img = req.body.logoFrente;
+  // if (req.file) await unlink(path.resolve("./public/" + img));
+
   await frenteModel.findByIdAndUpdate(req.params.id, {
     nombreFrente,
     nombreEncargado,
     apellidosEncargado,
     cuEncargado,
     celularEncargado,
+    logoFrente: req.file ? "/images/" + req.file.filename : logoFrente,
   });
+  
   res.json({ msg: "Frente actualizado" });
 };
 

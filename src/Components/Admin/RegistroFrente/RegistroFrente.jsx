@@ -4,6 +4,8 @@ import FileImage from "./fileImg/FileImage";
 import ListaFrente from "./ListaFrente";
 
 const RegistroFrente = () => {
+  const [imgPreview, setImgPreview] = useState(null);
+
   const URL = "http://localhost:4000/api/frente_universitario/";
   const [datosForm, setdatosForm] = useState({
     nombreFrente: "",
@@ -28,8 +30,8 @@ const RegistroFrente = () => {
   const getFrente = async () => {
     const res = await axios.get(URL, {
       headers: {
-        "content-type": "application/json"
-      }
+        "content-type": "application/json",
+      },
     });
     setfrentes(res.data);
   };
@@ -51,9 +53,10 @@ const RegistroFrente = () => {
     dataimg.append("cuEncargado", cuEncargado);
     dataimg.append("celularEncargado", celularEncargado);
     dataimg.append("logoFrente", logoFrente);
+    
 
     if (datosForm._id) {
-      await axios.put(URL + datosForm._id, datosForm);
+      await axios.put(URL + datosForm._id, dataimg);
     } else {
       await axios.post(URL, dataimg);
     }
@@ -67,6 +70,7 @@ const RegistroFrente = () => {
 
   const editar = (datos) => {
     setdatosForm(datos);
+    setImgPreview("http://localhost:4000/" + datos.logoFrente);
   };
 
   const cleanForm = () => {
@@ -76,7 +80,9 @@ const RegistroFrente = () => {
       apellidosEncargado: "",
       cuEncargado: "",
       celularEncargado: "",
+      logoFrente: "",
     });
+    setImgPreview("")
   };
 
   return (
@@ -150,7 +156,12 @@ const RegistroFrente = () => {
 
           <div className="row mt-3 text-right">
             <div className="col-md-10">
-              <FileImage datosForm={datosForm} setdatosForm={setdatosForm} />
+              <FileImage
+                setImgPreview={setImgPreview}
+                imgPreview={imgPreview}
+                datosForm={datosForm}
+                setdatosForm={setdatosForm}
+              />
             </div>
             <div className="col-md-1">
               <button className="btn btn-success mr-2" type="submit">

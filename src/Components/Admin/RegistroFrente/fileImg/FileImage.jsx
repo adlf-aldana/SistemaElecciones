@@ -1,8 +1,7 @@
 import React, { Fragment, useState } from "react";
 import "./style.css";
 
-const FileImage = ({ datosForm, setdatosForm }) => {
-  const [imgPreview, setImgPreview] = useState(null);
+const FileImage = ({ datosForm, setdatosForm, setImgPreview, imgPreview }) => {
   const [error, setError] = useState(false);
 
   const handleChange = (e) => {
