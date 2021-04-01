@@ -11,6 +11,7 @@ const RegistroFrente = () => {
     apellidosEncargado: "",
     cuEncargado: "",
     celularEncargado: "",
+    logoFrente: "",
   });
 
   const {
@@ -19,6 +20,7 @@ const RegistroFrente = () => {
     apellidosEncargado,
     cuEncargado,
     celularEncargado,
+    logoFrente,
   } = datosForm;
 
   const [frentes, setfrentes] = useState([]);
@@ -37,10 +39,19 @@ const RegistroFrente = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+
+    const dataimg = new FormData();
+    dataimg.append("nombreFrente", nombreFrente);
+    dataimg.append("nombreEncargado", nombreEncargado);
+    dataimg.append("apellidosEncargado", apellidosEncargado);
+    dataimg.append("cuEncargado", cuEncargado);
+    dataimg.append("celularEncargado", celularEncargado);
+    dataimg.append("logoFrente", logoFrente);
+
     if (datosForm._id) {
       await axios.put(URL + datosForm._id, datosForm);
     } else {
-      await axios.post(URL, datosForm);
+      await axios.post(URL, dataimg);
     }
     cleanForm();
   };
@@ -135,7 +146,7 @@ const RegistroFrente = () => {
 
           <div className="row mt-3 text-right">
             <div className="col-md-10">
-              <FileImage />
+              <FileImage datosForm={datosForm} setdatosForm={setdatosForm} />
             </div>
             <div className="col-md-1">
               <button className="btn btn-success mr-2" type="submit">

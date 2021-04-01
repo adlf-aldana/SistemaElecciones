@@ -27,6 +27,9 @@ const frenteSchema = new Schema(
       require: true,
       trim: true,
     },
+    logoFrente: {
+      type: String,
+    },
   },
   {
     timestamps: true,

@@ -1,5 +1,7 @@
 const { Router } = require("express");
+const multer = require("multer");
 const router = Router();
+
 const {
   getFrentes,
   createFrente,
@@ -8,12 +10,12 @@ const {
   deleteFrente,
 } = require("../controllers/frenteController");
 
-router.route("/").get(getFrentes).post(createFrente);
-
+const upload = multer({ dest: `${__dirname}/../../public/images` });
 router
-  .route("/:id")
-  .get(getFrente)
-  .put(updateFrente)
-  .delete(deleteFrente);
+  .route("/")
+  .get(getFrentes)
+  .post(upload.single("logoFrente"), createFrente);
+
+router.route("/:id").get(getFrente).put(updateFrente).delete(deleteFrente);
 
 module.exports = router;

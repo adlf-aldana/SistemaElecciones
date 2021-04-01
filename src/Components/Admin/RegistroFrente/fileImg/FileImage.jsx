@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from "react";
 import "./style.css";
 
-const FileImage = () => {
+const FileImage = ({ datosForm, setdatosForm }) => {
   const [imgPreview, setImgPreview] = useState(null);
   const [error, setError] = useState(false);
 
@@ -15,12 +15,13 @@ const FileImage = () => {
         setImgPreview(reader.result);
       };
       reader.readAsDataURL(selected);
+      setdatosForm({ ...datosForm, logoFrente: selected });
     } else {
       setError(true);
     }
   };
   return (
-    <Fragment className="App">
+    <Fragment>
       <div className="container">
         {error && <p className="errorMsg">Archivo no soportado</p>}
         <div
