@@ -70,6 +70,15 @@ const NavBar = () => {
                   Encargado de Mesa
                 </NavLink>
               </li>
+              <li className="nav-item">
+                <NavLink
+                  to="votacion"
+                  activeClassName="active"
+                  className="nav-link"
+                >
+                  Votacion
+                </NavLink>
+              </li>
             </ul>
           </div>
         </div>

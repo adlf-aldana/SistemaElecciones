@@ -10,6 +10,7 @@ import NavBar from "./Components/Navbar/NavBar";
 import Login from "./Components/Login/Login";
 import RegistroFrente from "./Components/Admin/RegistroFrente/RegistroFrente";
 import EncargadoMesa from "./Components/Usuario/encargadoMesa/EncargadoMesa";
+import Votacion from "./Components/Votacion/Votacion";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/registroUniversitario" component={UniversitarioIndex} />
           <Route path="/registroFrente" component={RegistroFrente} />
           <Route path="/encargadoMesa" component={EncargadoMesa} />
+          <Route path="/votacion" component={Votacion} />
           <Route path="/" exact component={Login} />
         </Switch>
       </Router>
