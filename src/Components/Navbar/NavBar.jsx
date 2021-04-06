@@ -70,6 +70,9 @@ const NavBar = () => {
                   Encargado de Mesa
                 </NavLink>
               </li>
+              {/* 
+              VOTACION 
+              */}
               <li className="nav-item">
                 <NavLink
                   to="votacion"
@@ -77,6 +80,18 @@ const NavBar = () => {
                   className="nav-link"
                 >
                   Votacion
+                </NavLink>
+              </li>
+              {/* 
+              INFORME 
+              */}
+              <li className="nav-item">
+                <NavLink
+                  to="informe"
+                  activeclassname="active"
+                  className="nav-link"
+                >
+                  Informe
                 </NavLink>
               </li>
             </ul>

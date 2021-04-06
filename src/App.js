@@ -11,6 +11,7 @@ import Login from "./Components/Login/Login";
 import RegistroFrente from "./Components/Admin/RegistroFrente/RegistroFrente";
 import EncargadoMesa from "./Components/Usuario/encargadoMesa/EncargadoMesa";
 import Votacion from "./Components/Votacion/Votacion";
+import Informe from "./Components/Estadisticas/Informe/Informe";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/registroFrente" component={RegistroFrente} />
           <Route path="/encargadoMesa" component={EncargadoMesa} />
           <Route path="/votacion" component={Votacion} />
+          <Route path="/informe" component={Informe} />
           <Route path="/" exact component={Login} />
         </Switch>
       </Router>
