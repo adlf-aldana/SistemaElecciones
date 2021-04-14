@@ -30,6 +30,9 @@ const frenteSchema = new Schema(
     logoFrente: {
       type: String,
     },
+    cantVotos: {
+      type: Number,
+    },
   },
   {
     timestamps: true,

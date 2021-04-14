@@ -10,6 +10,22 @@ const Votacion = () => {
     setfrentes(res.data);
   };
 
+  const btnVotar = async (frente) => {
+    const res = await axios.get(URL + frente._id);
+    const newData = {
+      nombreFrente: frente.nombreFrente,
+      nombreEncargado: frente.nombreEncargado,
+      apellidosEncargado: frente.apellidosEncargado,
+      cuEncargado: frente.cuEncargado,
+      celularEncargado: frente.celularEncargado,
+      logoFrente: frente.logoFrente,
+      cantVotos: res.data.msg.cantVotos + 1,
+    };
+
+    await axios.put(URL + frente._id, newData);
+    console.log(res.data.msg.cantVotos);
+  };
+
   useEffect(() => {
     getfrentes();
     return () => {};
@@ -31,7 +47,12 @@ const Votacion = () => {
                   />
                   <div className="card-body">
                     <h5 className="card-title">{frente.nombreFrente}</h5>
-                    <button className="btn btn-primary">Votar</button>
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => btnVotar(frente)}
+                    >
+                      Votar
+                    </button>
                   </div>
                 </div>
               </div>

@@ -20,6 +20,7 @@ frenteCtrl.createFrente = async (req, res) => {
     cuEncargado,
     celularEncargado,
     logoFrente,
+    cantVotos
   } = req.body;
 
   const newFrente = new frenteModel({
@@ -29,6 +30,7 @@ frenteCtrl.createFrente = async (req, res) => {
     cuEncargado,
     celularEncargado,
     logoFrente: "/images/" + req.file.filename,
+    cantVotos: 0,
   });
   await newFrente.save();
   res.send({ msg: "Frente Guardado" });
@@ -56,6 +58,7 @@ frenteCtrl.updateFrente = async (req, res) => {
     cuEncargado,
     celularEncargado,
     logoFrente,
+    cantVotos
   } = req.body;
 
   // const img = req.body.logoFrente;
@@ -68,6 +71,7 @@ frenteCtrl.updateFrente = async (req, res) => {
     cuEncargado,
     celularEncargado,
     logoFrente: req.file ? "/images/" + req.file.filename : logoFrente,
+    cantVotos
   });
   
   res.json({ msg: "Frente actualizado" });
