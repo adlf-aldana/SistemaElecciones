@@ -15,11 +15,11 @@ const Tabla = ({ datos, cantEstudiantes }) => {
         </thead>
         <tbody>
           {datos.map((dato, index) => (
-            <tr key={dato.id}>
+            <tr key={dato._id}>
               <td> {index + 1}</td>
               <td>{dato.nombreFrente}</td>
-              <td>{dato.CantVotos}</td>
-              <td>{(cantEstudiantes / datos.length) * dato.CantVotos}</td>
+              <td>{dato.cantVotos}</td>
+              {/* <td>{(cantEstudiantes / datos.length) * dato.cantVotos}</td> */}
             </tr>
           ))}
         </tbody>

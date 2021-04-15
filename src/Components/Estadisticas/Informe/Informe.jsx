@@ -1,17 +1,55 @@
-import React, { Fragment, useState } from "react";
+import axios from "axios";
+import React, { Fragment, useState, useEffect } from "react";
 import BarGraphics from "../GraphicsBar/BarGraphics";
 import Tabla from "../Tabla/Tabla";
 
 const Informe = () => {
-  const cantEstudiantes = 1000;
+  const URL = "http://localhost:4000/api/frente_universitario/";
+  const cantEstudiantes = 10;
 
-  const [datos, setdatos] = useState([
-    { id: 1, nombreFrente: "Frente 1", CantVotos: 6 },
-    { id: 2, nombreFrente: "Frente 2", CantVotos: 10 },
-    { id: 3, nombreFrente: "Frente 3", CantVotos: 15 },
-    { id: 4, nombreFrente: "Frente 4", CantVotos: 12 },
-    { id: 5, nombreFrente: "Frente 5", CantVotos: 3 },
-  ]);
+  const [datos, setdatos] = useState([]);
+  const [Chartdata, setChartdata] = useState({});
+
+  const getFrente = async () => {
+    const res = await axios.get(URL);
+    setdatos(res.data);
+    chart(res.data);
+  };
+
+  const chart = async (data) => {
+    const nombreFrente = [];
+    const CantVotos = [];
+    await data.map((dato) => {
+      nombreFrente.push(dato.nombreFrente);
+      CantVotos.push(dato.cantVotos);
+
+      setChartdata({
+        labels: nombreFrente,
+        datasets: [
+          {
+            label: "votos",
+            data: CantVotos,
+            backgroundColor: [
+              "red",
+              "blue",
+              "orange",
+              "black",
+              "yellow",
+              "pink",
+            ],
+            // backgroundColor: ["rgba(75,192,192,0.6)"],
+            borderWidth: 4,
+          },
+        ],
+      });
+    });
+  };
+
+  useEffect(() => {
+    getFrente();
+
+    return () => {};
+  }, []);
   return (
     <Fragment>
       <div className="container">
@@ -27,7 +65,7 @@ const Informe = () => {
           <strong>Total que NO votaron: </strong>
         </p>
         <Tabla datos={datos} cantEstudiantes={cantEstudiantes} />
-        <BarGraphics datos={datos} />
+        <BarGraphics Chartdata={Chartdata} />
       </div>
     </Fragment>
   );
