@@ -5,7 +5,7 @@ import Tabla from "../Tabla/Tabla";
 
 const Informe = () => {
   const URL = "http://localhost:4000/api/frente_universitario/";
-  const cantEstudiantes = 10;
+  const cantEstudiantes = 33;
 
   const [datos, setdatos] = useState([]);
   const [Chartdata, setChartdata] = useState({});
@@ -17,37 +17,27 @@ const Informe = () => {
   };
 
   const chart = async (data) => {
-    const nombreFrente = [];
-    const CantVotos = [];
-    await data.map((dato) => {
-      nombreFrente.push(dato.nombreFrente);
-      CantVotos.push(dato.cantVotos);
+    const nombreFrente = Object.values(data).map((key) => key.nombreFrente);
+    const CantVotos = Object.values(data).map((key) => key.cantVotos);
 
-      setChartdata({
-        labels: nombreFrente,
-        datasets: [
-          {
-            label: "votos",
-            data: CantVotos,
-            backgroundColor: [
-              "red",
-              "blue",
-              "orange",
-              "black",
-              "yellow",
-              "pink",
-            ],
-            // backgroundColor: ["rgba(75,192,192,0.6)"],
-            borderWidth: 4,
-          },
-        ],
-      });
+    setChartdata({
+      labels: nombreFrente,
+      datasets: [
+        {
+          type: "bar",
+          label: "votos",
+          data: CantVotos,
+
+          backgroundColor: ["red", "blue", "orange", "black", "yellow", "pink"],
+          // backgroundColor: ["rgba(75,192,192,0.6)"],
+          borderWidth: 4,
+        },
+      ],
     });
   };
 
   useEffect(() => {
     getFrente();
-
     return () => {};
   }, []);
   return (
