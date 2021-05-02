@@ -13,7 +13,7 @@ const BarGraphics = ({ Chartdata }) => {
             yAxes: [
               {
                 ticks: {
-                  // max: 90,
+                  max: 100,
                   min: 0,
                   // stepSize: 3,
                 },

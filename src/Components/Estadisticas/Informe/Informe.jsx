@@ -20,6 +20,9 @@ const Informe = () => {
     // CONVERSION DE OBJETO A ARRAY
     const nombreFrente = Object.values(data).map((key) => key.nombreFrente);
     const CantVotos = Object.values(data).map((key) => key.cantVotos);
+    const porcentajeVotos = CantVotos.map(
+      (voto) => ((voto * 100) / cantEstudiantes).toFixed(2)
+    );
 
     // PINTANDO GRAFICO
     setChartdata({
@@ -27,9 +30,9 @@ const Informe = () => {
       labels: nombreFrente,
       datasets: [
         {
-          label: "My First Dataset",
-          data: CantVotos,
-          
+          label: "Elecciones Centro de Estudiantes al 100%",
+          data: porcentajeVotos,
+
           backgroundColor: [
             "rgba(255, 99, 132, 0.2)",
             "rgba(255, 159, 64, 0.2)",
