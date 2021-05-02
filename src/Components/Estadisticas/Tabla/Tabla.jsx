@@ -10,7 +10,7 @@ const Tabla = ({ datos, cantEstudiantes }) => {
             <th>#</th>
             <th>Frente</th>
             <th>Cantidad de Votos</th>
-            {/* <th>Porcentaje de Votos</th> */}
+            <th>Porcentaje de Votos</th>
           </tr>
         </thead>
         <tbody>
@@ -19,7 +19,7 @@ const Tabla = ({ datos, cantEstudiantes }) => {
               <td> {index + 1}</td>
               <td>{dato.nombreFrente}</td>
               <td>{dato.cantVotos}</td>
-              {/* <td>{(cantEstudiantes / datos.length) * dato.cantVotos}</td> */}
+              <td>{((dato.cantVotos * 100) / cantEstudiantes).toFixed(2)} %</td>
             </tr>
           ))}
         </tbody>
