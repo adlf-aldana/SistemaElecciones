@@ -10,7 +10,7 @@ const Tabla = ({ datos, cantEstudiantes }) => {
             <th>#</th>
             <th>Frente</th>
             <th>Cantidad de Votos</th>
-            <th>Porcentaje de Votos</th>
+            {/* <th>Porcentaje de Votos</th> */}
           </tr>
         </thead>
         <tbody>
