@@ -41,16 +41,22 @@ const Informe = () => {
         <h1 className="text-center p-4">INFORME</h1>
         {Object.keys(frentes).length > 0 ? (
           <div>
-            <p>
-              <strong>Total Estudiantes: </strong>
-              {cantEstudiantes}
-            </p>
-            <p>
-              <strong>Total que votaron: </strong>
-            </p>
-            <p>
-              <strong>Total que NO votaron: </strong>
-            </p>
+            <div className="col">
+              <div className="row-md-12">
+                <button className="btn btn-success">Generar PDF</button>
+              </div>
+              <br />
+              <p className="row">
+                <strong>Total Estudiantes: </strong>
+                {cantEstudiantes}
+              </p>
+              <p className="row">
+                <strong>Total que votaron: </strong>
+              </p>
+              <p className="row">
+                <strong>Total que NO votaron: </strong>
+              </p>
+            </div>
             <Tabla frentes={frentes} datosPorcentajes={datosPorcentajes} />
             <BarGraphics datosGraficos={datosGraficos} />
           </div>
