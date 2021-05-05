@@ -7,6 +7,11 @@ const RegistroFrente = () => {
   const [imgPreview, setImgPreview] = useState(null);
   const [frentes, setfrentes] = useState([]);
   const URL = "http://localhost:4000/api/frente_universitario/";
+  const [message, setmessage] = useState({
+    text: "",
+    status: false,
+    type: "",
+  });
 
   const [datosForm, setdatosForm] = useState({
     nombreFrente: "",
@@ -44,25 +49,103 @@ const RegistroFrente = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    const dataimg = new FormData();
-    dataimg.append("nombreFrente", nombreFrente);
-    dataimg.append("nombreEncargado", nombreEncargado);
-    dataimg.append("apellidosEncargado", apellidosEncargado);
-    dataimg.append("cuEncargado", cuEncargado);
-    dataimg.append("celularEncargado", celularEncargado);
-    dataimg.append("logoFrente", logoFrente);
-    if (datosForm._id) {
-      await axios.put(URL + datosForm._id, dataimg);
-    } else {
-      await axios.post(URL, dataimg);
+    if (
+      nombreFrente.trim() == "" ||
+      nombreEncargado.trim() == "" ||
+      apellidosEncargado.trim() == "" ||
+      logoFrente == ""
+    ) {
+      setmessage({
+        text: "Error: Todos los campos deben estar llenos",
+        status: true,
+        type: "danger",
+      });
+
+      setTimeout(() => {
+        setmessage({
+          text: "",
+          status: false,
+          type: "",
+        });
+      }, 5000);
+      return;
+    }
+
+    if (
+      nombreFrente.length < 3 ||
+      nombreEncargado.length < 3 ||
+      apellidosEncargado.length < 3 ||
+      cuEncargado.length < 6 ||
+      celularEncargado.length < 8
+    ) {
+      setmessage({
+        text:
+          "Error: Los campos deben ser mayores a 3 caracteres, Carnet Universitario 6 digitos y celular 8 digitos",
+        status: true,
+        type: "danger",
+      });
+
+      setTimeout(() => {
+        setmessage({
+          text: "",
+          status: false,
+          type: "",
+        });
+      }, 5000);
+      return;
+    }
+    if (
+      nombreFrente.length > 30 ||
+      nombreEncargado.length > 30 ||
+      apellidosEncargado.length > 30 ||
+      cuEncargado.length > 6 ||
+      celularEncargado.length > 8
+    ) {
+      setmessage({
+        text:
+          "Error: Los campos deben ser mayores a 3 caractere, Carnet Universitario 6 digitos y celular 8 digitos",
+        status: true,
+        type: "danger",
+      });
+
+      setTimeout(() => {
+        setmessage({
+          text: "",
+          status: false,
+          type: "",
+        });
+      }, 5000);
+      return;
+    }
+    try {
+      const dataimg = new FormData();
+      dataimg.append("nombreFrente", nombreFrente);
+      dataimg.append("nombreEncargado", nombreEncargado);
+      dataimg.append("apellidosEncargado", apellidosEncargado);
+      dataimg.append("cuEncargado", cuEncargado);
+      dataimg.append("celularEncargado", celularEncargado);
+      dataimg.append("logoFrente", logoFrente);
+      if (datosForm._id) {
+        await axios.put(URL + datosForm._id, dataimg);
+      } else {
+        await axios.post(URL, dataimg);
+      }
+    } catch (e) {
+      console.log(e);
     }
     cleanForm();
     getFrente();
   };
 
   const eliminar = async (id) => {
-    await axios.delete(URL + id);
-    getFrente();
+    if (window.confirm("¿Esta seguro de eliminar?")) {
+      try {
+        await axios.delete(URL + id);
+        getFrente();
+      } catch (e) {
+        console.log(e);
+      }
+    }
   };
 
   const editar = (datos) => {
@@ -86,6 +169,9 @@ const RegistroFrente = () => {
     <Fragment>
       <div className="container mt-3">
         <h1 className="text-center">Registro Frente</h1>
+        {message.status ? (
+          <div className={`alert alert-${message.type}`}>{message.text}</div>
+        ) : null}
         <form onSubmit={onSubmit}>
           <div className="row mt-3">
             <div className="col">
@@ -97,6 +183,7 @@ const RegistroFrente = () => {
                 className="form-control"
                 onChange={handleChange}
                 value={nombreFrente}
+                maxLength={30}
               />
             </div>
 
@@ -109,6 +196,7 @@ const RegistroFrente = () => {
                 className="form-control"
                 onChange={handleChange}
                 value={nombreEncargado}
+                maxLength={30}
               />
             </div>
 
@@ -121,6 +209,7 @@ const RegistroFrente = () => {
                 className="form-control"
                 onChange={handleChange}
                 value={apellidosEncargado}
+                maxLength={30}
               />
             </div>
           </div>
@@ -129,7 +218,7 @@ const RegistroFrente = () => {
             <div className="col">
               <label htmlFor="">Carnet Universitario del Encagado:</label>
               <input
-                type="text"
+                type="number"
                 name="cuEncargado"
                 placeholder="Carnet Universitario del Encargado"
                 className="form-control"
@@ -141,7 +230,7 @@ const RegistroFrente = () => {
             <div className="col">
               <label htmlFor="">Teléfono Celular del Encargado:</label>
               <input
-                type="text"
+                type="number"
                 name="celularEncargado"
                 placeholder="Teléfono Celular del Encargado"
                 className="form-control"
