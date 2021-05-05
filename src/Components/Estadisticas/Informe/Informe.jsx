@@ -3,6 +3,8 @@ import BarGraphics from "../GraphicsBar/BarGraphics";
 import Tabla from "../Tabla/Tabla";
 import { datosFrente, getUniversitarios, porcentajes } from "./Peticiones";
 import { dataGraphics } from "./BarGraphics";
+import { jsPDF } from "jspdf";
+import * as html2canvas from "html2canvas";
 
 const Informe = () => {
   const [datosGraficos, setDatosGraficos] = useState(0);
@@ -25,6 +27,33 @@ const Informe = () => {
   const porcentajeVotos = async () => {
     setDatosPorcentajes(await porcentajes());
   };
+  const generarPDF = () => {
+    const doc = new jsPDF({
+      orientation: "landscape",
+      format: "letter",
+    });
+
+    const widthPage = doc.internal.pageSize.getWidth();
+    const heightPage = doc.internal.pageSize.getHeight();
+
+    doc.text("INFORME", widthPage / 2, 10);
+    doc.text(
+      "Total Estudiantes: " +
+        cantEstudiantes +
+        "     Total Votaron: " +
+        0 +
+        "     Total No Votaron: " +
+        0,
+      10,
+      20
+    );
+    // // doc.addPage();
+    html2canvas(document.getElementById("capture")).then(function (canvas) {
+      var img = canvas.toDataURL("image/png");
+      doc.addImage(img, "JPEG", 10, 25, widthPage - 15, heightPage - 25);
+      doc.save("informe.pdf");
+    });
+  };
   useEffect(() => {
     getCantUniversitarios();
     getFrente();
@@ -43,7 +72,12 @@ const Informe = () => {
           <div>
             <div className="col">
               <div className="row-md-12">
-                <button className="btn btn-success">Generar PDF</button>
+                <button
+                  className="btn btn-success"
+                  onClick={() => generarPDF()}
+                >
+                  Generar PDF
+                </button>
               </div>
               <br />
               <p className="row">
@@ -57,8 +91,10 @@ const Informe = () => {
                 <strong>Total que NO votaron: </strong>
               </p>
             </div>
-            <Tabla frentes={frentes} datosPorcentajes={datosPorcentajes} />
-            <BarGraphics datosGraficos={datosGraficos} />
+            <div id="capture">
+              <Tabla frentes={frentes} datosPorcentajes={datosPorcentajes} />
+              <BarGraphics datosGraficos={datosGraficos} />
+            </div>
           </div>
         ) : (
           <p>No hay datos</p>
