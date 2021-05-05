@@ -7,28 +7,87 @@ const UniversitarioIndex = () => {
   const URL = "http://localhost:4000/api/lista_estudiantes/";
   const [estudiantes, setestudiantes] = useState([]);
   const [editUni, seteditUni] = useState([]);
+  const [message, setmessage] = useState({
+    text: "",
+    status: false,
+    type: "",
+  });
 
   // OBTENIENDO DATOS
   const getEstudiantes = async () => {
-    const res = await axios.get(URL);
-    setestudiantes(res.data);
+    try {
+      const res = await axios.get(URL);
+      setestudiantes(res.data);
+    } catch (e) {
+      console.log("No se cargo los datos: " + e);
+    }
   };
 
   // GUARDAR DATOS
   const postEstudiantes = async (datosEstudiantes) => {
     if (editUni._id) {
-      await axios.put(URL + editUni._id, datosEstudiantes);
-      seteditUni([]);
+      try {
+        await axios.put(URL + editUni._id, datosEstudiantes);
+        seteditUni([]);
+        message({
+          text: "Editado Correctamente",
+          status: true,
+          type: "success",
+        });
+        setTimeout(() => {
+          message({
+            text: "",
+            status: false,
+            type: "",
+          });
+        }, 5000);
+      } catch (e) {
+        console.log("No se edito los datos: " + e);
+      }
     } else {
-      await axios.post(URL, datosEstudiantes);
+      try {
+        await axios.post(URL, datosEstudiantes);
+        message({
+          text: "Guardado Correctamente",
+          status: true,
+          type: "success",
+        });
+        setTimeout(() => {
+          message({
+            text: "",
+            status: false,
+            type: "",
+          });
+        }, 5000);
+      } catch (e) {
+        console.log("No se guardo los datos: " + e);
+      }
     }
     getEstudiantes();
   };
 
   // ELIMINAR DATO
   const eliminarEstudiante = async (id) => {
-    await axios.delete(URL + id);
-    getEstudiantes();
+    if (window.confirm("¿Esta seguro de eliminar?")) {
+      try {
+        await axios.delete(URL + id);
+        getEstudiantes();
+        message({
+          text: "Eliminado correctamente",
+          status: true,
+          type: "success",
+        });
+        setTimeout(() => {
+          message({
+            text: "",
+            status: false,
+            type: "",
+          });
+        }, 5000);
+      } catch (e) {
+        console.log("No se elimino los datos: " + e);
+      }
+    }
   };
 
   // EDITAR DATOS
@@ -43,6 +102,8 @@ const UniversitarioIndex = () => {
           // guardarEstudiante={guardarEstudiante}
           postEstudiantes={postEstudiantes}
           editUni={editUni}
+          message={message}
+          setmessage={setmessage}
         />
         <ListaUniversitarios
           eliminarEstudiante={eliminarEstudiante}
