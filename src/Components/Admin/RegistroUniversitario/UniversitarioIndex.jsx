@@ -5,6 +5,7 @@ import RegistroUniversitario from "./RegistroUniversitario";
 
 const UniversitarioIndex = () => {
   const URL = "http://localhost:4000/api/lista_estudiantes/";
+
   const [estudiantes, setestudiantes] = useState([]);
   const [editUni, seteditUni] = useState([]);
   const [message, setmessage] = useState({
