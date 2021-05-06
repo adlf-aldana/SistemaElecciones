@@ -1,10 +1,12 @@
 import axios from "axios";
 import React, { Fragment, useState } from "react";
+import Cards from "../../Usuario/encargadoMesa/Cards";
 import ListaUniversitarios from "./ListaUniversitarios";
 import RegistroUniversitario from "./RegistroUniversitario";
 
 const UniversitarioIndex = () => {
   const URL = "http://localhost:4000/api/lista_estudiantes/";
+  const URL_CU = "http://localhost:4000/api/consulta_universitario_cu/";
 
   const [estudiantes, setestudiantes] = useState([]);
   const [editUni, seteditUni] = useState([]);
@@ -96,6 +98,23 @@ const UniversitarioIndex = () => {
     seteditUni(datos);
   };
 
+  const [dataForm, setdataForm] = useState({
+    cuUniversitario: "",
+  });
+  const [votante, setvotante] = useState();
+  const { cuUniversitario } = dataForm;
+  const handleChange = (e) => {
+    setdataForm({ [e.target.name]: e.target.value });
+  };
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    const datos = await axios.get(URL_CU + cuUniversitario);
+    setvotante(datos.data.msg);
+    setdataForm({
+      cuUniversitario: "",
+    });
+  };
+
   return (
     <Fragment>
       <div className="container">
@@ -106,12 +125,33 @@ const UniversitarioIndex = () => {
           message={message}
           setmessage={setmessage}
         />
-        <ListaUniversitarios
+        {/* <ListaUniversitarios
           eliminarEstudiante={eliminarEstudiante}
           estudiantes={estudiantes}
           getEstudiantes={getEstudiantes}
           editarUniversitario={editarUniversitario}
-        />
+        /> */}
+        <br />
+        <form onSubmit={onSubmit}>
+          <div className="row">
+            <div className="col">
+              <input
+                type="text"
+                name="cuUniversitario"
+                className="form-control"
+                placeholder="Introduzca carnet universitario"
+                onChange={handleChange}
+                value={cuUniversitario}
+              />
+            </div>
+            <div className="col-md-4">
+              <button type="submit" className="btn btn-success">
+                Buscar
+              </button>
+            </div>
+          </div>
+          {votante ? <Cards votante={votante} /> : null}
+        </form>
       </div>
     </Fragment>
   );
