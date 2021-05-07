@@ -38,12 +38,13 @@ const Votacion = () => {
           {frentes.length > 0 ? (
             frentes.map((frente) => (
               <div className="col-md-4 mt-3" key={frente._id}>
-                <div className="card text-center" style={{ width: "18rem" }}>
+                <div className="card text-center" style={{ width: "18rem", display: "block" }}>
                   <img
                     src={`http://localhost:4000/${frente.logoFrente}`}
                     alt="..."
                     width="150"
                     height="160"
+                    className="mt-3"
                   />
                   <div className="card-body">
                     <h5 className="card-title">{frente.nombreFrente}</h5>
