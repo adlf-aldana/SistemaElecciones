@@ -34,6 +34,7 @@ const ListaFrente = ({ getFrente, frentes, eliminar, editar }) => {
                 <td>
                   <img
                     src={`http://localhost:4000${frente.logoFrente}`}
+                    // src={`http://192.168.0.6:4000${frente.logoFrente}`}
                     alt=""
                     width="80"
                     height="100"

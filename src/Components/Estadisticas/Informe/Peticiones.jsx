@@ -2,6 +2,8 @@ import axios from "axios";
 
 const URL_FRENTES = "http://localhost:4000/api/frente_universitario/";
 const URL_UNIVERSITARIOS = "http://localhost:4000/api/lista_estudiantes/";
+// const URL_FRENTES = "http://192.168.0.6:4000/api/frente_universitario/";
+// const URL_UNIVERSITARIOS = "http://192.168.0.6:4000/api/lista_estudiantes/";
 
 export const getUniversitarios = async () => {
   const res = await axios

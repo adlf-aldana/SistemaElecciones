@@ -17,6 +17,7 @@ const universitarioSchema = new Schema(
       type: Number,
       require: true,
       trim: true,
+      unique: true
     },
     carrera: {
       type: String,

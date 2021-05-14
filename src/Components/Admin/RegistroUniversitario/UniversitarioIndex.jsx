@@ -1,95 +1,135 @@
-import axios from "axios";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import Cards from "../../Usuario/encargadoMesa/Cards";
 import ListaUniversitarios from "./ListaUniversitarios";
 import RegistroUniversitario from "./RegistroUniversitario";
+import UniversitarioContext from "../../../context/universitarios/UniversitarioContext";
+import alertaContext from "../../../context/alerta/alertaContext";
 
 const UniversitarioIndex = () => {
-  const URL = "http://localhost:4000/api/lista_estudiantes/";
-  const URL_CU = "http://localhost:4000/api/consulta_universitario_cu/";
+  // CONTEXT
+  const alerta = useContext(alertaContext);
+  const { mostrarAlerta } = alerta;
+  const universitarioContext = useContext(UniversitarioContext);
+  const {
+    estudiantes,
+    mensaje,
+    estudiante,
+    datosFormulario,
+    obtenerUniversitarios,
+    agregarUniversitario,
+    eliminarUniversitario,
+    actualizarUniversitario,
+    busquedaUniversitario,
+    limpiarFormulario,
+  } = universitarioContext;
 
-  const [estudiantes, setestudiantes] = useState([]);
+  // STATES
   const [editUni, seteditUni] = useState([]);
-  const [message, setmessage] = useState({
-    text: "",
-    status: false,
-    type: "",
-  });
+  const [carnetUniversitario, setCarnetUniversitario] = useState("");
+  const [mensajeBusqueda, setMensajeBusqueda] = useState("");
 
-  // OBTENIENDO DATOS
-  const getEstudiantes = async () => {
-    try {
-      const res = await axios.get(URL);
-      setestudiantes(res.data);
-    } catch (e) {
-      console.log("No se cargo los datos: " + e);
-    }
+  // STATE OPCIONES
+  const [optionCargo, setoptionCargo] = useState([
+    { name: "Administrador" },
+    { name: "Estudiante" },
+    { name: "Encargado de Mesa" },
+    { name: "Verificador de Votante" },
+  ]);
+
+  // STATE FORM
+  const [datosEstudiantes, setdatosEstudiantes] = useState(datosFormulario);
+
+  // HANDLE FORM
+  const handleForm = (e) => {
+    setdatosEstudiantes({
+      ...datosEstudiantes,
+      [e.target.name]: e.target.value,
+    });
   };
 
-  // GUARDAR DATOS
-  const postEstudiantes = async (datosEstudiantes) => {
-    if (editUni._id) {
-      try {
-        await axios.put(URL + editUni._id, datosEstudiantes);
-        seteditUni([]);
-        message({
-          text: "Editado Correctamente",
-          status: true,
-          type: "success",
-        });
-        setTimeout(() => {
-          message({
-            text: "",
-            status: false,
-            type: "",
-          });
-        }, 5000);
-      } catch (e) {
-        console.log("No se edito los datos: " + e);
-      }
-    } else {
-      try {
-        await axios.post(URL, datosEstudiantes);
-        message({
-          text: "Guardado Correctamente",
-          status: true,
-          type: "success",
-        });
-        setTimeout(() => {
-          message({
-            text: "",
-            status: false,
-            type: "",
-          });
-        }, 5000);
-      } catch (e) {
-        console.log("No se guardo los datos: " + e);
-      }
+  const { nombre, apellidos, cu, carrera, cargo } = datosEstudiantes;
+
+  // SUBMIT FORM
+  const onSubmitForm = async (e) => {
+    e.preventDefault();
+    // VALIDACION
+    if (
+      nombre.trim() === "" ||
+      apellidos.trim() === "" ||
+      carrera.trim() === "" ||
+      cargo.trim() === ""
+    ) {
+      return mostrarAlerta("Todos los campos deben estar llenos", "danger");
     }
-    getEstudiantes();
+    if (cu.toString().length !== 6) {
+      return mostrarAlerta(
+        "El carnet universitario debe tener 6 caracteres",
+        "danger"
+      );
+    }
+    // GUARDAR DATOS
+    guardarEditarUniversitario(datosEstudiantes);
+  };
+
+  // const limpiarForm = () => {
+  //   setdatosEstudiantes({
+  //     nombre: "",
+  //     apellidos: "",
+  //     cu: "",
+  //     carrera: "",
+  //     cargo: "",
+  //   });
+  //   // Limpiando select
+  //   setoptionCargo([
+  //     { name: "Administrador" },
+  //     { name: "Estudiante" },
+  //     { name: "Encargado de Mesa" },
+  //     { name: "Verificador de Votante" },
+  //   ]);
+  //   seteditUni("");
+  // };
+  useEffect(() => {
+    if (mensaje) {
+      mostrarAlerta(mensaje.msg, mensaje.categoria);
+    }
+
+    if (editUni.length !== 0)
+      setdatosEstudiantes({
+        nombre: editUni.nombre,
+        apellidos: editUni.apellidos,
+        cu: editUni.cu,
+        carrera: editUni.carrera,
+        cargo: editUni.cargo,
+      });
+  }, [mensaje, editUni]);
+
+  useEffect(() => {
+    setdatosEstudiantes({
+      nombre: "",
+      apellidos: "",
+      cu: "",
+      carrera: "",
+      cargo: "",
+    });
+    seteditUni("");
+  }, [datosFormulario]);
+
+  // GUARDA O EDITA DATOS
+  const guardarEditarUniversitario = (datosEstudiantes) => {
+    if (editUni._id) {
+      actualizarUniversitario(editUni._id, datosEstudiantes);
+      mostrarAlerta("Editado correctamenta", "success");
+    } else {
+      agregarUniversitario(datosEstudiantes);
+      mostrarAlerta("Guardado correctamenta", "success");
+    }
   };
 
   // ELIMINAR DATO
-  const eliminarEstudiante = async (id) => {
+  const eliminar = async (id) => {
     if (window.confirm("¿Esta seguro de eliminar?")) {
-      try {
-        await axios.delete(URL + id);
-        getEstudiantes();
-        message({
-          text: "Eliminado correctamente",
-          status: true,
-          type: "success",
-        });
-        setTimeout(() => {
-          message({
-            text: "",
-            status: false,
-            type: "",
-          });
-        }, 5000);
-      } catch (e) {
-        console.log("No se elimino los datos: " + e);
-      }
+      eliminarUniversitario(id);
+      mostrarAlerta("Eliminado correctamenta", "success");
     }
   };
 
@@ -98,41 +138,49 @@ const UniversitarioIndex = () => {
     seteditUni(datos);
   };
 
-  const [dataForm, setdataForm] = useState({
-    cuUniversitario: "",
-  });
-  const [votante, setvotante] = useState();
-  const { cuUniversitario } = dataForm;
-  const handleChange = (e) => {
-    setdataForm({ [e.target.name]: e.target.value });
+  // HANDLE BUSQUEDA
+  const handleBusqueda = (e) => {
+    setCarnetUniversitario(e.target.value);
   };
-  const onSubmit = async (e) => {
+
+  // SUBMIT BUSQUEDA
+  const onSubmitBusqueda = async (e) => {
     e.preventDefault();
-    const datos = await axios.get(URL_CU + cuUniversitario);
-    setvotante(datos.data.msg);
-    setdataForm({
-      cuUniversitario: "",
-    });
+    busquedaUniversitario(carnetUniversitario);
+
+    if (estudiante === null) {
+      setTimeout(() => {
+        setMensajeBusqueda("");
+      }, 3000);
+      setMensajeBusqueda("NO SE ENCONTRÓ AL ESTUDIANTE");
+    }
   };
+
+  useEffect(() => {
+    obtenerUniversitarios();
+  }, []);
 
   return (
     <Fragment>
       <div className="container">
         <RegistroUniversitario
-          // guardarEstudiante={guardarEstudiante}
-          postEstudiantes={postEstudiantes}
+          datosEstudiantes={datosEstudiantes}
+          handleForm={handleForm}
+          onSubmitForm={onSubmitForm}
+          optionCargo={optionCargo}
+          limpiarFormulario={limpiarFormulario}
+          alerta={alerta}
           editUni={editUni}
-          message={message}
-          setmessage={setmessage}
         />
-        {/* <ListaUniversitarios
-          eliminarEstudiante={eliminarEstudiante}
+        <ListaUniversitarios
           estudiantes={estudiantes}
-          getEstudiantes={getEstudiantes}
+          eliminar={eliminar}
           editarUniversitario={editarUniversitario}
-        /> */}
+        />
         <br />
-        <form onSubmit={onSubmit}>
+        <form onSubmit={onSubmitBusqueda}>
+          <h3 className="text-center">Buscar Estudiante</h3>
+
           <div className="row">
             <div className="col">
               <input
@@ -140,8 +188,8 @@ const UniversitarioIndex = () => {
                 name="cuUniversitario"
                 className="form-control"
                 placeholder="Introduzca carnet universitario"
-                onChange={handleChange}
-                value={cuUniversitario}
+                onChange={handleBusqueda}
+                value={carnetUniversitario}
               />
             </div>
             <div className="col-md-4">
@@ -150,7 +198,17 @@ const UniversitarioIndex = () => {
               </button>
             </div>
           </div>
-          {votante ? <Cards votante={votante} /> : null}
+          {estudiante ? (
+            <Cards
+              estudiante={estudiante}
+              editarUniversitario={editarUniversitario}
+              eliminar={eliminar}
+            />
+          ) : (
+            <strong>
+              <p className="text-center mt-3">{mensajeBusqueda}</p>
+            </strong>
+          )}
         </form>
       </div>
     </Fragment>

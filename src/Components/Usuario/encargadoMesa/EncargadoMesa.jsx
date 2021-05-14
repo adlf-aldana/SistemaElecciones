@@ -3,6 +3,7 @@ import React, { Fragment, useState } from "react";
 import Cards from "./Cards";
 
 const EncargadoMesa = () => {
+  // const URL = "http://192.168.0.6:4000/api/consulta_universitario_cu/";
   const URL = "http://localhost:4000/api/consulta_universitario_cu/";
   // DATOS DEL FORMULARIO
   const [dataForm, setdataForm] = useState({
@@ -16,7 +17,7 @@ const EncargadoMesa = () => {
     carrera: "Carrera encargado",
   });
 
-  const [votante, setvotante] = useState();
+  const [estudiante, setvotante] = useState();
 
   const handleChange = (e) => {
     setdataForm({ [e.target.name]: e.target.value });
@@ -64,7 +65,7 @@ const EncargadoMesa = () => {
           </div>
         </form>
 
-        {votante ? <Cards votante={votante} /> : null}
+        {estudiante ? <Cards estudiante={estudiante} /> : null}
       </div>
     </Fragment>
   );

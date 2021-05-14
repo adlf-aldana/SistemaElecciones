@@ -7,6 +7,7 @@ const RegistroFrente = () => {
   const [imgPreview, setImgPreview] = useState(null);
   const [frentes, setfrentes] = useState([]);
   const URL = "http://localhost:4000/api/frente_universitario/";
+  // const URL = "http://192.168.0.6:4000/api/frente_universitario/";
   const [message, setmessage] = useState({
     text: "",
     status: false,
@@ -50,9 +51,9 @@ const RegistroFrente = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
     if (
-      nombreFrente.trim() == "" ||
-      nombreEncargado.trim() == "" ||
-      apellidosEncargado.trim() == "" ||
+      nombreFrente.trim() === "" ||
+      nombreEncargado.trim() === "" ||
+      apellidosEncargado.trim() === "" ||
       logoFrente == ""
     ) {
       setmessage({
@@ -150,6 +151,7 @@ const RegistroFrente = () => {
 
   const editar = (datos) => {
     setdatosForm(datos);
+    // setImgPreview("http://192.168.0.6:4000/" + datos.logoFrente);
     setImgPreview("http://localhost:4000/" + datos.logoFrente);
   };
 

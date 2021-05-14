@@ -1,21 +1,13 @@
-import React, { Fragment, useEffect } from "react";
-// import { Link } from "react-router-dom";
+import React, { Fragment } from "react";
 
 const ListaUniversitarios = ({
-  eliminarEstudiante,
+  eliminar,
   estudiantes,
-  getEstudiantes,
   editarUniversitario,
 }) => {
-
-  useEffect(() => {
-    getEstudiantes();
-  }, []);
-
   return (
     <Fragment>
       <h3 className="text-center">Lista de Estudiantes</h3>
-
       <table className="table">
         <thead>
           <tr>
@@ -38,9 +30,6 @@ const ListaUniversitarios = ({
               <td>{e.carrera}</td>
               <td>{e.cargo}</td>
               <td>
-                {/* <Link className="btn btn-warning" to={"/editar/" + e._id}>
-                  Edit
-                </Link> */}
                 <button
                   type="button"
                   className="btn btn-warning"
@@ -51,7 +40,7 @@ const ListaUniversitarios = ({
                 <button
                   type="button"
                   className="btn btn-danger ml-2"
-                  onClick={() => eliminarEstudiante(e._id)}
+                  onClick={() => eliminar(e._id)}
                 >
                   Eliminar
                 </button>

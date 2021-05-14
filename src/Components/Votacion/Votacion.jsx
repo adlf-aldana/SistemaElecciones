@@ -3,6 +3,7 @@ import React, { Fragment, useState, useEffect } from "react";
 
 const Votacion = () => {
   const [frentes, setfrentes] = useState("");
+  // const URL = "http://192.168.0.6:4000/api/frente_universitario/";
   const URL = "http://localhost:4000/api/frente_universitario/";
 
   const getfrentes = async () => {
@@ -41,6 +42,7 @@ const Votacion = () => {
                 <div className="card text-center" style={{ width: "18rem", display: "block" }}>
                   <img
                     src={`http://localhost:4000/${frente.logoFrente}`}
+                    // src={`http://192.168.0.6:4000/${frente.logoFrente}`}
                     alt="..."
                     width="150"
                     height="160"

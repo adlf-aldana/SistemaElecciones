@@ -1,46 +1,76 @@
 const univerCtrl = {};
 const universitarioModel = require("../models/universitarioModels");
+const { validationResult } = require('express-validator')
+// const jwt = require("jsonwebtoken")
 
 // OBTIENE A TODOS LOS UNIVERSITARIOS
 univerCtrl.getUniversitarios = async (req, res) => {
-  // consultando
-  const universitario = await universitarioModel.find();
-  // console.log(universitario);
-  res.json(universitario);
+  try {
+    // consultando
+    const universitario = await universitarioModel.find();
+    // console.log(universitario);
+    res.json(universitario);
+  } catch (e) {
+    return res.status(400).json({ msg: 'No se tiene acceso a la base de datos' })
+  }
 };
 
 // GUARDA UN NUEVO UNIVERSTARIO
 univerCtrl.createUniversitario = async (req, res) => {
-  const { nombre, apellidos, cu, carrera, cargo } = req.body;
-  const newUniversitario = new universitarioModel({
-    nombre,
-    apellidos,
-    cu,
-    carrera,
-    cargo,
-  });
-  // console.log(newUniversitario);
-  await newUniversitario.save();
-  res.send({ msg: "universitario Guardado" });
+  // Revisar si hay errorres
+  const errores = validationResult(req)
+  if (!errores.isEmpty()) {
+    // return res.status(400).json({ errores: errores.data.array() })
+    return res.status(400).json({ msg: errores.errors[0].msg })
+  }
+  // Extrayendo carnet universitario
+  const { cu } = req.body;
+  try {
+    // Revisar que el universitario sea unico
+    let universitario = await universitarioModel.findOne({ cu })
+
+    if (universitario) {
+      return res.status(400).json({ msg: 'El universitario ya existe' })
+    }
+    // Crea universitario
+    universitario = new universitarioModel(req.body);
+    // Guarda a Universitario
+    await universitario.save();
+    // // crear y firmar JWT
+    // const payload = {
+    //   universitario: {
+    //     id: universitario.id
+    //   }
+    // }
+    // // Firmar el JWT
+    // jwt.sign(payload, process.env.SECRETA, {
+    //   expiresIn: 3600
+    // }, (error, token) => {
+    //   if (error) throw error;
+    //   res.json({ token: token });
+    // })
+    // Mensaje de confirmación
+    res.json({ msg: "Universitario creado correctamente" });
+  } catch (e) {
+    console.log(e);
+    res.status(400).json({ msg: 'Hubo un error' })
+  }
 };
 
 // OBTIENE A UN UNIVERSITARIO POR ID
 univerCtrl.getUniversitario = async (req, res) => {
-  const universitario = await universitarioModel.findById(req.params.id);
-  res.json({ msg: universitario });
+
+  const universitario = await universitarioModel.findOne({ cu: req.params.id })
+  res.json({ estudiante: universitario });
 };
 
 // ACTUALIZA UN UNIVERSITARIO POR ID
 univerCtrl.updateUniversitario = async (req, res) => {
   const { nombre, apellidos, cu, carrera, cargo } = req.body;
-  await universitarioModel.findByIdAndUpdate(req.params.id, {
-    nombre,
-    apellidos,
-    cu,
-    carrera,
-    cargo,
-  });
-  res.json({ msg: "Universitario actualizado" });
+  const universitario = await universitarioModel.findByIdAndUpdate(req.params.id,
+    req.body
+  );
+  res.json({ universitario });
 };
 
 // ELIMINA A UN UNIVERSITARIO POR ID

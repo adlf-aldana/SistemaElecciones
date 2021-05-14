@@ -21,6 +21,7 @@ const frenteSchema = new Schema(
       type: Number,
       require: true,
       trim: true,
+      unique: true
     },
     celularEncargado: {
       type: Number,
