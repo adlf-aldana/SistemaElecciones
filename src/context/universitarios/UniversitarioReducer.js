@@ -5,7 +5,8 @@ import {
     ELIMINAR_UNIVERSITARIO,
     EDITAR_UNIVERSITARIO,
     BUSQUEDA_UNIVERSITARIO,
-    LIMPIAR_FORMULARIO
+    LIMPIAR_FORMULARIO,
+    LIMPIAR_MENSAJE
 } from '../../types';
 
 export default (state, action) => {
@@ -50,6 +51,11 @@ export default (state, action) => {
                     carrera: "",
                     cargo: "",
                 }
+            }
+        case LIMPIAR_MENSAJE:
+            return {
+                ...state,
+                mensaje: null
             }
         default: return state;
     }

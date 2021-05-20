@@ -21,6 +21,7 @@ const UniversitarioIndex = () => {
     actualizarUniversitario,
     busquedaUniversitario,
     limpiarFormulario,
+    limpiarMensaje,
   } = universitarioContext;
 
   // STATES
@@ -88,31 +89,6 @@ const UniversitarioIndex = () => {
   //   ]);
   //   seteditUni("");
   // };
-  useEffect(() => {
-    if (mensaje) {
-      mostrarAlerta(mensaje.msg, mensaje.categoria);
-    }
-
-    if (editUni.length !== 0)
-      setdatosEstudiantes({
-        nombre: editUni.nombre,
-        apellidos: editUni.apellidos,
-        cu: editUni.cu,
-        carrera: editUni.carrera,
-        cargo: editUni.cargo,
-      });
-  }, [mensaje, editUni]);
-
-  useEffect(() => {
-    setdatosEstudiantes({
-      nombre: "",
-      apellidos: "",
-      cu: "",
-      carrera: "",
-      cargo: "",
-    });
-    seteditUni("");
-  }, [datosFormulario]);
 
   // GUARDA O EDITA DATOS
   const guardarEditarUniversitario = (datosEstudiantes) => {
@@ -159,6 +135,30 @@ const UniversitarioIndex = () => {
   useEffect(() => {
     obtenerUniversitarios();
   }, []);
+  useEffect(() => {
+    if (mensaje) {
+      mostrarAlerta(mensaje.msg, mensaje.categoria);
+      limpiarMensaje();
+    }
+    if (editUni.length !== 0)
+      setdatosEstudiantes({
+        nombre: editUni.nombre,
+        apellidos: editUni.apellidos,
+        cu: editUni.cu,
+        carrera: editUni.carrera,
+        cargo: editUni.cargo,
+      });
+  }, [mensaje, editUni]);
+  useEffect(() => {
+    setdatosEstudiantes({
+      nombre: "",
+      apellidos: "",
+      cu: "",
+      carrera: "",
+      cargo: "",
+    });
+    seteditUni("");
+  }, [datosFormulario]);
 
   return (
     <Fragment>

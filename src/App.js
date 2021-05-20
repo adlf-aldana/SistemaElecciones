@@ -17,22 +17,25 @@ import Informe from "./Components/Estadisticas/Informe/Informe";
 
 import UniversitarioState from './context/universitarios/UniversitarioState'
 import AlertaState from "./context/alerta/alertaState";
+import FrentesState from "./context/frentes/FrentesState";
 
 function App() {
   return (
     <UniversitarioState>
       <AlertaState>
-        <Router>
-          <NavBar />
-          <Switch>
-            <Route path="/registroUniversitario" component={UniversitarioIndex} />
-            <Route path="/registroFrente" component={RegistroFrente} />
-            <Route path="/encargadoMesa" component={EncargadoMesa} />
-            <Route path="/votacion" component={Votacion} />
-            <Route path="/informe" component={Informe} />
-            <Route path="/" exact component={Login} />
-          </Switch>
-        </Router>
+        <FrentesState>
+          <Router>
+            <NavBar />
+            <Switch>
+              <Route path="/registroUniversitario" component={UniversitarioIndex} />
+              <Route path="/registroFrente" component={RegistroFrente} />
+              <Route path="/encargadoMesa" component={EncargadoMesa} />
+              <Route path="/votacion" component={Votacion} />
+              <Route path="/informe" component={Informe} />
+              <Route path="/" exact component={Login} />
+            </Switch>
+          </Router>
+        </FrentesState>
       </AlertaState>
     </UniversitarioState>
   );

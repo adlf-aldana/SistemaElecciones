@@ -10,7 +10,8 @@ import {
     ELIMINAR_UNIVERSITARIO,
     EDITAR_UNIVERSITARIO,
     BUSQUEDA_UNIVERSITARIO,
-    LIMPIAR_FORMULARIO
+    LIMPIAR_FORMULARIO,
+    LIMPIAR_MENSAJE
 } from '../../types/';
 
 import usuarioAxios from '../../config/axios'
@@ -36,10 +37,10 @@ const UniversitarioState = props => {
     // Obtener los Universitarios
     const obtenerUniversitarios = async () => {
         try {
-            const getUniversitarios = await usuarioAxios.get('/api/lista_estudiantes')
+            const res = await usuarioAxios.get('/api/lista_estudiantes')
             dispatch({
                 type: OBTENER_UNIVERSITARIOS,
-                payload: getUniversitarios.data
+                payload: res.data
             })
         } catch (e) {
             let alerta = null;
@@ -119,12 +120,17 @@ const UniversitarioState = props => {
             type: BUSQUEDA_UNIVERSITARIO,
             payload: universitario.data.estudiante
         })
-
     }
 
     const limpiarFormulario = () => {
         dispatch({
             type: LIMPIAR_FORMULARIO
+        })
+    }
+
+    const limpiarMensaje = () => {
+        dispatch({
+            type: LIMPIAR_MENSAJE
         })
     }
 
@@ -140,7 +146,8 @@ const UniversitarioState = props => {
                 eliminarUniversitario,
                 actualizarUniversitario,
                 busquedaUniversitario,
-                limpiarFormulario
+                limpiarFormulario,
+                limpiarMensaje
             }}
         >
             {props.children}

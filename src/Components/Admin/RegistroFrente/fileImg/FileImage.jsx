@@ -24,7 +24,7 @@ const FileImage = ({ datosForm, setdatosForm, setImgPreview, imgPreview }) => {
       <div className="container">
         {error && <p className="errorMsg">Archivo no soportado</p>}
         <div
-          className="imgPreview"
+          className="imgPreview img-fluid"
           style={{
             background: imgPreview
               ? `url("${imgPreview}") no-repeat center`

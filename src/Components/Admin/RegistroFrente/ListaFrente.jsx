@@ -1,9 +1,6 @@
 import React, { Fragment, useEffect } from "react";
 
-const ListaFrente = ({ getFrente, frentes, eliminar, editar }) => {
-  useEffect(() => {
-    getFrente();
-  }, []);
+const ListaFrente = ({ frentes, eliminar, editar }) => {
 
   return (
     <Fragment>
@@ -14,8 +11,8 @@ const ListaFrente = ({ getFrente, frentes, eliminar, editar }) => {
             <tr>
               <th>#</th>
               <th>Nombre Frente</th>
-              <th>Nombre Encargado</th>
-              <th>Apellidos Encargado</th>
+              {/* <th>Nombre Encargado</th>
+              <th>Apellidos Encargado</th> */}
               <th>C.U. Encargado</th>
               <th>Celular Encargado</th>
               <th>Logo Frente</th>
@@ -27,8 +24,8 @@ const ListaFrente = ({ getFrente, frentes, eliminar, editar }) => {
               <tr key={frente._id}>
                 <td>{index + 1}</td>
                 <td>{frente.nombreFrente}</td>
-                <td>{frente.nombreEncargado}</td>
-                <td>{frente.apellidosEncargado}</td>
+                {/* <td>{frente.nombreEncargado}</td>
+                <td>{frente.apellidosEncargado}</td> */}
                 <td>{frente.cuEncargado}</td>
                 <td>{frente.celularEncargado}</td>
                 <td>

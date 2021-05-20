@@ -7,16 +7,6 @@ const frenteSchema = new Schema(
       require: true,
       trim: true,
     },
-    nombreEncargado: {
-      type: String,
-      require: true,
-      trim: true,
-    },
-    apellidosEncargado: {
-      type: String,
-      require: true,
-      trim: true,
-    },
     cuEncargado: {
       type: Number,
       require: true,
