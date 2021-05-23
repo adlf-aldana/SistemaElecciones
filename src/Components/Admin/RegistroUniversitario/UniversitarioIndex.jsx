@@ -48,7 +48,8 @@ const UniversitarioIndex = () => {
     });
   };
 
-  const { nombre, apellidos, cu, carrera, cargo } = datosEstudiantes;
+  const { nombre, apellidos, cu, carrera, cargo, password, confirPassword } =
+    datosEstudiantes;
 
   // SUBMIT FORM
   const onSubmitForm = async (e) => {
@@ -62,6 +63,17 @@ const UniversitarioIndex = () => {
     ) {
       return mostrarAlerta("Todos los campos deben estar llenos", "danger");
     }
+    if (
+      (cargo.trim() === "Administrador" ||
+        cargo.trim() === "Encargado de Mesa" ||
+        cargo.trim() === "Verificador de Votante") &&
+      password === ""
+    ) {
+      return mostrarAlerta("Contraseña es obligatorio", "danger");
+    }
+    if (password !== confirPassword) {
+      return mostrarAlerta("Las contraseñas no coinciden", "danger");
+    }
     if (cu.toString().length !== 6) {
       return mostrarAlerta(
         "El carnet universitario debe tener 6 caracteres",
@@ -71,24 +83,6 @@ const UniversitarioIndex = () => {
     // GUARDAR DATOS
     guardarEditarUniversitario(datosEstudiantes);
   };
-
-  // const limpiarForm = () => {
-  //   setdatosEstudiantes({
-  //     nombre: "",
-  //     apellidos: "",
-  //     cu: "",
-  //     carrera: "",
-  //     cargo: "",
-  //   });
-  //   // Limpiando select
-  //   setoptionCargo([
-  //     { name: "Administrador" },
-  //     { name: "Estudiante" },
-  //     { name: "Encargado de Mesa" },
-  //     { name: "Verificador de Votante" },
-  //   ]);
-  //   seteditUni("");
-  // };
 
   // GUARDA O EDITA DATOS
   const guardarEditarUniversitario = (datosEstudiantes) => {
@@ -156,6 +150,8 @@ const UniversitarioIndex = () => {
       cu: "",
       carrera: "",
       cargo: "",
+      password: "",
+      confirPassword: "",
     });
     seteditUni("");
   }, [datosFormulario]);

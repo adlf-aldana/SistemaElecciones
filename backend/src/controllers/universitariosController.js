@@ -24,7 +24,7 @@ univerCtrl.createUniversitario = async (req, res) => {
     return res.status(400).json({ msg: errores.errors[0].msg })
   }
   // Extrayendo carnet universitario
-  const { cu } = req.body;
+  const { nombre, apellidos, cu, carrera, cargo } = req.body;
   try {
     // Revisar que el universitario sea unico
     let universitario = await universitarioModel.findOne({ cu })
@@ -32,8 +32,15 @@ univerCtrl.createUniversitario = async (req, res) => {
     if (universitario) {
       return res.status(400).json({ msg: 'El universitario ya existe' })
     }
-    // Crea universitario
-    universitario = new universitarioModel(req.body);
+
+    if (password === "") {
+      // Crea universitario
+      universitario = new universitarioModel({ nombre, apellidos, cu, carrera, cargo });
+    }
+    else {
+      // Crea universitario
+      universitario = new universitarioModel(req.body);
+    }
     // Guarda a Universitario
     await universitario.save();
     // // crear y firmar JWT
@@ -66,7 +73,6 @@ univerCtrl.getUniversitario = async (req, res) => {
 
 // ACTUALIZA UN UNIVERSITARIO POR ID
 univerCtrl.updateUniversitario = async (req, res) => {
-  const { nombre, apellidos, cu, carrera, cargo } = req.body;
   const universitario = await universitarioModel.findByIdAndUpdate(req.params.id,
     req.body
   );

@@ -29,6 +29,9 @@ const universitarioSchema = new Schema(
       require: true,
       trim: true,
     },
+    password: {
+      type: String
+    }
   },
   {
     // fecha y hora de creación o edicion de universitario

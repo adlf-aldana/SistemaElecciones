@@ -29,22 +29,24 @@ const ListaUniversitarios = ({
               <td>{e.cu}</td>
               <td>{e.carrera}</td>
               <td>{e.cargo}</td>
-              <td>
-                <button
-                  type="button"
-                  className="btn btn-warning"
-                  onClick={() => editarUniversitario(e)}
-                >
-                  Editar
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-danger ml-2"
-                  onClick={() => eliminar(e._id)}
-                >
-                  Eliminar
-                </button>
-              </td>
+              {e.cargo === "Administrador" ? null : (
+                <td>
+                  <button
+                    type="button"
+                    className="btn btn-warning"
+                    onClick={() => editarUniversitario(e)}
+                  >
+                    Editar
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-danger ml-2"
+                    onClick={() => eliminar(e._id)}
+                  >
+                    Eliminar
+                  </button>
+                </td>
+              )}
             </tr>
           ))}
         </tbody>

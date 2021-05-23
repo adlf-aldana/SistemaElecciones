@@ -1,7 +1,6 @@
 import React, { Fragment, useEffect } from "react";
 
 const ListaFrente = ({ frentes, eliminar, editar }) => {
-
   return (
     <Fragment>
       <div className="container mt-3">
@@ -37,20 +36,23 @@ const ListaFrente = ({ frentes, eliminar, editar }) => {
                     height="100"
                   />
                 </td>
-                <td>
-                  <button
-                    className="btn btn-warning mr-2"
-                    onClick={() => editar(frente)}
-                  >
-                    Editar
-                  </button>
-                  <button
-                    className="btn btn-danger"
-                    onClick={() => eliminar(frente._id)}
-                  >
-                    Eliminar
-                  </button>
-                </td>
+                {frente.nombreFrente === "Voto Blanco" ||
+                frente.nombreFrente === "Blanco" ? null : (
+                  <td>
+                    <button
+                      className="btn btn-warning mr-2"
+                      onClick={() => editar(frente)}
+                    >
+                      Editar
+                    </button>
+                    <button
+                      className="btn btn-danger"
+                      onClick={() => eliminar(frente._id)}
+                    >
+                      Eliminar
+                    </button>
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>

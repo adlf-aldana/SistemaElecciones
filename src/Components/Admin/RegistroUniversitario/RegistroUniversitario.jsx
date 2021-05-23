@@ -9,7 +9,8 @@ const RegistroUniversitario = ({
   alerta,
   editUni,
 }) => {
-  const { nombre, apellidos, cu, carrera, cargo } = datosEstudiantes;
+  const { nombre, apellidos, cu, carrera, cargo, password, confirPassword } =
+    datosEstudiantes;
 
   return (
     <Fragment>
@@ -104,6 +105,32 @@ const RegistroUniversitario = ({
               </select> */}
           </div>
         </div>
+        {cargo === "Administrador" ||
+        cargo === "Encargado de Mesa" ||
+        cargo === "Verificador de Votante" ? (
+          <div className="row mt-3">
+            <div className="col">
+              <label htmlFor="">Contraseña: *</label>
+              <input
+                type="password"
+                className="form-control"
+                name="password"
+                id="password"
+                onChange={handleForm}
+              />
+            </div>
+            <div className="col">
+              <label htmlFor="">Repetir Contraseña: *</label>
+              <input
+                type="password"
+                className="form-control"
+                name="confirPassword"
+                id="confirPassword"
+                onChange={handleForm}
+              />
+            </div>
+          </div>
+        ) : null}
         <div className="mt-3">
           {editUni ? (
             <button type="submit" className="btn btn-warning">

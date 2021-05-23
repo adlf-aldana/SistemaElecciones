@@ -28,6 +28,8 @@ const UniversitarioState = props => {
             cu: "",
             carrera: "",
             cargo: "",
+            password: "",
+            confirPassword: ""
         }
     }
 
