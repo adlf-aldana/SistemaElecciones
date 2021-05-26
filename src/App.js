@@ -18,23 +18,35 @@ import Informe from "./Components/Estadisticas/Informe/Informe";
 import UniversitarioState from './context/universitarios/UniversitarioState'
 import AlertaState from "./context/alerta/alertaState";
 import FrentesState from "./context/frentes/FrentesState";
+import AuthState from "./context/autenticacion/authState";
+import tokenAuth from "./config/token";
 
+import RutaPrivada from './Components/rutas/RutaPrivada'
+
+
+// Revisar si tenemos un token
+const token = localStorage.getItem('token');
+if (token) {
+  tokenAuth(token)
+}
 function App() {
   return (
     <UniversitarioState>
       <AlertaState>
         <FrentesState>
-          <Router>
-            <NavBar />
-            <Switch>
-              <Route path="/registroUniversitario" component={UniversitarioIndex} />
-              <Route path="/registroFrente" component={RegistroFrente} />
-              <Route path="/encargadoMesa" component={EncargadoMesa} />
-              <Route path="/votacion" component={Votacion} />
-              <Route path="/informe" component={Informe} />
-              <Route path="/" exact component={Login} />
-            </Switch>
-          </Router>
+          <AuthState>
+            <Router>
+              <NavBar />
+              <Switch>
+                <RutaPrivada path="/registroUniversitario" component={UniversitarioIndex} />
+                <RutaPrivada path="/registroFrente" component={RegistroFrente} />
+                <RutaPrivada path="/encargadoMesa" component={EncargadoMesa} />
+                <RutaPrivada path="/votacion" component={Votacion} />
+                <RutaPrivada path="/informe" component={Informe} />
+                <Route path="/" exact component={Login} />
+              </Switch>
+            </Router>
+          </AuthState>
         </FrentesState>
       </AlertaState>
     </UniversitarioState>

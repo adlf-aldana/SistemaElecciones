@@ -15,5 +15,6 @@ app.use(express.static(path.join(__dirname, '/../public')))
 app.use("/api/lista_estudiantes", require("./routes/universitarios"));
 app.use("/api/frente_universitario", require("./routes/frente_universitario"));
 app.use("/api/consulta_universitario_cu", require("./routes/consulta_universitario"));
+app.use("/api/auth", require("./routes/auth"));
 
 module.exports = app;

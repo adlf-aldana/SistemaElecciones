@@ -1,7 +1,8 @@
 const univerCtrl = {};
 const universitarioModel = require("../models/universitarioModels");
 const { validationResult } = require('express-validator')
-// const jwt = require("jsonwebtoken")
+const bcryptjs = require('bcryptjs')
+const jwt = require("jsonwebtoken")
 
 // OBTIENE A TODOS LOS UNIVERSITARIOS
 univerCtrl.getUniversitarios = async (req, res) => {
@@ -24,7 +25,7 @@ univerCtrl.createUniversitario = async (req, res) => {
     return res.status(400).json({ msg: errores.errors[0].msg })
   }
   // Extrayendo carnet universitario
-  const { nombre, apellidos, cu, carrera, cargo } = req.body;
+  const { nombre, apellidos, cu, carrera, cargo, password } = req.body;
   try {
     // Revisar que el universitario sea unico
     let universitario = await universitarioModel.findOne({ cu })
@@ -38,24 +39,27 @@ univerCtrl.createUniversitario = async (req, res) => {
       universitario = new universitarioModel({ nombre, apellidos, cu, carrera, cargo });
     }
     else {
+      // hashear el password
+      const salt = await bcryptjs.genSalt(10);
+      req.body.password = await bcryptjs.hash(password, salt)
       // Crea universitario
       universitario = new universitarioModel(req.body);
     }
     // Guarda a Universitario
     await universitario.save();
     // // crear y firmar JWT
-    // const payload = {
-    //   universitario: {
-    //     id: universitario.id
-    //   }
-    // }
-    // // Firmar el JWT
-    // jwt.sign(payload, process.env.SECRETA, {
-    //   expiresIn: 3600
-    // }, (error, token) => {
-    //   if (error) throw error;
-    //   res.json({ token: token });
-    // })
+    const payload = {
+      universitario: {
+        id: universitario.id
+      }
+    }
+    // Firmar el JWT
+    jwt.sign(payload, process.env.SECRETA, {
+      expiresIn: 3600
+    }, (error, token) => {
+      if (error) throw error;
+      res.json({ token: token });
+    })
     // Mensaje de confirmación
     res.json({ msg: "Universitario creado correctamente" });
   } catch (e) {
