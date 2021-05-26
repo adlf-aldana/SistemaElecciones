@@ -8,27 +8,31 @@ const Login = (props) => {
   const alertaContext = useContext(AlertaContext);
   const { alerta, mostrarAlerta } = alertaContext;
   const authContext = useContext(AuthContext);
-  const { mensaje, autenticado, iniciarSesion } = authContext;
-  // En caso de que el password o usuario no exista
-  useEffect(() => {
-    if(autenticado){
-      props.history.push('/registroUniversitario')
-    }
-    if (mensaje) {
-      mostrarAlerta(mensaje.msg, mensaje.categoria);
-    }
-  }, [mensaje, autenticado, props.history]);
+  const { mensaje, autenticado, iniciarSesion, usuario, usuarioAutenticado } =
+    authContext;
 
-  const [usuario, setusuario] = useState({
+  // // En caso de que el password o usuario no exista
+  // useEffect(() => {
+  //   if (autenticado) {
+  //     console.log(autenticado);
+  //     console.log(usuario);
+  //     props.history.push("/registroUniversitario");
+  //   }
+  //   if (mensaje) {
+  //     mostrarAlerta(mensaje.msg, mensaje.categoria);
+  //   }
+  // }, [mensaje, autenticado, props.history]);
+
+  const [usuarioForm, setusuario] = useState({
     cu: "",
     password: "",
   });
 
-  const { cu, password } = usuario;
+  const { cu, password } = usuarioForm;
 
   const onchange = (e) => {
     setusuario({
-      ...usuario,
+      ...usuarioForm,
       [e.target.name]: e.target.value,
     });
   };
@@ -40,6 +44,22 @@ const Login = (props) => {
     }
     iniciarSesion({ cu, password });
   };
+
+  // En caso de que el password o usuario no exista
+  useEffect(() => {
+    if (autenticado) {
+      if (usuario === null) {
+        console.log("...Cargando");
+      } else if (usuario.cargo === "Administrador") {
+        props.history.push("/registroUniversitario");
+      } else if (usuario.cargo === "Encargado de Mesa") {
+        props.history.push("/encargadoMesa");
+      }
+    }
+    if (mensaje) {
+      mostrarAlerta(mensaje.msg, mensaje.categoria);
+    }
+  }, [mensaje, autenticado, props.history, usuario]);
   return (
     <Fragment>
       <div className="row justify-content-md-center">

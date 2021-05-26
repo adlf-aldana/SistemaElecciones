@@ -21,7 +21,8 @@ import FrentesState from "./context/frentes/FrentesState";
 import AuthState from "./context/autenticacion/authState";
 import tokenAuth from "./config/token";
 
-import RutaPrivada from './Components/rutas/RutaPrivada'
+import RutaAdmin from './Components/rutas/RutaAdmin'
+import RutaEncargado from "./Components/rutas/RutaEncargado";
 
 
 // Revisar si tenemos un token
@@ -38,11 +39,11 @@ function App() {
             <Router>
               <NavBar />
               <Switch>
-                <RutaPrivada path="/registroUniversitario" component={UniversitarioIndex} />
-                <RutaPrivada path="/registroFrente" component={RegistroFrente} />
-                <RutaPrivada path="/encargadoMesa" component={EncargadoMesa} />
-                <RutaPrivada path="/votacion" component={Votacion} />
-                <RutaPrivada path="/informe" component={Informe} />
+                <RutaAdmin path="/registroUniversitario" component={UniversitarioIndex} />
+                <RutaAdmin path="/registroFrente" component={RegistroFrente} />
+                <RutaAdmin path="/informe" component={Informe} />
+                <RutaEncargado path="/encargadoMesa" component={EncargadoMesa} />
+                <Route path="/votacion" component={Votacion} />
                 <Route path="/" exact component={Login} />
               </Switch>
             </Router>
