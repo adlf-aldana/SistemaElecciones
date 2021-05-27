@@ -1,23 +1,19 @@
-import axios from "axios";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useContext, useEffect } from "react";
 import Cards from "./Cards";
 
+import AuthContext from "../../../context/autenticacion/authContext";
+import UniversitarioContext from "../../../context/universitarios/UniversitarioContext";
+
 const EncargadoMesa = () => {
-  // const URL = "http://192.168.0.6:4000/api/consulta_universitario_cu/";
-  const URL = "http://localhost:4000/api/consulta_universitario_cu/";
+  const authContext = useContext(AuthContext);
+  const { usuario, usuarioAutenticado } = authContext;
+  const universitarioContext = useContext(UniversitarioContext);
+  const { estudiante, busquedaUniversitario } = universitarioContext;
   // DATOS DEL FORMULARIO
+
   const [dataForm, setdataForm] = useState({
     cuUniversitario: "",
   });
-
-  const [EncargadoMesa, setEncargadoMesa] = useState({
-    nombre: "Nombre Encargado",
-    apellidos: "Apellidos Encargado",
-    cuEncargado: "11111",
-    carrera: "Carrera encargado",
-  });
-
-  const [estudiante, setvotante] = useState();
 
   const handleChange = (e) => {
     setdataForm({ [e.target.name]: e.target.value });
@@ -25,21 +21,19 @@ const EncargadoMesa = () => {
 
   const { cuUniversitario } = dataForm;
 
-  const onSubmit = async (e) => {
+  const onSubmit = (e) => {
     e.preventDefault();
-    const datos = await axios.get(URL + cuUniversitario);
-    setvotante(datos.data.msg);
-    setdataForm({
-      cuUniversitario: "",
-    });
+    busquedaUniversitario(cuUniversitario);
   };
+
+  useEffect(() => {
+    usuarioAutenticado();
+  }, [estudiante]);
 
   return (
     <Fragment>
       <div className="container mt-3">
-        <h1 className="text-center">Encargado de Mesa</h1>
-
-        <Cards EncargadoMesa={EncargadoMesa} />
+        {usuario ? <Cards usuario={usuario} /> : null}
 
         <form onSubmit={onSubmit}>
           <div className="row mt-3">
@@ -65,7 +59,9 @@ const EncargadoMesa = () => {
           </div>
         </form>
 
-        {estudiante ? <Cards estudiante={estudiante} /> : null}
+        {estudiante ? (
+          <Cards estudiante={estudiante} usuario={usuario} />
+        ) : null}
       </div>
     </Fragment>
   );

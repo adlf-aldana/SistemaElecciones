@@ -1,33 +1,25 @@
 import React, { Fragment } from "react";
 
-const Cards = ({
-  EncargadoMesa,
-  estudiante,
-  editarUniversitario,
-  eliminar,
-}) => {
+const Cards = ({ estudiante, editarUniversitario, eliminar, usuario }) => {
   return (
     <Fragment>
       <div className="card mt-5">
         <div className="card-header text-center">
-          <strong>
-            {EncargadoMesa
-              ? "DATOS DEL ENCARGADO DE MESA"
-              : "DATOS DEL ESTUDIANTE"}
-          </strong>
+          {/* <strong>{usuario ? usuario.cargo : "DATOS DEL ESTUDIANTE"}</strong> */}
+          <strong>{estudiante ? "DATOS DEL ESTUDIANTE" : usuario.cargo}</strong>
         </div>
         <div className="card-body">
           <div className="row mt-3">
             <div className="col">
               <strong>Nombre: </strong>
               <label htmlFor="">
-                {EncargadoMesa ? EncargadoMesa.nombre : estudiante.nombre}
+                {estudiante ? estudiante.nombre : usuario.nombre}
               </label>
             </div>
             <div className="col">
               <strong>Apellidos: </strong>
               <label htmlFor="">
-                {EncargadoMesa ? EncargadoMesa.apellidos : estudiante.apellidos}
+                {estudiante ? estudiante.apellidos : usuario.apellidos}
               </label>
             </div>
           </div>
@@ -36,19 +28,20 @@ const Cards = ({
             <div className="col">
               <strong>Carnet Universitario: </strong>
               <label htmlFor="">
-                {EncargadoMesa ? EncargadoMesa.cuEncargado : estudiante.cu}
+                {estudiante ? estudiante.cu : usuario.cu}
               </label>
             </div>
             <div className="col">
               <strong>Carrera: </strong>
               <label htmlFor="">
-                {EncargadoMesa ? EncargadoMesa.carrera : estudiante.carrera}
+                {estudiante ? estudiante.carrera : usuario.carrera}
               </label>
             </div>
           </div>
-          {EncargadoMesa ? (
+
+          {estudiante && usuario.cargo === "Encargado de Mesa" ? (
             <button className="btn btn-success mt-3">Confirmar</button>
-          ) : (
+          ) : estudiante && usuario.cargo === "Administrador" ? (
             <div>
               <button
                 onClick={() => editarUniversitario(estudiante)}
@@ -63,60 +56,12 @@ const Cards = ({
                 Eliminar
               </button>
             </div>
-          )}
+          ) : !estudiante &&
+            usuario.cargo === "Encargado de Mesa" ? null : null}
         </div>
       </div>
     </Fragment>
   );
 };
-// const Cards = ({ EncargadoMesa, votante }) => {
-//   return (
-//     <Fragment>
-//       <div className="card mt-5">
-//         <div className="card-header text-center">
-//           <strong>
-//             {EncargadoMesa
-//               ? "DATOS DEL ENCARGADO DE MESA"
-//               : "DATOS DEL VOTANTE"}
-//           </strong>
-//         </div>
-//         <div className="card-body">
-//           <div className="row mt-3">
-//             <div className="col">
-//               <strong>Nombre: </strong>
-//               <label htmlFor="">
-//                 {EncargadoMesa ? EncargadoMesa.nombre : votante.nombre}
-//               </label>
-//             </div>
-//             <div className="col">
-//               <strong>Apellidos: </strong>
-//               <label htmlFor="">
-//                 {EncargadoMesa ? EncargadoMesa.apellidos : votante.apellidos}
-//               </label>
-//             </div>
-//           </div>
-
-//           <div className="row mt-3">
-//             <div className="col">
-//               <strong>Carnet Universitario: </strong>
-//               <label htmlFor="">
-//                 {EncargadoMesa ? EncargadoMesa.cuEncargado : votante.cu}
-//               </label>
-//             </div>
-//             <div className="col">
-//               <strong>Carrera: </strong>
-//               <label htmlFor="">
-//                 {EncargadoMesa ? EncargadoMesa.carrera : votante.carrera}
-//               </label>
-//             </div>
-//           </div>
-//           {!EncargadoMesa ? (
-//             <button className="btn btn-success mt-3">Confirmar</button>
-//           ) : null}
-//         </div>
-//       </div>
-//     </Fragment>
-//   );
-// };
 
 export default Cards;

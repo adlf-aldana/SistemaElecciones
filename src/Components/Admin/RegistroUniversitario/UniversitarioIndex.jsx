@@ -4,6 +4,7 @@ import ListaUniversitarios from "./ListaUniversitarios";
 import RegistroUniversitario from "./RegistroUniversitario";
 import UniversitarioContext from "../../../context/universitarios/UniversitarioContext";
 import alertaContext from "../../../context/alerta/alertaContext";
+import AuthContext from "../../../context/autenticacion/authContext";
 
 const UniversitarioIndex = () => {
   // CONTEXT
@@ -23,6 +24,8 @@ const UniversitarioIndex = () => {
     limpiarFormulario,
     limpiarMensaje,
   } = universitarioContext;
+  const authContext = useContext(AuthContext);
+  const { usuario } = authContext;
 
   // STATES
   const [editUni, seteditUni] = useState([]);
@@ -199,6 +202,7 @@ const UniversitarioIndex = () => {
               estudiante={estudiante}
               editarUniversitario={editarUniversitario}
               eliminar={eliminar}
+              usuario={usuario}
             />
           ) : (
             <strong>
