@@ -35,29 +35,33 @@ const EncargadoMesa = () => {
       <div className="container mt-3">
         {usuario ? <Cards usuario={usuario} /> : null}
 
-        <form onSubmit={onSubmit}>
-          <div className="row mt-3">
-            <div className="col-md-3">
-              <strong>Habilitar a Votante:</strong>
-            </div>
-
-            <div className="col-md-5">
-              <input
-                type="text"
-                name="cuUniversitario"
-                className="form-control"
-                placeholder="Introduzca carnet universitario"
-                onChange={handleChange}
-                value={cuUniversitario}
-              />
-            </div>
-            <div className="col-md-4">
-              <button type="submit" className="btn btn-success">
-                Buscar
-              </button>
-            </div>
-          </div>
-        </form>
+        {usuario ? (
+          usuario.cargo === "Verificador de Votante" ? null : (
+            <form onSubmit={onSubmit}>
+              <div className="row mt-3">
+                <div className="col-md-3">
+                  <strong>Habilitar a Votante:</strong>
+                </div>
+                <div className="col-md-5">
+                  <input
+                    type="text"
+                    name="cuUniversitario"
+                    className="form-control"
+                    placeholder="Introduzca carnet universitario"
+                    onChange={handleChange}
+                    value={cuUniversitario}
+                  />
+                </div>
+                <div className="col-md-4">
+                  <button type="submit" className="btn btn-success">
+                    Buscar
+                  </button>
+                </div>
+                )
+              </div>
+            </form>
+          )
+        ) : null}
 
         {estudiante ? (
           <Cards estudiante={estudiante} usuario={usuario} />

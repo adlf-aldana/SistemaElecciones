@@ -54,6 +54,8 @@ const Login = (props) => {
         props.history.push("/registroUniversitario");
       } else if (usuario.cargo === "Encargado de Mesa") {
         props.history.push("/encargadoMesa");
+      } else if (usuario.cargo === "Verificador de Votante") {
+        props.history.push("/verificadorVotante");
       }
     }
     if (mensaje) {

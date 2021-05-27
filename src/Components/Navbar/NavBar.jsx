@@ -102,6 +102,33 @@ const NavBar = () => {
                   </p>
                 </div>
               </>
+            ) : usuario.cargo === "Verificador de Votante" ? (
+              <>
+                <ul className="navbar-nav mr-auto">
+                  <li className="nav-item">
+                    <NavLink
+                      to="verificadorVotante"
+                      activeClassName="active"
+                      className="nav-link"
+                    >
+                      Verificador Votante
+                    </NavLink>
+                  </li>
+                </ul>
+
+                <div class="d-flex flex-row-reverse">
+                  <button
+                    class="btn btn-outline-success "
+                    type="button"
+                    onClick={() => cerrarSesion()}
+                  >
+                    Cerrar Sesion
+                  </button>
+                  <p className="text-white my-auto mr-3">
+                    Hola {usuario.nombre}
+                  </p>
+                </div>
+              </>
             ) : null
           ) : null}
         </div>

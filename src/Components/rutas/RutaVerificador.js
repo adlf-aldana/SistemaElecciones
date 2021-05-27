@@ -3,10 +3,11 @@ import { Route, Redirect } from "react-router-dom";
 
 import AuthContext from "../../context/autenticacion/authContext";
 
-const RutaAdmin = ({ component: Component }, ...props) => {
+const RutaVerificador = ({ component: Component }, ...props) => {
   const authContext = useContext(AuthContext);
   const { autenticado, usuarioAutenticado, cargando, usuario } = authContext;
 
+  // const { cargo } = usuario;
   useEffect(() => {
     usuarioAutenticado();
   }, []);
@@ -16,13 +17,11 @@ const RutaAdmin = ({ component: Component }, ...props) => {
       render={(props) =>
         autenticado &&
         !cargando &&
-        (usuario.cargo === "Encargado de Mesa" ||
-          usuario.cargo === "Verificador de Votante" ||
+        (usuario.cargo === "Administrador" ||
+          usuario.cargo === "Encargado de Mesa" ||
           usuario.cargo === "Estudiante") ? (
-          // console.log(autenticado + ' - ' + cargando + '-' + !usuario.cargo === 'Encargado de Mesa')
           <Redirect to="/" />
         ) : (
-          // console.log(autenticado + ' - ' + cargando + '-' + !usuario.cargo === 'Encargado de Mesa')
           <Component {...props} />
         )
       }
@@ -41,4 +40,4 @@ const RutaAdmin = ({ component: Component }, ...props) => {
   );
 };
 
-export default RutaAdmin;
+export default RutaVerificador;
