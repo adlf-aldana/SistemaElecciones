@@ -3,14 +3,22 @@ import Cards from "./Cards";
 
 import AuthContext from "../../../context/autenticacion/authContext";
 import UniversitarioContext from "../../../context/universitarios/UniversitarioContext";
+import VotanteContext from "../../../context/votante/votanteContext";
 
 const EncargadoMesa = () => {
   const authContext = useContext(AuthContext);
   const { usuario, usuarioAutenticado } = authContext;
   const universitarioContext = useContext(UniversitarioContext);
   const { estudiante, busquedaUniversitario } = universitarioContext;
-  // DATOS DEL FORMULARIO
+  const votanteContext = useContext(VotanteContext);
+  const {
+    votante,
+    encargadoHabilitaVotante,
+    ultimoVotante,
+    autorizandoVotante,
+  } = votanteContext;
 
+  // DATOS DEL FORMULARIO
   const [dataForm, setdataForm] = useState({
     cuUniversitario: "",
   });
@@ -28,13 +36,17 @@ const EncargadoMesa = () => {
 
   useEffect(() => {
     usuarioAutenticado();
+    ultimoVotante();
   }, [estudiante]);
+
+  const confirmar = () => {
+    encargadoHabilitaVotante(estudiante);
+  };
 
   return (
     <Fragment>
       <div className="container mt-3">
         {usuario ? <Cards usuario={usuario} /> : null}
-
         {usuario ? (
           usuario.cargo === "Verificador de Votante" ? null : (
             <form onSubmit={onSubmit}>
@@ -57,14 +69,27 @@ const EncargadoMesa = () => {
                     Buscar
                   </button>
                 </div>
-                )
               </div>
             </form>
           )
         ) : null}
-
         {estudiante ? (
-          <Cards estudiante={estudiante} usuario={usuario} />
+          <Cards
+            estudiante={estudiante}
+            usuario={usuario}
+            confirmar={confirmar}
+          />
+        ) : null}
+
+        {usuario ? (
+          autorizandoVotante && usuario.cargo === "Verificador de Votante" ? (
+            <Cards
+              estudiante={autorizandoVotante}
+              usuario={usuario}
+              confirmar={confirmar}
+              autorizandoVotante={autorizandoVotante}
+            />
+          ) : null
         ) : null}
       </div>
     </Fragment>

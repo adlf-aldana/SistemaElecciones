@@ -19,6 +19,7 @@ import UniversitarioState from "./context/universitarios/UniversitarioState";
 import AlertaState from "./context/alerta/alertaState";
 import FrentesState from "./context/frentes/FrentesState";
 import AuthState from "./context/autenticacion/authState";
+import VotanteState from "./context/votante/votanteState";
 import tokenAuth from "./config/token";
 
 import RutaAdmin from "./Components/rutas/RutaAdmin";
@@ -36,27 +37,32 @@ function App() {
       <AlertaState>
         <FrentesState>
           <AuthState>
-            <Router>
-              <NavBar />
-              <Switch>
-                <RutaAdmin
-                  path="/registroUniversitario"
-                  component={UniversitarioIndex}
-                />
-                <RutaAdmin path="/registroFrente" component={RegistroFrente} />
-                <RutaAdmin path="/informe" component={Informe} />
-                <RutaEncargado
-                  path="/encargadoMesa"
-                  component={EncargadoMesa}
-                />
-                <RutaVerificador
-                  path="/verificadorVotante"
-                  component={EncargadoMesa}
-                />
-                <Route path="/votacion" component={Votacion} />
-                <Route path="/" exact component={Login} />
-              </Switch>
-            </Router>
+            <VotanteState>
+              <Router>
+                <NavBar />
+                <Switch>
+                  <RutaAdmin
+                    path="/registroUniversitario"
+                    component={UniversitarioIndex}
+                  />
+                  <RutaAdmin
+                    path="/registroFrente"
+                    component={RegistroFrente}
+                  />
+                  <RutaAdmin path="/informe" component={Informe} />
+                  <RutaEncargado
+                    path="/encargadoMesa"
+                    component={EncargadoMesa}
+                  />
+                  <RutaVerificador
+                    path="/verificadorVotante"
+                    component={EncargadoMesa}
+                  />
+                  <Route path="/votacion" component={Votacion} />
+                  <Route path="/" exact component={Login} />
+                </Switch>
+              </Router>
+            </VotanteState>
           </AuthState>
         </FrentesState>
       </AlertaState>

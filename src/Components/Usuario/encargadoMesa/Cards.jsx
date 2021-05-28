@@ -1,6 +1,14 @@
 import React, { Fragment } from "react";
 
-const Cards = ({ estudiante, editarUniversitario, eliminar, usuario }) => {
+const Cards = ({
+  estudiante,
+  editarUniversitario,
+  eliminar,
+  usuario,
+  confirmar,
+  autorizandoVotante,
+}) => {
+  const user = usuario ? usuario : estudiante ? estudiante : null;
   return (
     <Fragment>
       <div className="card mt-5">
@@ -39,8 +47,14 @@ const Cards = ({ estudiante, editarUniversitario, eliminar, usuario }) => {
             </div>
           </div>
 
-          {estudiante && usuario.cargo === "Encargado de Mesa" ? (
-            <button className="btn btn-success mt-3">Confirmar</button>
+          {(estudiante && usuario.cargo === "Encargado de Mesa") ||
+          (autorizandoVotante && usuario.cargo === "Verificador de Votante") ? (
+            <button
+              className="btn btn-success mt-3"
+              onClick={() => confirmar()}
+            >
+              Confirmar
+            </button>
           ) : estudiante && usuario.cargo === "Administrador" ? (
             <div>
               <button
