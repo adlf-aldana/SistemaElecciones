@@ -79,6 +79,7 @@ const EncargadoMesa = () => {
         };
         encargadoHabilitaVotante(votante);
       } else if (usuario.cargo === "Verificador de Votante") {
+        console.log("verificadr");
         // const votante = {
         //   cu: estudiante.cu,
         //   descripcion: "",

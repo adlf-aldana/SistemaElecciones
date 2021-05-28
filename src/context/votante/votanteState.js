@@ -45,9 +45,13 @@ const VotanteState = (props) => {
   const ultimoVotante = async () => {
     try {
       const res = await usuarioAxios.get("/api/consultaVotante");
+      const datosEstudiante = await usuarioAxios.get(
+        "/api/lista_estudiantes/" + res.data.votante[0].cu
+      );
+      console.log(datosEstudiante);
       dispatch({
         type: AUTORIZANDO_VOTANTE,
-        payload: res.data.votante[0],
+        payload: datosEstudiante.data.estudiante,
       });
     } catch (error) {
       console.log(error.response);

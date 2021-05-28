@@ -42,7 +42,7 @@ votanteCtrl.createVotante = async (req, res) => {
     await votante.save();
     res.send({ msg: "Votante Guardado" });
   } catch (error) {
-    res.status(400).json({ msg: "Hubo un error123" });
+    res.status(400).json({ msg: "Hubo un error" });
   }
 };
 
