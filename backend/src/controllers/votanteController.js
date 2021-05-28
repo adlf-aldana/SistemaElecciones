@@ -16,6 +16,7 @@ votanteCtrl.getVotantes = async (req, res) => {
 // GUARDANDO NUEVO VOTANTE
 votanteCtrl.createVotante = async (req, res) => {
   const { cu } = req.body;
+
   try {
     let votante = await votanteModels.findOne({ cu });
     if (votante) {
@@ -30,10 +31,18 @@ votanteCtrl.createVotante = async (req, res) => {
         });
       }
     }
+
+    const verificarUltimoVotante = await votanteModels.find().sort({ $natural: -1 }).limit(1);
+    if (!verificarUltimoVotante[0].verificadorVotante) {
+      return res.status(400).json({
+        msg: "Espere, Por favor... Verificador aún no confirmo al último votante",
+      });
+    }
     votante = new votanteModels(req.body);
     await votante.save();
+    res.send({ msg: "Votante Guardado" });
   } catch (error) {
-    res.status(400).json({ msg: "Hubo un error" });
+    res.status(400).json({ msg: "Hubo un error123" });
   }
 };
 
@@ -66,5 +75,6 @@ votanteCtrl.getUltimoVotante = async (req, res) => {
     res.status(400).json({ msg: "Hubo un error" });
   }
 };
+
 
 module.exports = votanteCtrl;

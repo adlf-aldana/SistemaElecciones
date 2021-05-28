@@ -5,6 +5,7 @@ import {
   AUTORIZANDO_VOTANTE,
   ERROR_VOTANTE,
   LIMPIAR_MENSAJE,
+  LIMPIAR_DESCRIPCION_RECHAZO,
 } from "../../types";
 
 import votanteContext from "./votanteContext";
@@ -15,6 +16,7 @@ const VotanteState = (props) => {
     votante: null,
     autorizandoVotante: null,
     mensaje: null,
+    // rechazandoVotante: { descripcion: "" },
   };
 
   const encargadoHabilitaVotante = async (votante) => {
@@ -24,6 +26,9 @@ const VotanteState = (props) => {
         type: ENCARGADO_HABILITA_VOTANTE,
         payload: votante,
       });
+      return true;
+      // console.log('encargado');
+      // limpiarDescripcionRechazo();
     } catch (error) {
       const alerta = {
         msg: error.response.data.msg,
@@ -33,6 +38,7 @@ const VotanteState = (props) => {
         type: ERROR_VOTANTE,
         payload: alerta,
       });
+      return false;
     }
   };
 
@@ -48,15 +54,25 @@ const VotanteState = (props) => {
     }
   };
 
-  const limpiarMensaje = () =>{
+  const limpiarMensaje = () => {
     try {
       dispatch({
-        type: LIMPIAR_MENSAJE
-      })
+        type: LIMPIAR_MENSAJE,
+      });
     } catch (error) {
       console.log(error);
     }
-  }
+  };
+
+  // const limpiarDescripcionRechazo = () => {
+  //   try {
+  //     dispatch({
+  //       type: LIMPIAR_DESCRIPCION_RECHAZO,
+  //     });
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const [state, dispatch] = useReducer(votanteReducer, initialState);
   return (
@@ -65,9 +81,11 @@ const VotanteState = (props) => {
         votante: state.votante,
         autorizandoVotante: state.autorizandoVotante,
         mensaje: state.mensaje,
+        // rechazandoVotante: state.rechazandoVotante,
         encargadoHabilitaVotante,
         ultimoVotante,
-        limpiarMensaje
+        limpiarMensaje,
+        // limpiarDescripcionRechazo
       }}
     >
       {props.children}

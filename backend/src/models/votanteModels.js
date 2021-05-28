@@ -18,6 +18,9 @@ const votanteSchema = new Schema(
     verificadorVotante: {
       type: Boolean,
     },
+    estado: {
+      type: Boolean,
+    },
   },
   {
     timestamps: true,

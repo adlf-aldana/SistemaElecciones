@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 
 const Cards = ({
   estudiante,
@@ -8,8 +8,14 @@ const Cards = ({
   confirmar,
   autorizandoVotante,
   rechazar,
+  handleMotivo,
+  descripcion,
+  motivoRechazo,
+  // limpiarDescripcionRechazo,
 }) => {
-  const user = usuario ? usuario : estudiante ? estudiante : null;
+  const [rechazando, setrechazando] = useState(false);
+  // const { descripcion } = motivoRechazo;
+
   return (
     <Fragment>
       <div className="card mt-5">
@@ -48,19 +54,57 @@ const Cards = ({
             </div>
           </div>
 
+          {rechazando ? (
+            <div class="form-group mt-3">
+              <label>
+                <strong>Explique detalladamente el motivo del rechazo:</strong>
+              </label>
+              <textarea
+                class="form-control"
+                name="descripcion"
+                rows="3"
+                onChange={handleMotivo}
+                value={descripcion}
+              ></textarea>
+            </div>
+          ) : null}
+
           {(estudiante && usuario.cargo === "Encargado de Mesa") ||
           (autorizandoVotante && usuario.cargo === "Verificador de Votante") ? (
-            <div className="mt-3">
-              <button
-                className="btn btn-success mr-2"
-                onClick={() => confirmar()}
-              >
-                Confirmar
-              </button>
-              <button className="btn btn-danger" onClick={() => rechazar()}>
-                Rechazar
-              </button>
-            </div>
+            rechazando ? (
+              <div className="mt-3">
+                <button
+                  className="btn btn-success mr-2"
+                  onClick={() => rechazar()}
+                >
+                  Confirmar Rechazo
+                </button>
+                <button
+                  className="btn btn-danger"
+                  onClick={() => setrechazando(!rechazando)}
+                >
+                  Cancelar
+                </button>
+                {/* <button onClick={() => limpiarDescripcionRechazo()}>
+                  limpiarDescripcionRechazo
+                </button> */}
+              </div>
+            ) : (
+              <div className="mt-3">
+                <button
+                  className="btn btn-success mr-2"
+                  onClick={() => confirmar()}
+                >
+                  Confirmar
+                </button>
+                <button
+                  className="btn btn-danger"
+                  onClick={() => setrechazando(!rechazando)}
+                >
+                  Rechazar
+                </button>
+              </div>
+            )
           ) : estudiante && usuario.cargo === "Administrador" ? (
             <div>
               <button

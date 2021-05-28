@@ -12,7 +12,8 @@ const EncargadoMesa = () => {
   const authContext = useContext(AuthContext);
   const { usuario, usuarioAutenticado } = authContext;
   const universitarioContext = useContext(UniversitarioContext);
-  const { estudiante, busquedaUniversitario } = universitarioContext;
+  const { estudiante, busquedaUniversitario, limpiarUniversitarioBuscado } =
+    universitarioContext;
   const votanteContext = useContext(VotanteContext);
   const {
     votante,
@@ -21,12 +22,22 @@ const EncargadoMesa = () => {
     autorizandoVotante,
     mensaje,
     limpiarMensaje,
+    // rechazandoVotante,
+    // limpiarDescripcionRechazo,
   } = votanteContext;
 
   // DATOS DEL FORMULARIO
   const [dataForm, setdataForm] = useState({
     cuUniversitario: "",
   });
+  const [motivoRechazo, setmotivoRechazo] = useState({ descripcion: "" });
+  const { descripcion } = motivoRechazo;
+  const handleMotivo = (e) => {
+    setmotivoRechazo({
+      ...motivoRechazo,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   const handleChange = (e) => {
     setdataForm({ [e.target.name]: e.target.value });
@@ -49,8 +60,12 @@ const EncargadoMesa = () => {
       setTimeout(() => {
         limpiarMensaje();
       }, 3000);
+    } else {
+      setmotivoRechazo({ descripcion: "" });
     }
   }, [mensaje]);
+  // useEffect(() => {
+  // }, [limpiarDescripcionRechazo]);
 
   const confirmar = () => {
     if (usuario) {
@@ -60,21 +75,49 @@ const EncargadoMesa = () => {
           descripcion: "",
           encargadoMesa: true,
           verificadorVotante: false,
+          estado: true,
         };
         encargadoHabilitaVotante(votante);
       } else if (usuario.cargo === "Verificador de Votante") {
-        console.log("Verificador de Votante");
+        // const votante = {
+        //   cu: estudiante.cu,
+        //   descripcion: "",
+        //   encargadoMesa: true,
+        //   verificadorVotante: false,
+        //   estado: false
+        // };
+        // encargadoHabilitaVotante(votante);
       }
     }
   };
 
-  const rechazar = () => {
+  const rechazar = async () => {
     if (usuario) {
       if (usuario.cargo === "Encargado de Mesa") {
-        console.log("Encargado de mesa");
-        // encargadoHabilitaVotante(estudiante);
+        if (!descripcion)
+          return mostrarAlerta(
+            "Complete el campo de motivo de rechazo",
+            "danger"
+          );
+        const votante = {
+          cu: estudiante.cu,
+          descripcion: descripcion,
+          encargadoMesa: true,
+          verificadorVotante: false,
+          estado: false,
+        };
+        const res = await encargadoHabilitaVotante(votante);
+        if (res) {
+          setmotivoRechazo({
+            descripcion: "",
+          });
+          setdataForm({
+            cuUniversitario: "",
+          });
+          limpiarUniversitarioBuscado();
+        }
       } else if (usuario.cargo === "Verificador de Votante") {
-        console.log("Verificador de Votante");
+        console.log("RECHAZANDO Verificador de Votante");
       }
     }
   };
@@ -92,7 +135,7 @@ const EncargadoMesa = () => {
                 </div>
                 <div className="col-md-5">
                   <input
-                    type="text"
+                    type="number"
                     name="cuUniversitario"
                     className="form-control"
                     placeholder="Introduzca carnet universitario"
@@ -118,6 +161,11 @@ const EncargadoMesa = () => {
             usuario={usuario}
             confirmar={confirmar}
             rechazar={rechazar}
+            setmotivoRechazo={setmotivoRechazo}
+            motivoRechazo={motivoRechazo}
+            handleMotivo={handleMotivo}
+            descripcion={descripcion}
+            // limpiarDescripcionRechazo={limpiarDescripcionRechazo}
           />
         ) : null}
 
@@ -129,6 +177,11 @@ const EncargadoMesa = () => {
               confirmar={confirmar}
               autorizandoVotante={autorizandoVotante}
               rechazar={rechazar}
+              setmotivoRechazo={setmotivoRechazo}
+              motivoRechazo={motivoRechazo}
+              handleMotivo={handleMotivo}
+              descripcion={descripcion}
+              // limpiarDescripcionRechazo={limpiarDescripcionRechazo}
             />
           ) : null
         ) : null}

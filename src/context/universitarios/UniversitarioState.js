@@ -11,7 +11,8 @@ import {
     EDITAR_UNIVERSITARIO,
     BUSQUEDA_UNIVERSITARIO,
     LIMPIAR_FORMULARIO,
-    LIMPIAR_MENSAJE
+    LIMPIAR_MENSAJE,
+    LIMPIAR_UNIVERSITARIO_BUSCADO
 } from '../../types/';
 
 import usuarioAxios from '../../config/axios'
@@ -136,6 +137,12 @@ const UniversitarioState = props => {
         })
     }
 
+    const limpiarUniversitarioBuscado = () => {
+        dispatch({
+            type: LIMPIAR_UNIVERSITARIO_BUSCADO
+        })
+    }
+
     return (
         <UniversitarioContext.Provider
             value={{
@@ -149,7 +156,8 @@ const UniversitarioState = props => {
                 actualizarUniversitario,
                 busquedaUniversitario,
                 limpiarFormulario,
-                limpiarMensaje
+                limpiarMensaje,
+                limpiarUniversitarioBuscado
             }}
         >
             {props.children}
