@@ -19,7 +19,16 @@ votanteCtrl.createVotante = async (req, res) => {
   try {
     let votante = await votanteModels.findOne({ cu });
     if (votante) {
-      return res.status(400).json({ msg: "El universitario ya votó" });
+      if (votante.encargadoMesa && votante.verificadorVotante) {
+        return res.status(400).json({ msg: "Error: El universitario ya votó" });
+      } else if (
+        votante.encargadoMesa &&
+        votante.verificadorVotante === false
+      ) {
+        return res.status(400).json({
+          msg: "En espera: Falta la habilitación del verificador de votante",
+        });
+      }
     }
     votante = new votanteModels(req.body);
     await votante.save();
@@ -51,7 +60,7 @@ votanteCtrl.deleteVotante = async (req, res) => {
 // OBTIENE ULTIMO VOTANTE
 votanteCtrl.getUltimoVotante = async (req, res) => {
   try {
-    const votante = await votanteModels.find().sort({ $natural:-1 }).limit(1);
+    const votante = await votanteModels.find().sort({ $natural: -1 }).limit(1);
     res.json({ votante });
   } catch (error) {
     res.status(400).json({ msg: "Hubo un error" });

@@ -7,6 +7,7 @@ const Cards = ({
   usuario,
   confirmar,
   autorizandoVotante,
+  rechazar,
 }) => {
   const user = usuario ? usuario : estudiante ? estudiante : null;
   return (
@@ -49,12 +50,17 @@ const Cards = ({
 
           {(estudiante && usuario.cargo === "Encargado de Mesa") ||
           (autorizandoVotante && usuario.cargo === "Verificador de Votante") ? (
-            <button
-              className="btn btn-success mt-3"
-              onClick={() => confirmar()}
-            >
-              Confirmar
-            </button>
+            <div className="mt-3">
+              <button
+                className="btn btn-success mr-2"
+                onClick={() => confirmar()}
+              >
+                Confirmar
+              </button>
+              <button className="btn btn-danger" onClick={() => rechazar()}>
+                Rechazar
+              </button>
+            </div>
           ) : estudiante && usuario.cargo === "Administrador" ? (
             <div>
               <button

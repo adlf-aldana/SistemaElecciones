@@ -1,4 +1,9 @@
-import { AUTORIZANDO_VOTANTE, ENCARGADO_HABILITA_VOTANTE } from "../../types";
+import {
+  AUTORIZANDO_VOTANTE,
+  ENCARGADO_HABILITA_VOTANTE,
+  ERROR_VOTANTE,
+  LIMPIAR_MENSAJE,
+} from "../../types";
 
 export default (state, action) => {
   switch (action.type) {
@@ -12,6 +17,18 @@ export default (state, action) => {
         ...state,
         autorizandoVotante: action.payload,
       };
+    case ERROR_VOTANTE: {
+      return {
+        ...state,
+        mensaje: action.payload,
+      };
+    }
+    case LIMPIAR_MENSAJE: {
+      return {
+        ...state,
+        mensaje: null,
+      };
+    }
     default:
       return state;
   }

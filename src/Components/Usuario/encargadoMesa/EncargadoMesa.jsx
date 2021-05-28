@@ -4,8 +4,11 @@ import Cards from "./Cards";
 import AuthContext from "../../../context/autenticacion/authContext";
 import UniversitarioContext from "../../../context/universitarios/UniversitarioContext";
 import VotanteContext from "../../../context/votante/votanteContext";
+import AlertaContext from "../../../context/alerta/alertaContext";
 
 const EncargadoMesa = () => {
+  const alertaContext = useContext(AlertaContext);
+  const { mostrarAlerta, alerta } = alertaContext;
   const authContext = useContext(AuthContext);
   const { usuario, usuarioAutenticado } = authContext;
   const universitarioContext = useContext(UniversitarioContext);
@@ -16,6 +19,8 @@ const EncargadoMesa = () => {
     encargadoHabilitaVotante,
     ultimoVotante,
     autorizandoVotante,
+    mensaje,
+    limpiarMensaje,
   } = votanteContext;
 
   // DATOS DEL FORMULARIO
@@ -38,9 +43,40 @@ const EncargadoMesa = () => {
     usuarioAutenticado();
     ultimoVotante();
   }, [estudiante]);
+  useEffect(() => {
+    if (mensaje) {
+      mostrarAlerta(mensaje.msg, mensaje.categoria);
+      setTimeout(() => {
+        limpiarMensaje();
+      }, 3000);
+    }
+  }, [mensaje]);
 
   const confirmar = () => {
-    encargadoHabilitaVotante(estudiante);
+    if (usuario) {
+      if (usuario.cargo === "Encargado de Mesa") {
+        const votante = {
+          cu: estudiante.cu,
+          descripcion: "",
+          encargadoMesa: true,
+          verificadorVotante: false,
+        };
+        encargadoHabilitaVotante(votante);
+      } else if (usuario.cargo === "Verificador de Votante") {
+        console.log("Verificador de Votante");
+      }
+    }
+  };
+
+  const rechazar = () => {
+    if (usuario) {
+      if (usuario.cargo === "Encargado de Mesa") {
+        console.log("Encargado de mesa");
+        // encargadoHabilitaVotante(estudiante);
+      } else if (usuario.cargo === "Verificador de Votante") {
+        console.log("Verificador de Votante");
+      }
+    }
   };
 
   return (
@@ -73,11 +109,15 @@ const EncargadoMesa = () => {
             </form>
           )
         ) : null}
+        {alerta ? (
+          <div className={`alert alert-${alerta.categoria}`}>{alerta.msg}</div>
+        ) : null}
         {estudiante ? (
           <Cards
             estudiante={estudiante}
             usuario={usuario}
             confirmar={confirmar}
+            rechazar={rechazar}
           />
         ) : null}
 
@@ -88,6 +128,7 @@ const EncargadoMesa = () => {
               usuario={usuario}
               confirmar={confirmar}
               autorizandoVotante={autorizandoVotante}
+              rechazar={rechazar}
             />
           ) : null
         ) : null}
