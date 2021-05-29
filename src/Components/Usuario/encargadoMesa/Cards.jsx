@@ -1,4 +1,5 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useContext, useState } from "react";
+import VotanteContext from "../../../context/votante/votanteContext";
 
 const Cards = ({
   estudiante,
@@ -10,17 +11,17 @@ const Cards = ({
   rechazar,
   handleMotivo,
   descripcion,
-  motivoRechazo,
-  // limpiarDescripcionRechazo,
 }) => {
   const [rechazando, setrechazando] = useState(false);
-  // const { descripcion } = motivoRechazo;
-
+  const votanteContext = useContext(VotanteContext);
+  const { ultimoVotante } = votanteContext;
+  const actualizando = () => {
+    ultimoVotante();
+  };
   return (
     <Fragment>
       <div className="card mt-5">
         <div className="card-header text-center">
-          {/* <strong>{usuario ? usuario.cargo : "DATOS DEL ESTUDIANTE"}</strong> */}
           <strong>{estudiante ? "DATOS DEL ESTUDIANTE" : usuario.cargo}</strong>
         </div>
         <div className="card-body">
@@ -54,6 +55,23 @@ const Cards = ({
             </div>
           </div>
 
+          {estudiante && usuario.cargo === "Verificador de Votante" ? (
+            <div className="row mt-3">
+              {estudiante.estadoEncargadoMesa ? (
+                <div className="col">
+                  <label className="text-success">Sin problemas</label>
+                </div>
+              ) : (
+                <div className="col">
+                  <strong>Descripcion de Problema: </strong>
+                  <label className="text-danger">
+                    {estudiante.descripcionProblemaEncargadoMesa}
+                  </label>
+                </div>
+              )}
+            </div>
+          ) : null}
+
           {rechazando ? (
             <div class="form-group mt-3">
               <label>
@@ -85,9 +103,6 @@ const Cards = ({
                 >
                   Cancelar
                 </button>
-                {/* <button onClick={() => limpiarDescripcionRechazo()}>
-                  limpiarDescripcionRechazo
-                </button> */}
               </div>
             ) : (
               <div className="mt-3">
@@ -120,8 +135,11 @@ const Cards = ({
                 Eliminar
               </button>
             </div>
-          ) : !estudiante &&
-            usuario.cargo === "Encargado de Mesa" ? null : null}
+          ) : !estudiante && usuario.cargo === "Encargado de Mesa" ? null : (
+            <button className="btn btn-success" onClick={() => actualizando()}>
+              Actualizar
+            </button>
+          )}
         </div>
       </div>
     </Fragment>

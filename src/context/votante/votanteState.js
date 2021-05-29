@@ -54,6 +54,9 @@ const VotanteState = (props) => {
         carrera: datosEstudiante.data.estudiante.carrera,
         encargadoMesa: res.data.votante[0].encargadoMesa,
         verificadorVotante: res.data.votante[0].verificadorVotante,
+        estadoEncargadoMesa: res.data.votante[0].estadoEncargadoMesa,
+        descripcionProblemaEncargadoMesa:
+          res.data.votante[0].descripcionProblemaEncargadoMesa,
       };
       dispatch({
         type: AUTORIZANDO_VOTANTE,

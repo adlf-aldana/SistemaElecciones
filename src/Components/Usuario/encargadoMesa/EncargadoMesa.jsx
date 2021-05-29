@@ -60,7 +60,7 @@ const EncargadoMesa = () => {
       setTimeout(() => {
         limpiarMensaje();
       }, 3000);
-    } 
+    }
     // else {
     //   setmotivoRechazo({ descripcion: "" });
     // }
@@ -71,10 +71,12 @@ const EncargadoMesa = () => {
       if (usuario.cargo === "Encargado de Mesa") {
         const votante = {
           cu: estudiante.cu,
-          descripcion: "",
+          descripcionProblemaEncargadoMesa: "",
+          descripcionProblemaVerificadorVotante: "",
           encargadoMesa: true,
           verificadorVotante: false,
-          estado: true,
+          estadoEncargadoMesa: true,
+          estadoVerificadorVotante: false,
         };
         const res = await encargadoHabilitaVotante(votante);
         if (res) {
@@ -89,10 +91,12 @@ const EncargadoMesa = () => {
       } else if (usuario.cargo === "Verificador de Votante") {
         const votante = {
           cu: autorizandoVotante.cu,
-          descripcion: "",
+          descripcionProblemaEncargadoMesa: "",
+          descripcionProblemaVerificadorVotante: "",
           encargadoMesa: true,
           verificadorVotante: true,
-          estado: true,
+          estadoEncargadoMesa: true,
+          estadoVerificadorVotante: true,
         };
         const res = await actualizarVotante(autorizandoVotante._id, votante);
         if (res) {
@@ -118,10 +122,12 @@ const EncargadoMesa = () => {
           );
         const votante = {
           cu: estudiante.cu,
-          descripcion: descripcion,
+          descripcionProblemaEncargadoMesa: descripcion,
+          descripcionProblemaVerificadorVotante: "",
           encargadoMesa: true,
           verificadorVotante: false,
-          estado: false,
+          estadoEncargadoMesa: false,
+          estadoVerificadorVotante: false,
         };
         const res = await encargadoHabilitaVotante(votante);
         if (res) {
@@ -141,10 +147,11 @@ const EncargadoMesa = () => {
           );
         const votante = {
           cu: autorizandoVotante.cu,
-          descripcion: descripcion,
+          descripcionProblemaVerificadorVotante: descripcion,
           encargadoMesa: true,
           verificadorVotante: true,
-          estado: true,
+          estadoEncargadoMesa: false,
+          estadoVerificadorVotante: false,
         };
         const res = await actualizarVotante(autorizandoVotante._id, votante);
         if (res) {

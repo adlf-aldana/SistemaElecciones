@@ -8,7 +8,11 @@ const votanteSchema = new Schema(
       trim: true,
       unique: true,
     },
-    descripcion: {
+    descripcionProblemaEncargadoMesa: {
+      type: String,
+      trim: true,
+    },
+    descripcionProblemaVerificadorVotante: {
       type: String,
       trim: true,
     },
@@ -18,7 +22,10 @@ const votanteSchema = new Schema(
     verificadorVotante: {
       type: Boolean,
     },
-    estado: {
+    estadoEncargadoMesa: {
+      type: Boolean,
+    },
+    estadoVerificadorVotante: {
       type: Boolean,
     },
   },
