@@ -32,8 +32,14 @@ votanteCtrl.createVotante = async (req, res) => {
       }
     }
 
-    const verificarUltimoVotante = await votanteModels.find().sort({ $natural: -1 }).limit(1);
-    if (!verificarUltimoVotante[0].verificadorVotante) {
+    const verificarUltimoVotante = await votanteModels
+      .find()
+      .sort({ $natural: -1 })
+      .limit(1);
+    if (
+      verificarUltimoVotante[0] &&
+      !verificarUltimoVotante[0].verificadorVotante
+    ) {
       return res.status(400).json({
         msg: "Espere, Por favor... Verificador aún no confirmo al último votante",
       });
@@ -42,7 +48,7 @@ votanteCtrl.createVotante = async (req, res) => {
     await votante.save();
     res.send({ msg: "Votante Guardado" });
   } catch (error) {
-    res.status(400).json({ msg: "Hubo un error" });
+    res.status(400).json({ msg: "Hubo un error al crear un nuevo votante" });
   }
 };
 
@@ -52,7 +58,7 @@ votanteCtrl.getVotante = async (req, res) => {
     const votante = await votanteModels.findOne({ cu: req.params.id });
     res.json({ votante });
   } catch (error) {
-    res.status(400).json({ msg: "Hubo un error" });
+    res.status(400).json({ msg: "Hubo un error al obtener a un vontante" });
   }
 };
 
@@ -62,7 +68,7 @@ votanteCtrl.deleteVotante = async (req, res) => {
     await votanteModels.findByIdAndDelete(req.params.id);
     res.json({ msg: "Votante Eliminado" });
   } catch (error) {
-    res.status(400).json({ msg: "Hubo un error" });
+    res.status(400).json({ msg: "Hubo un error al eliminar a votante" });
   }
 };
 
@@ -72,9 +78,20 @@ votanteCtrl.getUltimoVotante = async (req, res) => {
     const votante = await votanteModels.find().sort({ $natural: -1 }).limit(1);
     res.json({ votante });
   } catch (error) {
-    res.status(400).json({ msg: "Hubo un error" });
+    res.status(400).json({ msg: "Hubo un error al obtener el ultimo votante" });
   }
 };
 
+votanteCtrl.updateVotante = async (req, res) => {
+  try {
+    const votante = await votanteModels.findByIdAndUpdate(
+      req.params.id,
+      req.body
+    );
+    res.json(votante);
+  } catch (error) {
+    res.status(400).json({ msg: "Hubo un error al Actualizar" });
+  }
+};
 
 module.exports = votanteCtrl;

@@ -1,4 +1,5 @@
 import {
+  ACTUALIZAR_VOTANTE,
   AUTORIZANDO_VOTANTE,
   ENCARGADO_HABILITA_VOTANTE,
   ERROR_VOTANTE,
@@ -31,12 +32,19 @@ export default (state, action) => {
       };
     }
     case LIMPIAR_DESCRIPCION_RECHAZO: {
-      console.log("LIMPIOOOOOOOO");
       return {
         ...state,
         rechazandoVotante: { descripcion: "" },
       };
     }
+    case ACTUALIZAR_VOTANTE:
+      return {
+        ...state,
+        autorizandoVotante: action.payload,
+        // autorizandoVotante: state.autorizandoVotante.map((votante) =>
+        //   votante._id === action.payload._id ? action.payload : votante
+        // ),
+      };
     default:
       return state;
   }

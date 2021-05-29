@@ -5,7 +5,7 @@ import {
   AUTORIZANDO_VOTANTE,
   ERROR_VOTANTE,
   LIMPIAR_MENSAJE,
-  LIMPIAR_DESCRIPCION_RECHAZO,
+  ACTUALIZAR_VOTANTE,
 } from "../../types";
 
 import votanteContext from "./votanteContext";
@@ -16,7 +16,7 @@ const VotanteState = (props) => {
     votante: null,
     autorizandoVotante: null,
     mensaje: null,
-    // rechazandoVotante: { descripcion: "" },
+    votantes: null,
   };
 
   const encargadoHabilitaVotante = async (votante) => {
@@ -27,8 +27,6 @@ const VotanteState = (props) => {
         payload: votante,
       });
       return true;
-      // console.log('encargado');
-      // limpiarDescripcionRechazo();
     } catch (error) {
       const alerta = {
         msg: error.response.data.msg,
@@ -48,10 +46,18 @@ const VotanteState = (props) => {
       const datosEstudiante = await usuarioAxios.get(
         "/api/lista_estudiantes/" + res.data.votante[0].cu
       );
-      console.log(datosEstudiante);
+      const datos = {
+        _id: res.data.votante[0]._id,
+        nombre: datosEstudiante.data.estudiante.nombre,
+        apellidos: datosEstudiante.data.estudiante.apellidos,
+        cu: datosEstudiante.data.estudiante.cu,
+        carrera: datosEstudiante.data.estudiante.carrera,
+        encargadoMesa: res.data.votante[0].encargadoMesa,
+        verificadorVotante: res.data.votante[0].verificadorVotante,
+      };
       dispatch({
         type: AUTORIZANDO_VOTANTE,
-        payload: datosEstudiante.data.estudiante,
+        payload: datos,
       });
     } catch (error) {
       console.log(error.response);
@@ -68,15 +74,27 @@ const VotanteState = (props) => {
     }
   };
 
-  // const limpiarDescripcionRechazo = () => {
-  //   try {
-  //     dispatch({
-  //       type: LIMPIAR_DESCRIPCION_RECHAZO,
-  //     });
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+  const actualizarVotante = async (id, votante) => {
+    try {
+      const res = await usuarioAxios.put(`/api/votante/${id}`, votante);
+      console.log(res.data.votante);
+      dispatch({
+        type: ACTUALIZAR_VOTANTE,
+        payload: res.data.votante,
+      });
+      return true;
+    } catch (error) {
+      const alerta = {
+        msg: error.response.data.msg,
+        categoria: "danger",
+      };
+      dispatch({
+        type: ERROR_VOTANTE,
+        payload: alerta,
+      });
+      return false;
+    }
+  };
 
   const [state, dispatch] = useReducer(votanteReducer, initialState);
   return (
@@ -85,11 +103,10 @@ const VotanteState = (props) => {
         votante: state.votante,
         autorizandoVotante: state.autorizandoVotante,
         mensaje: state.mensaje,
-        // rechazandoVotante: state.rechazandoVotante,
         encargadoHabilitaVotante,
         ultimoVotante,
         limpiarMensaje,
-        // limpiarDescripcionRechazo
+        actualizarVotante,
       }}
     >
       {props.children}
