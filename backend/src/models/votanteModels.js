@@ -28,6 +28,9 @@ const votanteSchema = new Schema(
     estadoVerificadorVotante: {
       type: Boolean,
     },
+    _idFrente: {
+      type: String,
+    },
   },
   {
     timestamps: true,

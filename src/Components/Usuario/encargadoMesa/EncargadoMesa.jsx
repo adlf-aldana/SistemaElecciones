@@ -71,12 +71,13 @@ const EncargadoMesa = () => {
       if (usuario.cargo === "Encargado de Mesa") {
         const votante = {
           cu: estudiante.cu,
-          descripcionProblemaEncargadoMesa: "",
-          descripcionProblemaVerificadorVotante: "",
           encargadoMesa: true,
           verificadorVotante: false,
+          descripcionProblemaEncargadoMesa: "",
+          descripcionProblemaVerificadorVotante: "",
           estadoEncargadoMesa: true,
           estadoVerificadorVotante: false,
+          _idFrente: null,
         };
         const res = await encargadoHabilitaVotante(votante);
         if (res) {
@@ -97,6 +98,7 @@ const EncargadoMesa = () => {
           verificadorVotante: true,
           estadoEncargadoMesa: true,
           estadoVerificadorVotante: true,
+          _idFrente: null,
         };
         const res = await actualizarVotante(autorizandoVotante._id, votante);
         if (res) {
@@ -128,6 +130,7 @@ const EncargadoMesa = () => {
           verificadorVotante: false,
           estadoEncargadoMesa: false,
           estadoVerificadorVotante: false,
+          _idFrente: null,
         };
         const res = await encargadoHabilitaVotante(votante);
         if (res) {
@@ -152,6 +155,7 @@ const EncargadoMesa = () => {
           verificadorVotante: true,
           estadoEncargadoMesa: false,
           estadoVerificadorVotante: false,
+          _idFrente: null,
         };
         const res = await actualizarVotante(autorizandoVotante._id, votante);
         if (res) {

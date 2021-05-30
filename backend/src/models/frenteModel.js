@@ -11,7 +11,7 @@ const frenteSchema = new Schema(
       type: Number,
       require: true,
       trim: true,
-      unique: true
+      unique: true,
     },
     celularEncargado: {
       type: Number,
@@ -20,9 +20,6 @@ const frenteSchema = new Schema(
     },
     logoFrente: {
       type: String,
-    },
-    cantVotos: {
-      type: Number,
     },
   },
   {

@@ -55,21 +55,23 @@ const Cards = ({
             </div>
           </div>
 
-          {estudiante && usuario.cargo === "Verificador de Votante" ? (
-            <div className="row mt-3">
-              {estudiante.estadoEncargadoMesa ? (
-                <div className="col">
-                  <label className="text-success">Sin problemas</label>
-                </div>
-              ) : (
-                <div className="col">
-                  <strong>Descripcion de Problema: </strong>
-                  <label className="text-danger">
-                    {estudiante.descripcionProblemaEncargadoMesa}
-                  </label>
-                </div>
-              )}
-            </div>
+          {estudiante && usuario ? (
+            usuario.cargo === "Verificador de Votante" ? (
+              <div className="row mt-3">
+                {estudiante.estadoEncargadoMesa ? (
+                  <div className="col">
+                    <label className="text-success">Sin problemas</label>
+                  </div>
+                ) : (
+                  <div className="col">
+                    <strong>Descripcion de Problema: </strong>
+                    <label className="text-danger">
+                      {estudiante.descripcionProblemaEncargadoMesa}
+                    </label>
+                  </div>
+                )}
+              </div>
+            ) : null
           ) : null}
 
           {rechazando ? (
@@ -87,59 +89,65 @@ const Cards = ({
             </div>
           ) : null}
 
-          {(estudiante && usuario.cargo === "Encargado de Mesa") ||
-          (autorizandoVotante && usuario.cargo === "Verificador de Votante") ? (
-            rechazando ? (
-              <div className="mt-3">
+          {usuario ? (
+            (estudiante && usuario.cargo === "Encargado de Mesa") ||
+            (autorizandoVotante &&
+              usuario.cargo === "Verificador de Votante") ? (
+              rechazando ? (
+                <div className="mt-3">
+                  <button
+                    className="btn btn-success mr-2"
+                    onClick={() => rechazar()}
+                  >
+                    Confirmar Rechazo
+                  </button>
+                  <button
+                    className="btn btn-danger"
+                    onClick={() => setrechazando(!rechazando)}
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              ) : (
+                <div className="mt-3">
+                  <button
+                    className="btn btn-success mr-2"
+                    onClick={() => confirmar()}
+                  >
+                    Confirmar
+                  </button>
+                  <button
+                    className="btn btn-danger"
+                    onClick={() => setrechazando(!rechazando)}
+                  >
+                    Rechazar
+                  </button>
+                </div>
+              )
+            ) : estudiante && usuario.cargo === "Administrador" ? (
+              <div>
                 <button
-                  className="btn btn-success mr-2"
-                  onClick={() => rechazar()}
+                  onClick={() => editarUniversitario(estudiante)}
+                  className="btn btn-warning mt-3 mr-2"
                 >
-                  Confirmar Rechazo
+                  Editar
                 </button>
                 <button
-                  className="btn btn-danger"
-                  onClick={() => setrechazando(!rechazando)}
+                  onClick={() => eliminar(estudiante._id)}
+                  className="btn btn-danger mt-3"
                 >
-                  Cancelar
+                  Eliminar
                 </button>
               </div>
-            ) : (
-              <div className="mt-3">
-                <button
-                  className="btn btn-success mr-2"
-                  onClick={() => confirmar()}
-                >
-                  Confirmar
-                </button>
-                <button
-                  className="btn btn-danger"
-                  onClick={() => setrechazando(!rechazando)}
-                >
-                  Rechazar
-                </button>
-              </div>
-            )
-          ) : estudiante && usuario.cargo === "Administrador" ? (
-            <div>
+            ) : !estudiante && usuario.cargo === "Verificador de Votante" ? (
               <button
-                onClick={() => editarUniversitario(estudiante)}
-                className="btn btn-warning mt-3 mr-2"
+                className="btn btn-success"
+                onClick={() => actualizando()}
               >
-                Editar
+                Actualizar
               </button>
-              <button
-                onClick={() => eliminar(estudiante._id)}
-                className="btn btn-danger mt-3"
-              >
-                Eliminar
-              </button>
-            </div>
-          ) : !estudiante && usuario.cargo === "Encargado de Mesa" ? null : (
-            <button className="btn btn-success" onClick={() => actualizando()}>
-              Actualizar
-            </button>
-          )}
+            ) : null
+          ) : null}
         </div>
       </div>
     </Fragment>

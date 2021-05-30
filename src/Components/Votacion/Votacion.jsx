@@ -1,70 +1,96 @@
-import axios from "axios";
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState, useEffect, useContext } from "react";
+import FrentesContext from "../../context/frentes/FrentesContext";
+import VotanteContext from "../../context/votante/votanteContext";
+import Cards from "../Usuario/encargadoMesa/Cards";
 
 const Votacion = () => {
-  const [frentes, setfrentes] = useState("");
-  // const URL = "http://192.168.0.6:4000/api/frente_universitario/";
-  const URL = "http://localhost:4000/api/frente_universitario/";
-
-  const getfrentes = async () => {
-    const res = await axios.get(URL);
-    setfrentes(res.data);
-  };
+  const frentesContext = useContext(FrentesContext);
+  const { frentes, obtenerFrentes } = frentesContext;
+  const votanteContext = useContext(VotanteContext);
+  const { autorizandoVotante, actualizarVotante, ultimoVotante } =
+    votanteContext;
 
   const btnVotar = async (frente) => {
-    const res = await axios.get(URL + frente._id);
-    const newData = {
-      nombreFrente: frente.nombreFrente,
-      nombreEncargado: frente.nombreEncargado,
-      apellidosEncargado: frente.apellidosEncargado,
-      cuEncargado: frente.cuEncargado,
-      celularEncargado: frente.celularEncargado,
-      logoFrente: frente.logoFrente,
-      cantVotos: res.data.msg.cantVotos + 1,
+    const votante = {
+      cu: autorizandoVotante.cu,
+      descripcionProblemaEncargadoMesa:
+        autorizandoVotante.descripcionProblemaEncargadoMesa,
+      descripcionProblemaVerificadorVotante:
+        autorizandoVotante.descripcionProblemaVerificadorVotante,
+      encargadoMesa: autorizandoVotante.encargadoMesa,
+      verificadorVotante: autorizandoVotante.verificadorVotante,
+      estadoEncargadoMesa: autorizandoVotante.estadoEncargadoMesa,
+      estadoVerificadorVotante: autorizandoVotante.estadoVerificadorVotante,
+      _idFrente: frente._id,
     };
-
-    await axios.put(URL + frente._id, newData);
-    console.log(res.data.msg.cantVotos);
+    actualizarVotante(autorizandoVotante._id, votante);
   };
 
   useEffect(() => {
-    getfrentes();
-    return () => {};
+    obtenerFrentes();
   }, []);
   return (
     <Fragment>
-      <div className="container mt-4">
-        <h1 className="text-center">Votación</h1>
-        <div className="row">
-          {frentes.length > 0 ? (
-            frentes.map((frente) => (
-              <div className="col-md-4 mt-3" key={frente._id}>
-                <div className="card text-center" style={{ width: "18rem", display: "block" }}>
-                  <img
-                    src={`http://localhost:4000/${frente.logoFrente}`}
-                    // src={`http://192.168.0.6:4000/${frente.logoFrente}`}
-                    alt="..."
-                    width="150"
-                    height="160"
-                    className="mt-3"
-                  />
-                  <div className="card-body">
-                    <h5 className="card-title">{frente.nombreFrente}</h5>
-                    <button
-                      className="btn btn-primary"
-                      onClick={() => btnVotar(frente)}
+      {autorizandoVotante ? (
+        autorizandoVotante.estadoEncargadoMesa &&
+        autorizandoVotante.estadoVerificadorVotante &&
+        autorizandoVotante._idFrente === null ? (
+          <div className="container mt-4">
+            <Cards estudiante={autorizandoVotante} usuario={null} />
+            <h1 className="text-center mt-4">Votación</h1>
+            <div className="row">
+              {frentes.length > 0 ? (
+                frentes.map((frente) => (
+                  <div className="col-md-4 mt-3" key={frente._id}>
+                    <div
+                      className="card text-center"
+                      style={{ width: "18rem", display: "block" }}
                     >
-                      Votar
-                    </button>
+                      <img
+                        src={`http://localhost:4000/${frente.logoFrente}`}
+                        // src={`http://192.168.0.6:4000/${frente.logoFrente}`}
+                        alt="..."
+                        width="150"
+                        height="160"
+                        className="mt-3"
+                      />
+                      <div className="card-body">
+                        <h5 className="card-title">{frente.nombreFrente}</h5>
+                        <button
+                          className="btn btn-primary"
+                          onClick={() => btnVotar(frente)}
+                        >
+                          Votar
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            ))
-          ) : (
-            <p>Sin datos</p>
-          )}
+                ))
+              ) : (
+                <p>Sin datos</p>
+              )}
+            </div>
+          </div>
+        ) : (
+          <div>
+            <p>
+              Advertencia: Antes realizar su voto verifique sus datos por favor
+            </p>
+            <button className="btn btn-success" onClick={() => ultimoVotante()}>
+              Empezar
+            </button>
+          </div>
+        )
+      ) : (
+        <div>
+          <p>
+            Advertencia: Antes realizar su voto verifique sus datos por favor
+          </p>
+          <button className="btn btn-success" onClick={() => ultimoVotante()}>
+            Empezar
+          </button>
         </div>
-      </div>
+      )}
     </Fragment>
   );
 };

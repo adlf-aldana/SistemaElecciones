@@ -5,6 +5,7 @@ import {
   ERROR_VOTANTE,
   LIMPIAR_DESCRIPCION_RECHAZO,
   LIMPIAR_MENSAJE,
+  LIMPIAR_DATOS,
 } from "../../types";
 
 export default (state, action) => {
@@ -44,6 +45,13 @@ export default (state, action) => {
         // autorizandoVotante: state.autorizandoVotante.map((votante) =>
         //   votante._id === action.payload._id ? action.payload : votante
         // ),
+      };
+    case LIMPIAR_DATOS:
+      return {
+        votante: null,
+        autorizandoVotante: null,
+        mensaje: null,
+        votantes: null,
       };
     default:
       return state;

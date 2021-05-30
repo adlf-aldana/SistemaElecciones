@@ -6,6 +6,7 @@ import {
   ERROR_VOTANTE,
   LIMPIAR_MENSAJE,
   ACTUALIZAR_VOTANTE,
+  LIMPIAR_DATOS,
 } from "../../types";
 
 import votanteContext from "./votanteContext";
@@ -55,8 +56,10 @@ const VotanteState = (props) => {
         encargadoMesa: res.data.votante[0].encargadoMesa,
         verificadorVotante: res.data.votante[0].verificadorVotante,
         estadoEncargadoMesa: res.data.votante[0].estadoEncargadoMesa,
+        estadoVerificadorVotante: res.data.votante[0].estadoVerificadorVotante,
         descripcionProblemaEncargadoMesa:
           res.data.votante[0].descripcionProblemaEncargadoMesa,
+        _idFrente: res.data.votante[0]._idFrente,
       };
       dispatch({
         type: AUTORIZANDO_VOTANTE,
@@ -79,12 +82,13 @@ const VotanteState = (props) => {
 
   const actualizarVotante = async (id, votante) => {
     try {
-      const res = await usuarioAxios.put(`/api/votante/${id}`, votante);
-      console.log(res.data.votante);
+      console.log(votante);
+      await usuarioAxios.put(`/api/votante/${id}`, votante);
       dispatch({
         type: ACTUALIZAR_VOTANTE,
-        payload: res.data.votante,
+        payload: votante,
       });
+      limpiarDatos();
       return true;
     } catch (error) {
       const alerta = {
@@ -97,6 +101,12 @@ const VotanteState = (props) => {
       });
       return false;
     }
+  };
+
+  const limpiarDatos = () => {
+    dispatch({
+      type: LIMPIAR_DATOS,
+    });
   };
 
   const [state, dispatch] = useReducer(votanteReducer, initialState);
