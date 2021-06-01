@@ -75,12 +75,12 @@ const Cards = ({
           ) : null}
 
           {rechazando ? (
-            <div class="form-group mt-3">
+            <div className="form-group mt-3">
               <label>
                 <strong>Explique detalladamente el motivo del rechazo:</strong>
               </label>
               <textarea
-                class="form-control"
+                className="form-control"
                 name="descripcion"
                 rows="3"
                 onChange={handleMotivo}

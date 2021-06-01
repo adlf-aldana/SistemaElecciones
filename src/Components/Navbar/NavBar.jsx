@@ -62,9 +62,9 @@ const NavBar = () => {
                     </NavLink>
                   </li>
                 </ul>
-                <div class="d-flex flex-row-reverse">
+                <div className="d-flex flex-row-reverse">
                   <button
-                    class="btn btn-outline-success "
+                    className="btn btn-outline-success "
                     type="button"
                     onClick={() => cerrarSesion()}
                   >
@@ -89,9 +89,9 @@ const NavBar = () => {
                   </li>
                 </ul>
 
-                <div class="d-flex flex-row-reverse">
+                <div className="d-flex flex-row-reverse">
                   <button
-                    class="btn btn-outline-success "
+                    className="btn btn-outline-success "
                     type="button"
                     onClick={() => cerrarSesion()}
                   >
@@ -116,9 +116,9 @@ const NavBar = () => {
                   </li>
                 </ul>
 
-                <div class="d-flex flex-row-reverse">
+                <div className="d-flex flex-row-reverse">
                   <button
-                    class="btn btn-outline-success "
+                    className="btn btn-outline-success "
                     type="button"
                     onClick={() => cerrarSesion()}
                   >
