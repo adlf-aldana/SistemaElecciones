@@ -1,21 +1,22 @@
-import { datosFrente, porcentajes } from "./Peticiones";
-
-export const dataGraphics = async () => {
-  const nombres = await datosFrente().then((data) =>
-    Object.values(data).map((key) => key.nombreFrente)
-  );
-  // const votos = await datosFrente().then((data) =>
-  //   Object.values(data).map((key) => key.cantVotos)
+export const dataGraphics = (datosGraficos) => {
+  // const nombres = await datosFrente().then((data) =>
+  //   Object.values(data).map((key) => key.nombreFrente)
   // );
-  const porcentajeVotos = await porcentajes();
+  // // const votos = await datosFrente().then((data) =>
+  // //   Object.values(data).map((key) => key.cantVotos)
+  // // );
+  // const porcentajeVotos = await porcentajes();
+
+  const nombres = Object.values(datosGraficos).map((key) => key.nombreFrente);
+  const porcentaje = Object.values(datosGraficos).map((key) => key.porcentaje);
   return {
     type: "bar",
+
     labels: nombres,
     datasets: [
       {
         label: "Elecciones Centro de Estudiantes al 100%",
-        data: porcentajeVotos,
-
+        data: porcentaje,
         backgroundColor: [
           "rgba(255, 99, 132, 0.2)",
           "rgba(255, 159, 64, 0.2)",

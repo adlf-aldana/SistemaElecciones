@@ -6,6 +6,7 @@ import {
   LIMPIAR_DESCRIPCION_RECHAZO,
   LIMPIAR_MENSAJE,
   LIMPIAR_DATOS,
+  OBTENER_VOTANTES,
 } from "../../types";
 
 export default (state, action) => {
@@ -52,6 +53,12 @@ export default (state, action) => {
         autorizandoVotante: null,
         mensaje: null,
         votantes: null,
+      };
+    case OBTENER_VOTANTES:
+      return {
+        ...state,
+        votantes: action.payload.votantes,
+        cantVotosFrente: action.payload.cantPartido,
       };
     default:
       return state;

@@ -5,7 +5,12 @@ const votanteModels = require("../models/votanteModels");
 votanteCtrl.getVotantes = async (req, res) => {
   try {
     const votantes = await votanteModels.find();
-    res.json(votantes);
+    // console.log(votantes);
+
+    const cantPartido = await votanteModels.aggregate([
+      { $group: { _id: "$_idFrente", total: { $sum: 1 } } },
+    ]);
+    res.json({ votantes, cantPartido });
   } catch (error) {
     return res
       .status(400)

@@ -171,11 +171,11 @@ const UniversitarioIndex = () => {
           alerta={alerta}
           editUni={editUni}
         />
-        <ListaUniversitarios
+        {/* <ListaUniversitarios
           estudiantes={estudiantes}
           eliminar={eliminar}
           editarUniversitario={editarUniversitario}
-        />
+        /> */}
         <br />
         <form onSubmit={onSubmitBusqueda}>
           <h3 className="text-center">Buscar Estudiante</h3>

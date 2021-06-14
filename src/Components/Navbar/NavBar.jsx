@@ -13,7 +13,7 @@ const NavBar = () => {
     <Fragment>
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
         <a className="navbar-brand" href="#">
-          APP
+          Sistema De Votación
         </a>
         <button
           className="navbar-toggler"

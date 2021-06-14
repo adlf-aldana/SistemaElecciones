@@ -1,4 +1,4 @@
-const Tabla = ({ frentes, datosPorcentajes }) => {
+const Tabla = ({ datosFrente }) => {
   return (
     <div className="container">
       <h4 className="text-center">TABLA DE DATOS</h4>
@@ -12,12 +12,13 @@ const Tabla = ({ frentes, datosPorcentajes }) => {
           </tr>
         </thead>
         <tbody>
-          {frentes.map((frente, index) => (
+          {datosFrente.map((frente, index) => (
             <tr key={frente._id}>
               <td> {index + 1}</td>
               <td>{frente.nombreFrente}</td>
               <td>{frente.cantVotos}</td>
-              <td>{datosPorcentajes[index]} %</td>
+              <td>{frente.porcentaje} %</td>
+              {/* <td>{datosPorcentajes[index]} %</td> */}
             </tr>
           ))}
         </tbody>

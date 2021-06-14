@@ -29,7 +29,7 @@ const ListaUniversitarios = ({
               <td>{e.cu}</td>
               <td>{e.carrera}</td>
               <td>{e.cargo}</td>
-              {e.cargo === "Administrador" ? null : (
+              {/* {e.cargo === "Administrador" ? null : ( */}
                 <td>
                   <button
                     type="button"
@@ -46,7 +46,7 @@ const ListaUniversitarios = ({
                     Eliminar
                   </button>
                 </td>
-              )}
+              {/* )} */}
             </tr>
           ))}
         </tbody>

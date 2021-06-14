@@ -7,6 +7,7 @@ import {
   LIMPIAR_MENSAJE,
   ACTUALIZAR_VOTANTE,
   LIMPIAR_DATOS,
+  OBTENER_VOTANTES,
 } from "../../types";
 
 import votanteContext from "./votanteContext";
@@ -18,6 +19,7 @@ const VotanteState = (props) => {
     autorizandoVotante: null,
     mensaje: null,
     votantes: null,
+    cantVotosFrente: null,
   };
 
   const encargadoHabilitaVotante = async (votante) => {
@@ -82,7 +84,6 @@ const VotanteState = (props) => {
 
   const actualizarVotante = async (id, votante) => {
     try {
-      console.log(votante);
       await usuarioAxios.put(`/api/votante/${id}`, votante);
       dispatch({
         type: ACTUALIZAR_VOTANTE,
@@ -109,6 +110,24 @@ const VotanteState = (props) => {
     });
   };
 
+  const obtenerVotante = async () => {
+    await usuarioAxios.get("/api/votante/").then(res=>
+      dispatch({
+        type: OBTENER_VOTANTES,
+        payload: res.data,
+      })
+    );
+
+    // console.log('antes');
+    // const res = await usuarioAxios.get("/api/votante/")
+    // console.log(res);
+    // dispatch({
+    //   type: OBTENER_VOTANTES,
+    //   payload: res.data,
+    // });
+    // console.log(state.votante);
+  };
+
   const [state, dispatch] = useReducer(votanteReducer, initialState);
   return (
     <votanteContext.Provider
@@ -116,10 +135,13 @@ const VotanteState = (props) => {
         votante: state.votante,
         autorizandoVotante: state.autorizandoVotante,
         mensaje: state.mensaje,
+        votantes: state.votantes,
+        cantVotosFrente: state.cantVotosFrente,
         encargadoHabilitaVotante,
         ultimoVotante,
         limpiarMensaje,
         actualizarVotante,
+        obtenerVotante,
       }}
     >
       {props.children}
