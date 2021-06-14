@@ -10,8 +10,7 @@ export const dataGraphics = (datosGraficos) => {
   const nombres = Object.values(datosGraficos).map((key) => key.nombreFrente);
   const porcentaje = Object.values(datosGraficos).map((key) => key.porcentaje);
   return {
-    type: "bar",
-
+    type: "polarArea",
     labels: nombres,
     datasets: [
       {

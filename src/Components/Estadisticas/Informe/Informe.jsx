@@ -1,7 +1,6 @@
 import React, { Fragment, useState, useEffect, useContext } from "react";
-import BarGraphics from "../GraphicsBar/BarGraphics";
+import BarGraphics from "../TortaGraficos/TortaGraficos";
 import Tabla from "../Tabla/Tabla";
-import { datosFrente, getUniversitarios, porcentajes } from "./Peticiones";
 import { dataGraphics } from "./BarGraphics";
 import { jsPDF } from "jspdf";
 import * as html2canvas from "html2canvas";
@@ -59,31 +58,8 @@ const Informe = () => {
         }
       });
     });
-    // {
-    //   cantVotosFrente.map(cantidad => {
-    //     if(frente._id === cantidad._idFrente){
-    //       setDatos({
-    //         datosFrentes: {
-    //           nombreFrente: frente.nombreFrente,
-    //           cantVotos: total
-    //         }
-    //       })
-    //     }
-    //   })
-    // )}
   };
   const [datosGraficos, setDatosGraficos] = useState(0);
-  // const [cantEstudiantes, setcantEstudiantes] = useState(0);
-  // const [frentes, setFrentes] = useState({});
-  // const [datosPorcentajes, setDatosPorcentajes] = useState(0);
-
-  // const getCantUniversitarios = async () => {
-  //   setcantEstudiantes(await getUniversitarios());
-  // };
-
-  // const getFrente = async () => {
-  //   setFrentes(await datosFrente());
-  // };
 
   const graficando = () => {
     setDatosGraficos(dataGraphics(datosFrente));
@@ -117,74 +93,12 @@ const Informe = () => {
       10,
       20
     );
-    // doc.autoTable({ html: "#my-table" });
-    // doc.autoTable({
-    //   head: [["Frente", "Cantidad de Votos", "Porcentaje de Votos"]],
-    //   body: [nombres]
-    // });
-
-    // doc.autoTable({
-    //   head: [["Frente", "Cantidad de Votos", "Porcentaje de Votos"]],
-    // });
-    // Object.values(datosFrente).map((frente, index) => {
-    //   doc.autoTable({
-    //     body: [
-    //       [frente.nombreFrente, frente.cantVotos, frente.porcentaje],
-
-    //       // Object.values(datosFrente).map((frente) => {
-    //       //   frente
-    //       //   // [frente.nombreFrente, frente.cantVotos, frente.porcentaje];
-    //       // }),
-    //       // datosFrente.map((frente, index) => {
-    //       //   [nombres[0], cantVotos[0], porcentaje[0]]
-    //       // }),
-    //       // datosFrente.map((frente) => {
-    //       //   console.log(frente);
-    //       //   [frente.nombreFrente, frente.cantVotos, frente.porcentaje]
-    //       // }),
-    //       // ["1", "Frente 1", "2", "15"],
-    //       // ["2", "Frente 2", "3", "30"],
-    //     ],
-    //   });
-    // });
-
-    // doc.autoTable({
-    //   head: [["#", "Frente", "Cantidad de Votos", "Porcentaje de Votos"]],
-    // });
-    // Object.values(datosFrente).map((frente, index) => {
-    //   doc.autoTable({
-    //     body: [
-    //       [index + 1, frente.nombreFrente, frente.cantVotos, frente.porcentaje],
-    //       // Object.values(datosFrente).map((frente) => {
-    //       //   frente
-    //       //   // [frente.nombreFrente, frente.cantVotos, frente.porcentaje];
-    //       // }),
-    //       // datosFrente.map((frente, index) => {
-    //       //   [nombres[0], cantVotos[0], porcentaje[0]]
-    //       // }),
-    //       // datosFrente.map((frente) => {
-    //       //   console.log(frente);
-    //       //   [frente.nombreFrente, frente.cantVotos, frente.porcentaje]
-    //       // }),
-    //       // ["1", "Frente 1", "2", "15"],
-    //       // ["2", "Frente 2", "3", "30"],
-    //     ],
-    //   });
-    // });
-    // });
-
-    html2canvas(document.getElementById("tablaDatos")).then(function (canvas) {
+    html2canvas(document.getElementById("grafico")).then(function (canvas) {
       var img = canvas.toDataURL("image/png");
-      doc.addImage(img, "JPEG", 10, 25, widthPage - 15, heightPage - 25);
-      
+      // doc.addImage(img, "JPEG", 10, 25, widthPage - 15, heightPage - 25);
+      doc.addImage(img, "JPEG", 15, 25, widthPage - 65, heightPage - 75);
+      doc.save("informe.pdf");
     });
-    // doc.addPage();
-    // html2canvas(document.getElementById("grafico")).then(function (canvas) {
-    //   var img = canvas.toDataURL("image/png");
-    //   doc.addImage(img, "JPEG", 10, 25, widthPage - 15, heightPage - 25);
-    //   // doc.save("informe.pdf");
-    // });
-    doc.save("informe.pdf");
   };
   useEffect(() => {
     obtenerVotante();
@@ -245,9 +159,9 @@ const Informe = () => {
               ) : null}
             </div>
             <div id="tablaDatos">
-              <Tabla datosFrente={datosFrente} />
             </div>
             <div id="grafico">
+              <Tabla datosFrente={datosFrente} />
               <BarGraphics datosGraficos={datosGraficos} />
             </div>
           </div>
