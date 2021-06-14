@@ -65,15 +65,13 @@ const Informe = () => {
     setDatosGraficos(dataGraphics(datosFrente));
   };
   const generarPDF = () => {
-    const nombres = Object.values(datosFrente).map((key) => [
-      key.nombreFrente,
-      key.cantVotos,
-      key.porcentaje,
-    ]);
-    const cantVotos = Object.values(datosFrente).map((key) => key.cantVotos);
-    const porcentaje = Object.values(datosFrente).map((key) => key.porcentaje);
-
-    console.log(nombres);
+    // const nombres = Object.values(datosFrente).map((key) => [
+    //   key.nombreFrente,
+    //   key.cantVotos,
+    //   key.porcentaje,
+    // ]);
+    // const cantVotos = Object.values(datosFrente).map((key) => key.cantVotos);
+    // const porcentaje = Object.values(datosFrente).map((key) => key.porcentaje);
     const doc = new jsPDF({
       orientation: "landscape",
       format: "letter",
@@ -158,8 +156,7 @@ const Informe = () => {
                 </>
               ) : null}
             </div>
-            <div id="tablaDatos">
-            </div>
+            <div id="tablaDatos"></div>
             <div id="grafico">
               <Tabla datosFrente={datosFrente} />
               <BarGraphics datosGraficos={datosGraficos} />
