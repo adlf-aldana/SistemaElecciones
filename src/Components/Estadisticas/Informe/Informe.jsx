@@ -5,12 +5,16 @@ import { dataGraphics } from "./BarGraphics";
 import { jsPDF } from "jspdf";
 import * as html2canvas from "html2canvas";
 import "jspdf-autotable";
+import { PdfMakeWrapper, Table } from "pdfmake-wrapper";
+import pdfFonts from "pdfmake/build/vfs_fonts"; // fonts provided for pdfmake
 
 import VotanteContext from "../../../context/votante/votanteContext";
 import FrenteContext from "../../../context/frentes/FrentesContext";
 import UniversitarioContext from "../../../context/universitarios/UniversitarioContext";
 
 const Informe = () => {
+  // Set the fonts to use
+  PdfMakeWrapper.setFonts(pdfFonts);
   const votanteContext = useContext(VotanteContext);
   const { obtenerVotante, cantVotosFrente, votantes } = votanteContext;
   const frenteContext = useContext(FrenteContext);
@@ -98,6 +102,50 @@ const Informe = () => {
       doc.save("informe.pdf");
     });
   };
+  const listaEstudiantes = () => {
+    const doc = new jsPDF({
+      orientation: "landscape",
+      format: "letter",
+    });
+
+    const widthPage = doc.internal.pageSize.getWidth();
+    const heightPage = doc.internal.pageSize.getHeight();
+
+    doc.text("LISTA DE ESTUDIANTES UNIVERSITARIOS", widthPage / 2, 10);
+    doc.autoTable({
+      head: [
+        [
+          { content: "Nombre (s)" },
+          { content: "Apellido (s)" },
+          { content: "Carrera" },
+          { content: "Cargo" },
+          { content: "Carnet Universitario" },
+        ],
+      ],
+    });
+    estudiantes.map((estudiante) => {
+      console.log(estudiante);
+      doc.autoTable({
+        columnStyles: {
+          0: { cellWidth: 48 },
+          1: { cellWidth: 52 },
+          2: { cellWidth: 36 },
+          3: { cellWidth: 40 },
+        },
+        body: [
+          [
+            estudiante.nombre,
+            estudiante.apellidos,
+            estudiante.carrera,
+            estudiante.cargo,
+            estudiante.cu,
+          ],
+        ],
+      });
+    });
+    doc.save("listaEstudiantes.pdf");
+  };
+  const listaVotaciones = () => {};
   useEffect(() => {
     obtenerVotante();
     obtenerFrentes();
@@ -119,16 +167,28 @@ const Informe = () => {
   return (
     <Fragment>
       <div className="container">
-        <h1 className="text-center p-4">INFORME</h1>
+        <h1 className="text-center p-4">REPORTE</h1>
         {Object.keys(frentes).length > 0 ? (
           <div>
             <div className="col">
               <div className="row-md-12">
                 <button
-                  className="btn btn-success"
+                  className="btn btn-success mr-3"
                   onClick={() => generarPDF()}
                 >
-                  Generar PDF
+                  Generar Reporte
+                </button>
+                <button
+                  className="btn btn-success mr-3"
+                  onClick={() => listaEstudiantes()}
+                >
+                  Reporte Lista de Estudiantes
+                </button>
+                <button
+                  className="btn btn-success"
+                  onClick={() => listaVotaciones()}
+                >
+                  Reporte Lista De Votaciones
                 </button>
               </div>
               <br />

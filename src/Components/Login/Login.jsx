@@ -91,7 +91,7 @@ const Login = (props) => {
                 <div className="col">
                   <label htmlFor="">Contraseña:</label>
                   <input
-                    type="text"
+                    type="password"
                     name="password"
                     placeholder="Contraseña"
                     className="form-control"

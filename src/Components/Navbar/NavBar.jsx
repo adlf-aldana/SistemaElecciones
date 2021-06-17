@@ -38,7 +38,7 @@ const NavBar = () => {
                       activeclassname="active"
                       className="nav-link"
                     >
-                      Registro Universitario
+                      Gestion Universitario
                     </NavLink>
                   </li>
 
@@ -48,7 +48,7 @@ const NavBar = () => {
                       activeclassname="active"
                       className="nav-link"
                     >
-                      Registro Frente
+                      Gestion Frente
                     </NavLink>
                   </li>
 
@@ -58,7 +58,7 @@ const NavBar = () => {
                       activeclassname="active"
                       className="nav-link"
                     >
-                      Informe
+                      Reporte
                     </NavLink>
                   </li>
                 </ul>

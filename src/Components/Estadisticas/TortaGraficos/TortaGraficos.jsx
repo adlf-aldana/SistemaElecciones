@@ -5,7 +5,7 @@ const BarGraphics = ({ datosGraficos }) => {
   // console.log(datosGraficos);
   return (
     <Fragment>
-      <h3 className="text-center">Barra de Gráficos</h3>
+      <h3 className="text-center mt-5">Gráfica</h3>
       <Pie
         data={() => datosGraficos}
         redraw
