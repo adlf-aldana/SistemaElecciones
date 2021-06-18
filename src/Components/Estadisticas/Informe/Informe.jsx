@@ -5,7 +5,7 @@ import { dataGraphics } from "./BarGraphics";
 import { jsPDF } from "jspdf";
 import * as html2canvas from "html2canvas";
 import "jspdf-autotable";
-import { PdfMakeWrapper, Table } from "pdfmake-wrapper";
+import { PdfMakeWrapper } from "pdfmake-wrapper";
 import pdfFonts from "pdfmake/build/vfs_fonts"; // fonts provided for pdfmake
 
 import VotanteContext from "../../../context/votante/votanteContext";
@@ -20,7 +20,7 @@ const Informe = () => {
   const frenteContext = useContext(FrenteContext);
   const { frentes, obtenerFrentes } = frenteContext;
   const universitarioContext = useContext(UniversitarioContext);
-  const { estudiantes, obtenerUniversitarios } = universitarioContext;
+  const { estudiantes, obtenerUniversitarios, busquedaUniversitario, datosVotantes,obteniendoDatosVotante } = universitarioContext;
 
   const [cantidades, setcantidades] = useState({
     totalUniversitarios: null,
@@ -29,6 +29,7 @@ const Informe = () => {
   });
 
   const [datosFrente, setDatosFrente] = useState([]);
+  const [datosVotante, setdatosVotante] = useState()
 
   const informacionCantidadVotos = () => {
     setcantidades({
@@ -124,7 +125,6 @@ const Informe = () => {
       ],
     });
     estudiantes.map((estudiante) => {
-      console.log(estudiante);
       doc.autoTable({
         columnStyles: {
           0: { cellWidth: 48 },
@@ -145,7 +145,13 @@ const Informe = () => {
     });
     doc.save("listaEstudiantes.pdf");
   };
-  const listaVotaciones = () => {};
+
+  const listaVotaciones = () => {
+    votantes.map(votante => {
+      setdatosVotante(obteniendoDatosVotante(votante))
+    })
+    console.log(datosVotantes);
+  };
   useEffect(() => {
     obtenerVotante();
     obtenerFrentes();
