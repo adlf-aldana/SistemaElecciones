@@ -154,15 +154,23 @@ const UniversitarioState = (props) => {
     const resDataVotante = await usuarioAxios.get(
       "/api/lista_estudiantes/" + votante.cu
     );
-    const resDataFrente = await usuarioAxios.get(
-      "/api/frente_universitario/" + votante._idFrente
-    );
+
+    let resDataFrente;
+    votante._idFrente !== null
+      ? (resDataFrente = await usuarioAxios.get(
+          "/api/frente_universitario/" + votante._idFrente
+        ))
+      : (resDataFrente = {data: {msg: {nombreFrente: 'No votó'}}});
+
+    // const resDataFrente = await usuarioAxios.get(
+    //   "/api/frente_universitario/" + votante._idFrente
+    // );
+    
     const dataVotante = {
       ...votante,
       ...resDataVotante.data.estudiante,
       ...resDataFrente.data.msg,
     };
-
     return dataVotante;
   };
   return (

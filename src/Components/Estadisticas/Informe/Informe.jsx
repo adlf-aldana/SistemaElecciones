@@ -183,6 +183,7 @@ const Informe = () => {
         ],
       ],
     });
+    console.log(datosVotante);
     datosVotante.map((datoEstudiante) => {
       doc.autoTable({
         columnStyles: {
