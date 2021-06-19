@@ -49,7 +49,6 @@ const Login = (props) => {
   useEffect(() => {
     if (autenticado) {
       if (usuario === null) {
-        console.log("...Cargando");
       } else if (usuario.cargo === "Administrador") {
         props.history.push("/registroUniversitario");
       } else if (usuario.cargo === "Encargado de Mesa") {

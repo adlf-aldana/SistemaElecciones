@@ -13,7 +13,6 @@ import {
   LIMPIAR_FORMULARIO,
   LIMPIAR_MENSAJE,
   LIMPIAR_UNIVERSITARIO_BUSCADO,
-  OBTENER_DATOS_VOTANTE,
 } from "../../types/";
 
 import usuarioAxios from "../../config/axios";
@@ -21,6 +20,7 @@ import usuarioAxios from "../../config/axios";
 const UniversitarioState = (props) => {
   const initialState = {
     estudiantes: [],
+    estudiantesSinAdmin: [],
     estudiante: null,
     mensaje: null,
     datosFormulario: {
@@ -126,7 +126,6 @@ const UniversitarioState = (props) => {
     const universitario = await usuarioAxios.get(
       "/api/lista_estudiantes/" + carnetUniversitario
     );
-    console.log(universitario.data.estudiante);
     dispatch({
       type: BUSQUEDA_UNIVERSITARIO,
       payload: universitario.data.estudiante,
@@ -158,8 +157,6 @@ const UniversitarioState = (props) => {
     const resDataFrente = await usuarioAxios.get(
       "/api/frente_universitario/" + votante._idFrente
     );
-    // console.log(resDataVotante.data.estudiante);
-    // console.log(resDataFrente.data.msg);
     const dataVotante = {
       ...votante,
       ...resDataVotante.data.estudiante,
@@ -167,24 +164,6 @@ const UniversitarioState = (props) => {
     };
 
     return dataVotante;
-    // // console.log(votante);
-    // const nuevo = await usuarioAxios.get("/api/lista_estudiantes/" + votante.cu)
-    //   // .get("/api/lista_estudiantes/" + votante.cu)
-    //   // // .then((res) => Object.assign(votante, res.data.estudiante));
-    //   // .then((res) => res);
-    // usuarioAxios
-    //   .get("/api/frente_universitario/" + votante._idFrente)
-    //   .then((res) => Object.assign(votante, res.data.msg));
-    //   const union = {...votante, ...nuevo.data.estudiante}
-    //   console.log(union.nombre);
-    // console.log(votante);
-    // console.log(votante.nombre);
-    // console.log(votante._id);
-    // return votante;
-    // // dispatch({
-    // //   type: OBTENER_DATOS_VOTANTE,
-    // //   payload: votante,
-    // // });
   };
   return (
     <UniversitarioContext.Provider
@@ -194,6 +173,7 @@ const UniversitarioState = (props) => {
         estudiante: state.estudiante,
         datosFormulario: state.datosFormulario,
         datosVotantes: state.datosVotantes,
+        estudiantesSinAdmin: state.estudiantesSinAdmin,
         obtenerUniversitarios,
         agregarUniversitario,
         eliminarUniversitario,

@@ -23,8 +23,7 @@ const Informe = () => {
   const {
     estudiantes,
     obtenerUniversitarios,
-    busquedaUniversitario,
-    datosVotantes,
+    estudiantesSinAdmin,
     obteniendoDatosVotante,
   } = universitarioContext;
 
@@ -39,9 +38,9 @@ const Informe = () => {
 
   const informacionCantidadVotos = () => {
     setcantidades({
-      totalUniversitarios: estudiantes.length,
+      totalUniversitarios: estudiantesSinAdmin.length,
       votaron: votantes.length,
-      noVotaron: estudiantes.length - votantes.length,
+      noVotaron: estudiantesSinAdmin.length - votantes.length,
     });
   };
 

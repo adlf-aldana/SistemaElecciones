@@ -16,7 +16,8 @@ export default (state, action) => {
     case OBTENER_UNIVERSITARIOS:
       return {
         ...state,
-        estudiantes: action.payload,
+        estudiantes: action.payload.universitario,
+        estudiantesSinAdmin: action.payload.universitariosSinAdmins,
       };
     case AGREGAR_UNIVERSITARIO:
       return {
@@ -67,11 +68,6 @@ export default (state, action) => {
       return {
         ...state,
         estudiante: null,
-      };
-    case OBTENER_DATOS_VOTANTE:
-      return {
-        ...state,
-        datosVotantes: action.payload,
       };
     default:
       return state;
