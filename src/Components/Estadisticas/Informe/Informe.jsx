@@ -20,7 +20,13 @@ const Informe = () => {
   const frenteContext = useContext(FrenteContext);
   const { frentes, obtenerFrentes } = frenteContext;
   const universitarioContext = useContext(UniversitarioContext);
-  const { estudiantes, obtenerUniversitarios, busquedaUniversitario, datosVotantes,obteniendoDatosVotante } = universitarioContext;
+  const {
+    estudiantes,
+    obtenerUniversitarios,
+    busquedaUniversitario,
+    datosVotantes,
+    obteniendoDatosVotante,
+  } = universitarioContext;
 
   const [cantidades, setcantidades] = useState({
     totalUniversitarios: null,
@@ -29,7 +35,7 @@ const Informe = () => {
   });
 
   const [datosFrente, setDatosFrente] = useState([]);
-  const [datosVotante, setdatosVotante] = useState()
+  const [datosVotante, setdatosVotante] = useState([]);
 
   const informacionCantidadVotos = () => {
     setcantidades({
@@ -146,17 +152,72 @@ const Informe = () => {
     doc.save("listaEstudiantes.pdf");
   };
 
+  const consiguiendoDatosVotante = () => {
+    const datos = [];
+    votantes.map(async (votante) => {
+      datos.push(await obteniendoDatosVotante(votante));
+      setdatosVotante(datos);
+    });
+  };
+
   const listaVotaciones = () => {
-    votantes.map(votante => {
-      setdatosVotante(obteniendoDatosVotante(votante))
-    })
-    console.log(datosVotantes);
+    const doc = new jsPDF({
+      orientation: "landscape",
+      format: "letter",
+    });
+
+    const widthPage = doc.internal.pageSize.getWidth();
+    const heightPage = doc.internal.pageSize.getHeight();
+
+    doc.text("LISTA DE VOTACIONES", widthPage / 2, 10);
+    doc.autoTable({
+      head: [
+        [
+          { content: "Nombre (s)" },
+          { content: "Apellido (s)" },
+          { content: "Carrera" },
+          { content: "Cargo" },
+          { content: "C.U." },
+          { content: "Descripción Encargado de Mesa" },
+          { content: "Descripción Verificador Votante" },
+          { content: "Nombre Frente" },
+        ],
+      ],
+    });
+    datosVotante.map((datoEstudiante) => {
+      doc.autoTable({
+        columnStyles: {
+          0: { cellWidth: 25 },
+          1: { cellWidth: 25 },
+          2: { cellWidth: 17 },
+          3: { cellWidth: 15 },
+          4: { cellWidth: 15 },
+          5: { cellWidth: 51 },
+          6: { cellWidth: 75 },
+          7: { cellWidth: 28 },
+        },
+        body: [
+          [
+            datoEstudiante.nombre,
+            datoEstudiante.apellidos,
+            datoEstudiante.carrera,
+            datoEstudiante.cargo,
+            datoEstudiante.cu,
+            datoEstudiante.descripcionProblemaEncargadoMesa,
+            datoEstudiante.descripcionProblemaVerificadorVotante,
+            datoEstudiante.nombreFrente,
+          ],
+        ],
+      });
+    });
+    doc.save("listaEstudiantes.pdf");
   };
   useEffect(() => {
     obtenerVotante();
     obtenerFrentes();
     obtenerUniversitarios();
     if (frentes && cantVotosFrente) {
+      consiguiendoDatosVotante();
       obteniendoDatosFrentes();
     }
   }, []);

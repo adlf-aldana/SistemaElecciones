@@ -151,18 +151,40 @@ const UniversitarioState = (props) => {
     });
   };
 
-  const obteniendoDatosVotante = (votante) => {
+  const obteniendoDatosVotante = async (votante) => {
+    const resDataVotante = await usuarioAxios.get(
+      "/api/lista_estudiantes/" + votante.cu
+    );
+    const resDataFrente = await usuarioAxios.get(
+      "/api/frente_universitario/" + votante._idFrente
+    );
+    // console.log(resDataVotante.data.estudiante);
+    // console.log(resDataFrente.data.msg);
+    const dataVotante = {
+      ...votante,
+      ...resDataVotante.data.estudiante,
+      ...resDataFrente.data.msg,
+    };
+
+    return dataVotante;
+    // // console.log(votante);
+    // const nuevo = await usuarioAxios.get("/api/lista_estudiantes/" + votante.cu)
+    //   // .get("/api/lista_estudiantes/" + votante.cu)
+    //   // // .then((res) => Object.assign(votante, res.data.estudiante));
+    //   // .then((res) => res);
+    // usuarioAxios
+    //   .get("/api/frente_universitario/" + votante._idFrente)
+    //   .then((res) => Object.assign(votante, res.data.msg));
+    //   const union = {...votante, ...nuevo.data.estudiante}
+    //   console.log(union.nombre);
     // console.log(votante);
-    usuarioAxios
-      .get("/api/lista_estudiantes/" + votante.cu)
-      .then((res) => Object.assign(votante, res.data.estudiante));
-    usuarioAxios
-      .get("/api/frente_universitario/" + votante._idFrente)
-      .then((res) => Object.assign(votante, res.data.msg));
-    dispatch({
-      type: OBTENER_DATOS_VOTANTE,
-      payload: votante,
-    });
+    // console.log(votante.nombre);
+    // console.log(votante._id);
+    // return votante;
+    // // dispatch({
+    // //   type: OBTENER_DATOS_VOTANTE,
+    // //   payload: votante,
+    // // });
   };
   return (
     <UniversitarioContext.Provider
