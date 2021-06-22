@@ -2,6 +2,8 @@ const frenteCtrl = {};
 const frenteModel = require("../models/frenteModel");
 const universitarioModel = require("../models/universitarioModels");
 
+const crypto = require("crypto-js")
+
 const { unlink } = require("fs-extra");
 const path = require("path");
 
@@ -11,16 +13,19 @@ frenteCtrl.getFrentes = async (req, res) => {
 };
 
 frenteCtrl.createFrente = async (req, res) => {
+const frente = {
+  nombreFrente: crypto.AES.decrypt(req.body.nombreFrente, "palabraClave").toString(crypto.enc.Utf8),
+  cuEncargado: crypto.AES.decrypt(req.body.cuEncargado, "palabraClave").toString(crypto.enc.Utf8),
+  celularEncargado: crypto.AES.decrypt(req.body.celularEncargado, "palabraClave").toString(crypto.enc.Utf8)
+}
   const {
-    nombreFrente,
     cuEncargado,
-    celularEncargado,
-    logoFrente,
-    cantVotos
-  } = req.body;
+  } = frente;
   try {
     let cu = parseInt(cuEncargado)
-    let universitario = await universitarioModel.findOne({ cu })
+    const universitarios = await universitarioModel.find()
+    // let universitario = await universitarioModel.findOne({ cu })
+    let universitario = universitarios.filter(res=> crypto.AES.decrypt(res.cu,'palabraClave').toString(crypto.enc.Utf8)===cu)
     if (!universitario) {
       await unlink(path.resolve("./public/images/" + req.file.filename));
       return res.status(400).json({ msg: 'Error: Universitario no existe' })
@@ -31,11 +36,10 @@ frenteCtrl.createFrente = async (req, res) => {
       return res.status(400).json({ msg: 'Error: Ya existe un encargado con ese CU' })
     }
     const newFrente = new frenteModel({
-      nombreFrente,
-      cuEncargado,
-      celularEncargado,
+      nombreFrente: req.body.nombreFrente,
+      cuEncargado: req.body.cuEncargado,
+      celularEncargado: req.body.celularEncargado,
       logoFrente: "/images/" + req.file.filename,
-      cantVotos: 0,
     });
     await newFrente.save();
     res.send({ msg: "Frente Guardado" });

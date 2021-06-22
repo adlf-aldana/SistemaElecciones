@@ -89,8 +89,8 @@ const UniversitarioIndex = () => {
 
   // GUARDA O EDITA DATOS
   const guardarEditarUniversitario = (datosEstudiantes) => {
-    if (editUni._id) {
-      actualizarUniversitario(editUni._id, datosEstudiantes);
+    if (editUni.id) {
+      actualizarUniversitario(editUni.id, datosEstudiantes);
       mostrarAlerta("Editado correctamenta", "success");
     } else {
       agregarUniversitario(datosEstudiantes);

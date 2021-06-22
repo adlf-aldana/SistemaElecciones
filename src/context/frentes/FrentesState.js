@@ -5,6 +5,8 @@ import FrentesReducer from './FrentesReducer';
 
 import usuarioAxios from '../../config/axios';
 
+import * as crypto from "crypto-js"
+
 import { AGREGAR_FRENTE, ELIMINAR_FRENTE, OBTENER_FRENTES, EDITAR_FRENTE, LIMPIAR_FORMULARIO, ERROR_FRENTE, BUSQUEDA_UNIVERSITARIO, LIMPIAR_MENSAJE } from '../../types';
 
 const FrentesState = props => {
@@ -24,7 +26,16 @@ const FrentesState = props => {
 
     const obtenerFrentes = async () => {
         try {
-            const res = await usuarioAxios.get('/api/frente_universitario')
+            let res = await usuarioAxios.get('/api/frente_universitario')
+            // let res2 = res.data.map(data => 
+                
+            //     [{nombreFrente: crypto.AES.decrypt(data.nombreFrente, 'palabraClave').toString(crypto.enc.Utf8),
+            //     cuEncargado: crypto.AES.decrypt(data.cuEncargado, 'palabraClave').toString(crypto.enc.Utf8),
+            //     celularEncargado: crypto.AES.decrypt(data.celularEncargado, 'palabraClave').toString(crypto.enc.Utf8),
+            //     logoFrente: data.logoFrente}]
+            // )
+            // console.log(res.data);
+            // console.log(res2);
             dispatch({
                 type: OBTENER_FRENTES,
                 payload: res.data

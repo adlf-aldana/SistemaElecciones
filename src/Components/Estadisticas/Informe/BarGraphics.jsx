@@ -1,3 +1,4 @@
+import * as crypto from 'crypto-js'
 export const dataGraphics = (datosGraficos) => {
   // const nombres = await datosFrente().then((data) =>
   //   Object.values(data).map((key) => key.nombreFrente)
@@ -7,7 +8,7 @@ export const dataGraphics = (datosGraficos) => {
   // // );
   // const porcentajeVotos = await porcentajes();
 
-  const nombres = Object.values(datosGraficos).map((key) => key.nombreFrente);
+  const nombres = Object.values(datosGraficos).map((key) =>  crypto.AES.decrypt(key.nombreFrente,'palabraClave').toString(crypto.enc.Utf8));
   const porcentaje = Object.values(datosGraficos).map((key) => key.porcentaje);
   return {
     type: "pie",

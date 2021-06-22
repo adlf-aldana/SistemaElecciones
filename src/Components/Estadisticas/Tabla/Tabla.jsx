@@ -1,3 +1,4 @@
+import * as crypto from 'crypto-js'
 const Tabla = ({ datosFrente }) => {
   return (
     <div className="container">
@@ -15,7 +16,7 @@ const Tabla = ({ datosFrente }) => {
           {datosFrente.map((frente, index) => (
             <tr key={frente._id}>
               <td> {index + 1}</td>
-              <td>{frente.nombreFrente}</td>
+              <td>{crypto.AES.decrypt(frente.nombreFrente, 'palabraClave').toString(crypto.enc.Utf8)}</td>
               <td>{frente.cantVotos}</td>
               <td>{frente.porcentaje} %</td>
               {/* <td>{datosPorcentajes[index]} %</td> */}

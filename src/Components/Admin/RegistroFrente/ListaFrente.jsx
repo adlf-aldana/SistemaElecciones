@@ -1,4 +1,5 @@
 import React, { Fragment, useEffect } from "react";
+import * as  crypto from 'crypto-js'
 
 const ListaFrente = ({ frentes, eliminar, editar }) => {
   return (
@@ -22,11 +23,11 @@ const ListaFrente = ({ frentes, eliminar, editar }) => {
             {frentes.map((frente, index) => (
               <tr key={frente._id}>
                 <td>{index + 1}</td>
-                <td>{frente.nombreFrente}</td>
+                <td>{crypto.AES.decrypt(frente.nombreFrente,'palabraClave').toString(crypto.enc.Utf8)}</td>
                 {/* <td>{frente.nombreEncargado}</td>
                 <td>{frente.apellidosEncargado}</td> */}
-                <td>{frente.cuEncargado}</td>
-                <td>{frente.celularEncargado}</td>
+                <td>{crypto.AES.decrypt(frente.cuEncargado,'palabraClave').toString(crypto.enc.Utf8)}</td>
+                <td>{crypto.AES.decrypt(frente.celularEncargado,'palabraClave').toString(crypto.enc.Utf8)}</td>
                 <td>
                   <img
                     src={`http://localhost:4000${frente.logoFrente}`}

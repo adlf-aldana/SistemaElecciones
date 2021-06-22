@@ -2,6 +2,7 @@ import React, { Fragment, useState, useEffect, useContext } from "react";
 import FrentesContext from "../../context/frentes/FrentesContext";
 import VotanteContext from "../../context/votante/votanteContext";
 import Cards from "../Usuario/encargadoMesa/Cards";
+import * as crypto from 'crypto-js'
 
 const Votacion = () => {
   const frentesContext = useContext(FrentesContext);
@@ -55,7 +56,7 @@ const Votacion = () => {
                         className="mt-3"
                       />
                       <div className="card-body">
-                        <h5 className="card-title">{frente.nombreFrente}</h5>
+                        <h5 className="card-title">{crypto.AES.decrypt(frente.nombreFrente,'palabraClave').toString(crypto.enc.Utf8)}</h5>
                         <button
                           className="btn btn-primary"
                           onClick={() => btnVotar(frente)}

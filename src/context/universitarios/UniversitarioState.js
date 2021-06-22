@@ -3,6 +3,8 @@ import React, { useReducer } from "react";
 import UniversitarioContext from "./UniversitarioContext";
 import UniversitarioReducer from "./UniversitarioReducer";
 
+import * as crypto from "crypto-js";
+
 import {
   OBTENER_UNIVERSITARIOS,
   AGREGAR_UNIVERSITARIO,
@@ -18,6 +20,7 @@ import {
 import usuarioAxios from "../../config/axios";
 
 const UniversitarioState = (props) => {
+  const palabraClave = "palabraClave";
   const initialState = {
     estudiantes: [],
     estudiantesSinAdmin: [],
@@ -69,9 +72,25 @@ const UniversitarioState = (props) => {
   // Agregar Universitario
   const agregarUniversitario = async (univertario) => {
     try {
+      const encryptData = {
+        nombre: crypto.AES.encrypt(univertario.nombre, palabraClave).toString(),
+        apellidos: crypto.AES.encrypt(
+          univertario.apellidos,
+          palabraClave
+        ).toString(),
+        cu: crypto.AES.encrypt(univertario.cu, palabraClave).toString(),
+        carrera: crypto.AES.encrypt(
+          univertario.carrera,
+          palabraClave
+        ).toString(),
+        cargo: crypto.AES.encrypt(univertario.cargo, palabraClave).toString(),
+        password: univertario.password
+          ? univertario.password
+          : null,
+      };
       const regUniversitario = await usuarioAxios.post(
         "/api/lista_estudiantes",
-        univertario
+        encryptData
       );
       dispatch({
         type: AGREGAR_UNIVERSITARIO,
@@ -80,6 +99,7 @@ const UniversitarioState = (props) => {
       obtenerUniversitarios();
       limpiarFormulario();
     } catch (error) {
+      console.log(error);
       const alerta = {
         msg: error.response.data.msg,
         categoria: "danger",
@@ -107,9 +127,25 @@ const UniversitarioState = (props) => {
 
   const actualizarUniversitario = async (id, universitario) => {
     try {
+      const encryptData = {
+        nombre: crypto.AES.encrypt(universitario.nombre, palabraClave).toString(),
+        apellidos: crypto.AES.encrypt(
+          universitario.apellidos,
+          palabraClave
+        ).toString(),
+        cu: crypto.AES.encrypt(universitario.cu, palabraClave).toString(),
+        carrera: crypto.AES.encrypt(
+          universitario.carrera,
+          palabraClave
+        ).toString(),
+        cargo: crypto.AES.encrypt(universitario.cargo, palabraClave).toString(),
+        password: universitario.password
+          ? universitario.password
+          : null,
+      };
       const data = await usuarioAxios.put(
         `/api/lista_estudiantes/${id}`,
-        universitario
+        encryptData
       );
       dispatch({
         type: EDITAR_UNIVERSITARIO,
@@ -160,12 +196,12 @@ const UniversitarioState = (props) => {
       ? (resDataFrente = await usuarioAxios.get(
           "/api/frente_universitario/" + votante._idFrente
         ))
-      : (resDataFrente = {data: {msg: {nombreFrente: 'No votó'}}});
+      : (resDataFrente = { data: { msg: { nombreFrente: "No votó" } } });
 
     // const resDataFrente = await usuarioAxios.get(
     //   "/api/frente_universitario/" + votante._idFrente
     // );
-    
+
     const dataVotante = {
       ...votante,
       ...resDataVotante.data.estudiante,

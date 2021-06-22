@@ -8,13 +8,13 @@ const frenteSchema = new Schema(
       trim: true,
     },
     cuEncargado: {
-      type: Number,
+      type: String,
       require: true,
       trim: true,
       unique: true,
     },
     celularEncargado: {
-      type: Number,
+      type: String,
       require: true,
       trim: true,
     },

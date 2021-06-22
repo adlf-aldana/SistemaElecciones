@@ -3,6 +3,7 @@ import alertaContext from "../../../context/alerta/alertaContext";
 import FrentesContext from "../../../context/frentes/FrentesContext";
 import FileImage from "./fileImg/FileImage";
 import ListaFrente from "./ListaFrente";
+import * as crypto from 'crypto-js'
 
 const RegistroFrente = () => {
   const frentesContext = useContext(FrentesContext);
@@ -58,14 +59,15 @@ const RegistroFrente = () => {
       return;
     }
     const dataimg = new FormData();
-    dataimg.append("nombreFrente", nombreFrente);
-    dataimg.append("cuEncargado", cuEncargado);
-    dataimg.append("celularEncargado", celularEncargado);
+    dataimg.append("nombreFrente", crypto.AES.encrypt(nombreFrente, "palabraClave").toString());
+    dataimg.append("cuEncargado", crypto.AES.encrypt(cuEncargado, "palabraClave").toString() );
+    dataimg.append("celularEncargado", crypto.AES.encrypt(celularEncargado, "palabraClave").toString() );
     dataimg.append("logoFrente", logoFrente);
     if (editUni._id) {
       actualizarFrente(editUni._id, dataimg);
       mostrarAlerta("Actualizacion Existosa", "success");
     } else {
+      console.log(dataimg);
       agregarFrente(dataimg);
       mostrarAlerta("Guardado Existoso", "success");
     }
@@ -79,6 +81,13 @@ const RegistroFrente = () => {
   };
 
   const editar = (datos) => {
+    datos = {
+      _id: datos._id,
+      nombreFrente: crypto.AES.decrypt(datos.nombreFrente,'palabraClave').toString(crypto.enc.Utf8),
+      cuEncargado: crypto.AES.decrypt(datos.cuEncargado,'palabraClave').toString(crypto.enc.Utf8),
+      celularEncargado: crypto.AES.decrypt(datos.celularEncargado,'palabraClave').toString(crypto.enc.Utf8),
+      logoFrente: datos.logoFrente
+    }
     // setdatosForm(datos);
     seteditUni(datos);
     //   // setImgPreview("http://192.168.0.6:4000/" + datos.logoFrente);
@@ -235,6 +244,8 @@ const RegistroFrente = () => {
           </div>
         </form>
       </div>
+      {/* {frentes === [] ? 
+      <ListaFrente frentes={frentes} eliminar={eliminar} editar={editar} />: <h3 className="text-center mt-5">No Hay Frentes registrados</h3>} */}
       <ListaFrente frentes={frentes} eliminar={eliminar} editar={editar} />
     </Fragment>
   );

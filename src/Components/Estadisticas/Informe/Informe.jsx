@@ -7,6 +7,7 @@ import * as html2canvas from "html2canvas";
 import "jspdf-autotable";
 import { PdfMakeWrapper } from "pdfmake-wrapper";
 import pdfFonts from "pdfmake/build/vfs_fonts"; // fonts provided for pdfmake
+import * as crypto from 'crypto-js'
 
 import VotanteContext from "../../../context/votante/votanteContext";
 import FrenteContext from "../../../context/frentes/FrentesContext";
@@ -139,11 +140,11 @@ const Informe = () => {
         },
         body: [
           [
-            estudiante.nombre,
-            estudiante.apellidos,
-            estudiante.carrera,
-            estudiante.cargo,
-            estudiante.cu,
+            crypto.AES.decrypt(estudiante.nombre,'palabraClave').toString(crypto.enc.Utf8),
+            crypto.AES.decrypt(estudiante.apellidos,'palabraClave').toString(crypto.enc.Utf8) ,
+            crypto.AES.decrypt(estudiante.carrera,'palabraClave').toString(crypto.enc.Utf8) ,
+            crypto.AES.decrypt(estudiante.cargo,'palabraClave').toString(crypto.enc.Utf8),
+            crypto.AES.decrypt(estudiante.cu,'palabraClave').toString(crypto.enc.Utf8),
           ],
         ],
       });
@@ -183,7 +184,6 @@ const Informe = () => {
         ],
       ],
     });
-    console.log(datosVotante);
     datosVotante.map((datoEstudiante) => {
       doc.autoTable({
         columnStyles: {
@@ -205,7 +205,7 @@ const Informe = () => {
             datoEstudiante.cu,
             datoEstudiante.descripcionProblemaEncargadoMesa,
             datoEstudiante.descripcionProblemaVerificadorVotante,
-            datoEstudiante.nombreFrente,
+            crypto.AES.decrypt(datoEstudiante.nombreFrente,'palabraClave').toString(crypto.enc.Utf8),
           ],
         ],
       });

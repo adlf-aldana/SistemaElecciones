@@ -133,7 +133,7 @@ const Cards = ({
                   Editar
                 </button>
                 <button
-                  onClick={() => eliminar(estudiante._id)}
+                  onClick={() => eliminar(estudiante.id)}
                   className="btn btn-danger mt-3"
                 >
                   Eliminar

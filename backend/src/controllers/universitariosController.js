@@ -3,15 +3,17 @@ const universitarioModel = require("../models/universitarioModels");
 const { validationResult } = require("express-validator");
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto-js");
 
 // OBTIENE A TODOS LOS UNIVERSITARIOS
 univerCtrl.getUniversitarios = async (req, res) => {
   try {
     // consultando
     const universitario = await universitarioModel.find();
-    const universitariosSinAdmins = await universitarioModel.find({
-      cargo: { $gt: "Administrador" },
-    });
+    // const universitariosSinAdmins = await universitarioModel.find({
+    //   cargo: { $gt: "Administrador" },
+    // });
+    const universitariosSinAdmins = universitario.filter(res => crypto.AES.decrypt(res.cargo,'palabraClave').toString(crypto.enc.Utf8) !== 'Administrador')
 
     res.json({ universitario, universitariosSinAdmins });
   } catch (e) {
@@ -23,6 +25,8 @@ univerCtrl.getUniversitarios = async (req, res) => {
 
 // GUARDA UN NUEVO UNIVERSTARIO
 univerCtrl.createUniversitario = async (req, res) => {
+  const decryptData = crypto.AES.decrypt(req.body.cu, "palabraClave");
+
   // Revisar si hay errorres
   const errores = validationResult(req);
   if (!errores.isEmpty()) {
@@ -32,14 +36,20 @@ univerCtrl.createUniversitario = async (req, res) => {
   // Extrayendo carnet universitario
   const { nombre, apellidos, cu, carrera, cargo, password } = req.body;
   try {
+    const DecryptCu = decryptData.toString(crypto.enc.Utf8);
     // Revisar que el universitario sea unico
-    let universitario = await universitarioModel.findOne({ cu });
+    let universitario = await universitarioModel.findOne({ DecryptCu });
 
     if (universitario) {
       return res.status(400).json({ msg: "El universitario ya existe" });
     }
-
-    if (password === "") {
+    if (password) {
+      // hashear el password
+      const salt = await bcryptjs.genSalt(10);
+      req.body.password = await bcryptjs.hash(password, salt);
+      // Crea universitario
+      universitario = new universitarioModel(req.body);
+    } else {
       // Crea universitario
       universitario = new universitarioModel({
         nombre,
@@ -48,12 +58,6 @@ univerCtrl.createUniversitario = async (req, res) => {
         carrera,
         cargo,
       });
-    } else {
-      // hashear el password
-      const salt = await bcryptjs.genSalt(10);
-      req.body.password = await bcryptjs.hash(password, salt);
-      // Crea universitario
-      universitario = new universitarioModel(req.body);
     }
     // Guarda a Universitario
     await universitario.save();
@@ -85,7 +89,34 @@ univerCtrl.createUniversitario = async (req, res) => {
 
 // OBTIENE A UN UNIVERSITARIO POR ID
 univerCtrl.getUniversitario = async (req, res) => {
-  const universitario = await universitarioModel.findOne({ cu: req.params.id });
+  const universitarios = await universitarioModel.find();
+  let universitario = universitarios.filter(
+    (res) =>
+      crypto.AES.decrypt(res.cu, "palabraClave").toString(crypto.enc.Utf8) ===
+      req.params.id
+  );
+  universitario = {
+    id: universitario[0].id,
+    nombre: crypto.AES.decrypt(
+      universitario[0].nombre,
+      "palabraClave"
+    ).toString(crypto.enc.Utf8),
+    apellidos: crypto.AES.decrypt(
+      universitario[0].apellidos,
+      "palabraClave"
+    ).toString(crypto.enc.Utf8),
+    cu: crypto.AES.decrypt(universitario[0].cu, "palabraClave").toString(
+      crypto.enc.Utf8
+    ),
+    carrera: crypto.AES.decrypt(
+      universitario[0].carrera,
+      "palabraClave"
+    ).toString(crypto.enc.Utf8),
+    cargo: crypto.AES.decrypt(universitario[0].cargo, "palabraClave").toString(
+      crypto.enc.Utf8
+    ),
+  };
+  // const universitario = await universitarioModel.findOne({ cu: req.params.id });
   res.json({ estudiante: universitario });
 };
 
