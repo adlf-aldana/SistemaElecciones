@@ -13,7 +13,6 @@ const web3 = new Web3(Web3.givenProvider || "http://127.0.0.1:8545");
 votanteCtrl.getVotantes = async (req, res) => {
   try {
     const votantes = await votanteModels.find();
-    // console.log(votantes);
 
     const cantPartido = await votanteModels.aggregate([
       { $group: { _id: "$_idFrente", total: { $sum: 1 } } },
@@ -97,16 +96,17 @@ votanteCtrl.getUltimoVotante = async (req, res) => {
 
 votanteCtrl.updateVotante = async (req, res) => {
   try {
-  
-    const truffle = TruffleContract(JSONvotacion);
-    truffle.setProvider(web3Provider);
-    const votacion = await truffle.deployed();
-    const accounts = await web3.eth.getAccounts();
-    const account = accounts[0];
-    await votacion.createTask(req.body.cu, req.body._idFrente, "20/02/2020", {
-      from: account,
-      gas: 3000000,
-    });
+    if (req.body._idFrente) {
+      const truffle = TruffleContract(JSONvotacion);
+      truffle.setProvider(web3Provider);
+      const votacion = await truffle.deployed();
+      const accounts = await web3.eth.getAccounts();
+      const account = accounts[0];
+      await votacion.createTask(req.body.cu, req.body._idFrente, "20/02/2020", {
+        from: account,
+        gas: 3000000,
+      });
+    }
     const votante = await votanteModels.findByIdAndUpdate(
       req.params.id,
       req.body
