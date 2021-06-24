@@ -13,6 +13,7 @@ frenteCtrl.getFrentes = async (req, res) => {
 };
 
 frenteCtrl.createFrente = async (req, res) => {
+  console.log(req.body);
 const frente = {
   nombreFrente: crypto.AES.decrypt(req.body.nombreFrente, "palabraClave").toString(crypto.enc.Utf8),
   cuEncargado: crypto.AES.decrypt(req.body.cuEncargado, "palabraClave").toString(crypto.enc.Utf8),
@@ -30,7 +31,8 @@ const frente = {
       await unlink(path.resolve("./public/images/" + req.file.filename));
       return res.status(400).json({ msg: 'Error: Universitario no existe' })
     }
-    let encargado = await frenteModel.findOne({ cuEncargado })
+    let encargado = await frenteModel.findOne({ cu })
+    console.log(cu);
     if (encargado) {
       await unlink(path.resolve("./public/images/" + req.file.filename));
       return res.status(400).json({ msg: 'Error: Ya existe un encargado con ese CU' })
@@ -41,9 +43,8 @@ const frente = {
       celularEncargado: req.body.celularEncargado,
       logoFrente: "/images/" + req.file.filename,
     });
-    console.log(newFrente);
     await newFrente.save();
-    res.send( req.body );
+    res.send( frente );
   } catch (error) {
     console.log(error);
   }

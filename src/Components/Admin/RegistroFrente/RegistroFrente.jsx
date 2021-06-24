@@ -67,7 +67,6 @@ const RegistroFrente = () => {
       actualizarFrente(editUni._id, dataimg);
       mostrarAlerta("Actualizacion Existosa", "success");
     } else {
-      console.log(dataimg);
       agregarFrente(dataimg);
       mostrarAlerta("Guardado Existoso", "success");
     }

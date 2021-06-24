@@ -48,23 +48,21 @@ const FrentesState = props => {
     const agregarFrente = async frente => {
         try {
             const regFrente = await usuarioAxios.post('/api/frente_universitario', frente)
-            console.log(regFrente);
             dispatch({
                 type: AGREGAR_FRENTE,
-                payload: regFrente
+                payload: regFrente.data
             })
             obtenerFrentes()
             limpiarFormulario()
         } catch (error) {
-            console.log(error);
-            // let alerta = {
-            //     msg: error.response.data.msg,
-            //     categoria: 'danger'
-            // }
-            // dispatch({
-            //     type: ERROR_FRENTE,
-            //     payload: alerta
-            // })
+            let alerta = {
+                msg: error.response.data.msg,
+                categoria: 'danger'
+            }
+            dispatch({
+                type: ERROR_FRENTE,
+                payload: alerta
+            })
         }
     }
 
