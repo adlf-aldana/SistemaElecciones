@@ -41,8 +41,9 @@ const frente = {
       celularEncargado: req.body.celularEncargado,
       logoFrente: "/images/" + req.file.filename,
     });
+    console.log(newFrente);
     await newFrente.save();
-    res.send({ msg: "Frente Guardado" });
+    res.send( req.body );
   } catch (error) {
     console.log(error);
   }

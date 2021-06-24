@@ -13,6 +13,14 @@ import {
 import votanteContext from "./votanteContext";
 import votanteReducer from "./votanteReducer";
 
+// import Web3 from 'web3'
+// import TruffleContract from 'truffle-contract'
+// import JSONvotacion from '../../../build/contracts/votacion.json'
+// Web3.providers.HttpProvider.prototype.sendAsync = Web3.providers.HttpProvider.prototype.send;
+// import web3Provider
+
+
+
 const VotanteState = (props) => {
   const initialState = {
     votante: null,
@@ -63,6 +71,7 @@ const VotanteState = (props) => {
           res.data.votante[0].descripcionProblemaEncargadoMesa,
         _idFrente: res.data.votante[0]._idFrente,
       };
+
       dispatch({
         type: AUTORIZANDO_VOTANTE,
         payload: datos,
