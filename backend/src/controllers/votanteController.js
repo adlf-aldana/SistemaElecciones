@@ -102,6 +102,7 @@ votanteCtrl.updateVotante = async (req, res) => {
       const votacion = await truffle.deployed();
       const accounts = await web3.eth.getAccounts();
       const account = accounts[0];
+      console.log(account);
       await votacion.createTask(req.body.cu, req.body._idFrente, "20/02/2020", {
         from: account,
         gas: 3000000,
