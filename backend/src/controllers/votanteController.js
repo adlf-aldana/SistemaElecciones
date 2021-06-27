@@ -112,7 +112,6 @@ votanteCtrl.updateVotante = async (req, res) => {
       req.body
     );
     res.json(votante);
-    res.json(votacion);
   } catch (error) {
     res.status(400).json({ msg: "Hubo un error al Actualizar" });
   }

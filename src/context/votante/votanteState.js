@@ -9,6 +9,7 @@ import {
   LIMPIAR_DATOS,
   OBTENER_VOTANTES,
   BUSQUEDA_UNIVERSITARIO,
+  LIMPIAR_UNIVERSITARIO_BUSCADO,
 } from "../../types";
 
 import votanteContext from "./votanteContext";
@@ -188,6 +189,12 @@ const VotanteState = (props) => {
     }
   };
 
+  const limpiarUniversitarioBuscado = () => {
+    dispatch({
+      type: LIMPIAR_UNIVERSITARIO_BUSCADO,
+    });
+  };
+
   const [state, dispatch] = useReducer(votanteReducer, initialState);
   return (
     <votanteContext.Provider
@@ -203,7 +210,8 @@ const VotanteState = (props) => {
         limpiarMensaje,
         actualizarVotante,
         obtenerVotante,
-        busquedaUniversitario
+        busquedaUniversitario,
+        limpiarUniversitarioBuscado
       }}
     >
       {props.children}

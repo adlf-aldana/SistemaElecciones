@@ -12,8 +12,8 @@ const EncargadoMesa = () => {
   const authContext = useContext(AuthContext);
   const { usuario, usuarioAutenticado } = authContext;
   const universitarioContext = useContext(UniversitarioContext);
-  const { limpiarUniversitarioBuscado } =
-    universitarioContext;
+  // const { limpiarUniversitarioBuscado } =
+  //   universitarioContext;
   const votanteContext = useContext(VotanteContext);
   const {
     encargadoHabilitaVotante,
@@ -23,7 +23,8 @@ const EncargadoMesa = () => {
     limpiarMensaje,
     actualizarVotante,
     busquedaUniversitario,
-    estudiante
+    estudiante,
+    limpiarUniversitarioBuscado
   } = votanteContext;
 
   // DATOS DEL FORMULARIO
@@ -69,11 +70,8 @@ const EncargadoMesa = () => {
         const votante = {
           cu: estudiante.cu,
           encargadoMesa: true,
-          verificadorVotante: false,
           descripcionProblemaEncargadoMesa: "",
-          descripcionProblemaVerificadorVotante: "",
           estadoEncargadoMesa: true,
-          estadoVerificadorVotante: false,
           _idFrente: null,
         };
         const res = await encargadoHabilitaVotante(votante);
@@ -89,11 +87,8 @@ const EncargadoMesa = () => {
       } else if (usuario.cargo === "Verificador de Votante") {
         const votante = {
           cu: autorizandoVotante.cu,
-          descripcionProblemaEncargadoMesa: "",
           descripcionProblemaVerificadorVotante: "",
-          encargadoMesa: true,
           verificadorVotante: true,
-          estadoEncargadoMesa: true,
           estadoVerificadorVotante: true,
           _idFrente: null,
         };
@@ -122,11 +117,8 @@ const EncargadoMesa = () => {
         const votante = {
           cu: estudiante.cu,
           descripcionProblemaEncargadoMesa: descripcion,
-          descripcionProblemaVerificadorVotante: "",
           encargadoMesa: true,
-          verificadorVotante: false,
           estadoEncargadoMesa: false,
-          estadoVerificadorVotante: false,
           _idFrente: null,
         };
         const res = await encargadoHabilitaVotante(votante);
@@ -148,9 +140,7 @@ const EncargadoMesa = () => {
         const votante = {
           cu: autorizandoVotante.cu,
           descripcionProblemaVerificadorVotante: descripcion,
-          encargadoMesa: true,
           verificadorVotante: true,
-          estadoEncargadoMesa: false,
           estadoVerificadorVotante: false,
           _idFrente: null,
         };
