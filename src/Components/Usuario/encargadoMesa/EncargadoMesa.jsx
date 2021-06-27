@@ -12,18 +12,18 @@ const EncargadoMesa = () => {
   const authContext = useContext(AuthContext);
   const { usuario, usuarioAutenticado } = authContext;
   const universitarioContext = useContext(UniversitarioContext);
-  const { estudiante, busquedaUniversitario, limpiarUniversitarioBuscado } =
+  const { limpiarUniversitarioBuscado } =
     universitarioContext;
   const votanteContext = useContext(VotanteContext);
   const {
-    votante,
     encargadoHabilitaVotante,
     ultimoVotante,
     autorizandoVotante,
     mensaje,
     limpiarMensaje,
     actualizarVotante,
-    // limpiarDescripcionRechazo,
+    busquedaUniversitario,
+    estudiante
   } = votanteContext;
 
   // DATOS DEL FORMULARIO
@@ -61,9 +61,6 @@ const EncargadoMesa = () => {
         limpiarMensaje();
       }, 3000);
     }
-    // else {
-    //   setmotivoRechazo({ descripcion: "" });
-    // }
   }, [mensaje]);
 
   const confirmar = async () => {

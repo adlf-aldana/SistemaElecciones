@@ -2,7 +2,6 @@ import React, { Fragment } from "react";
 import { Pie } from "react-chartjs-2";
 
 const BarGraphics = ({ datosGraficos }) => {
-  // console.log(datosGraficos);
   return (
     <Fragment>
       <h3 className="text-center mt-5">Gráfica</h3>

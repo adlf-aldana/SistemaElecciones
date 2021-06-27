@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 
-console.log('PROCESO: '+process.env.MONGODB_URI);
 const URI = process.env.MONGODB_URI
   ? process.env.MONGODB_URI
   : "mongodb://localhost/databasetest";

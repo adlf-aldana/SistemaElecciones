@@ -8,18 +8,11 @@ import {
   ACTUALIZAR_VOTANTE,
   LIMPIAR_DATOS,
   OBTENER_VOTANTES,
+  BUSQUEDA_UNIVERSITARIO,
 } from "../../types";
 
 import votanteContext from "./votanteContext";
 import votanteReducer from "./votanteReducer";
-
-// import Web3 from 'web3'
-// import TruffleContract from 'truffle-contract'
-// import JSONvotacion from '../../../build/contracts/votacion.json'
-// Web3.providers.HttpProvider.prototype.sendAsync = Web3.providers.HttpProvider.prototype.send;
-// import web3Provider
-
-
 
 const VotanteState = (props) => {
   const initialState = {
@@ -28,6 +21,7 @@ const VotanteState = (props) => {
     mensaje: null,
     votantes: null,
     cantVotosFrente: null,
+    estudiante: null
   };
 
   const encargadoHabilitaVotante = async (votante) => {
@@ -38,11 +32,19 @@ const VotanteState = (props) => {
         payload: votante,
       });
       return true;
-    } catch (error) {
-      const alerta = {
-        msg: error.response.data.msg,
-        categoria: "danger",
-      };
+    } catch (e) {
+      let alerta = null;
+      if (e.response !== undefined) {
+        alerta = {
+          msg: e.response.data.msg,
+          categoria: "danger",
+        };
+      } else {
+        alerta = {
+          msg: "No se pudo conectar con el servidor",
+          categoria: "danger",
+        };
+      }
       dispatch({
         type: ERROR_VOTANTE,
         payload: alerta,
@@ -100,11 +102,19 @@ const VotanteState = (props) => {
       });
       limpiarDatos();
       return true;
-    } catch (error) {
-      const alerta = {
-        msg: error.response.data.msg,
-        categoria: "danger",
-      };
+    } catch (e) {
+      let alerta = null;
+      if (e.response !== undefined) {
+        alerta = {
+          msg: e.response.data.msg,
+          categoria: "danger",
+        };
+      } else {
+        alerta = {
+          msg: "No se pudo conectar con el servidor",
+          categoria: "danger",
+        };
+      }
       dispatch({
         type: ERROR_VOTANTE,
         payload: alerta,
@@ -120,21 +130,62 @@ const VotanteState = (props) => {
   };
 
   const obtenerVotante = async () => {
-    await usuarioAxios.get("/api/votante/").then(res=>
+    try {
+      await usuarioAxios.get("/api/votante/").then((res) =>
+        dispatch({
+          type: OBTENER_VOTANTES,
+          payload: res.data,
+        })
+      );
+    } catch (e) {
+      let alerta = null;
+      if (e.response !== undefined) {
+        alerta = {
+          msg: e.response.data.msg,
+          categoria: "danger",
+        };
+      } else {
+        alerta = {
+          msg: "No se pudo conectar con el servidor",
+          categoria: "danger",
+        };
+      }
       dispatch({
-        type: OBTENER_VOTANTES,
-        payload: res.data,
-      })
-    );
+        type: ERROR_VOTANTE,
+        payload: alerta,
+      });
+      return false;
+    }
+  };
 
-    // console.log('antes');
-    // const res = await usuarioAxios.get("/api/votante/")
-    // console.log(res);
-    // dispatch({
-    //   type: OBTENER_VOTANTES,
-    //   payload: res.data,
-    // });
-    // console.log(state.votante);
+  const busquedaUniversitario = async (carnetUniversitario) => {
+    try {
+      const universitario = await usuarioAxios.get(
+        "/api/lista_estudiantes/" + carnetUniversitario
+      );
+      dispatch({
+        type: BUSQUEDA_UNIVERSITARIO,
+        payload: universitario.data.estudiante,
+      });
+    } catch (e) {
+      let alerta = null;
+      if (e.response) {
+        alerta = {
+          msg: e.response.data.msg,
+          categoria: "danger",
+        };
+      } else {
+        alerta = {
+          msg: "No se pudo conectar con el servidor",
+          categoria: "danger",
+        };
+      }
+      dispatch({
+        type: ERROR_VOTANTE,
+        payload: alerta,
+      });
+      return false;
+    }
   };
 
   const [state, dispatch] = useReducer(votanteReducer, initialState);
@@ -146,11 +197,13 @@ const VotanteState = (props) => {
         mensaje: state.mensaje,
         votantes: state.votantes,
         cantVotosFrente: state.cantVotosFrente,
+        estudiante: state.estudiante,
         encargadoHabilitaVotante,
         ultimoVotante,
         limpiarMensaje,
         actualizarVotante,
         obtenerVotante,
+        busquedaUniversitario
       }}
     >
       {props.children}

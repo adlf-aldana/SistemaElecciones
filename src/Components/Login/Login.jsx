@@ -11,18 +11,6 @@ const Login = (props) => {
   const { mensaje, autenticado, iniciarSesion, usuario, usuarioAutenticado } =
     authContext;
 
-  // // En caso de que el password o usuario no exista
-  // useEffect(() => {
-  //   if (autenticado) {
-  //     console.log(autenticado);
-  //     console.log(usuario);
-  //     props.history.push("/registroUniversitario");
-  //   }
-  //   if (mensaje) {
-  //     mostrarAlerta(mensaje.msg, mensaje.categoria);
-  //   }
-  // }, [mensaje, autenticado, props.history]);
-
   const [usuarioForm, setusuario] = useState({
     cu: "",
     password: "",

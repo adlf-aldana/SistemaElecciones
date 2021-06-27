@@ -24,8 +24,6 @@ const ListaFrente = ({ frentes, eliminar, editar }) => {
               <tr key={frente._id}>
                 <td>{index + 1}</td>
                 <td>{crypto.AES.decrypt(frente.nombreFrente,'palabraClave').toString(crypto.enc.Utf8)}</td>
-                {/* <td>{frente.nombreEncargado}</td>
-                <td>{frente.apellidosEncargado}</td> */}
                 <td>{crypto.AES.decrypt(frente.cuEncargado,'palabraClave').toString(crypto.enc.Utf8)}</td>
                 <td>{crypto.AES.decrypt(frente.celularEncargado,'palabraClave').toString(crypto.enc.Utf8)}</td>
                 <td>

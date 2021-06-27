@@ -8,43 +8,44 @@ authCtrl.autenticarUsuario = async (req, res) => {
   const { cu, password } = req.body;
   try {
     let universitarios = await Universitarios.find();
-    
-    let universitario = universitarios.filter(res =>
-      crypto.AES.decrypt(res.cu, "palabraClave").toString(crypto.enc.Utf8) ===
-      cu
-      );
-      universitario = {
-        id: universitario[0].id,
-        nombre: crypto.AES.decrypt(
-          universitario[0].nombre,
-          "palabraClave"
-          ).toString(crypto.enc.Utf8),
-          apellidos: crypto.AES.decrypt(
-            universitario[0].apellidos,
-            "palabraClave"
-            ).toString(crypto.enc.Utf8),
-            cu: crypto.AES.decrypt(universitario[0].cu, "palabraClave").toString(
-              crypto.enc.Utf8
-              ),
-              carrera: crypto.AES.decrypt(
-                universitario[0].carrera,
-                "palabraClave"
-                ).toString(crypto.enc.Utf8),
-                cargo: crypto.AES.decrypt(
-                  universitario[0].cargo,
-                  "palabraClave"
-                  ).toString(crypto.enc.Utf8),
-                  password: universitario[0].password,
-                };
-                
-                // let universitario = await Universitarios.findOne({ cu });
-                if (!universitario) {
-                  return res.status(400).json({ msg: "El Universitario no existe" });
-                }
-                const passCorrecto = await bcryptjs.compare(
-                  password,
-                  universitario.password
-                  );
+
+    let universitario = universitarios.filter(
+      (res) =>
+        crypto.AES.decrypt(res.cu, "palabraClave").toString(crypto.enc.Utf8) ===
+        cu
+    );
+    // let universitario = await Universitarios.findOne({ cu });
+    if (universitario.length < 1) {
+      return res.status(400).json({ msg: "El Universitario no existe" });
+    }
+    universitario = {
+      id: universitario[0].id,
+      nombre: crypto.AES.decrypt(
+        universitario[0].nombre,
+        "palabraClave"
+      ).toString(crypto.enc.Utf8),
+      apellidos: crypto.AES.decrypt(
+        universitario[0].apellidos,
+        "palabraClave"
+      ).toString(crypto.enc.Utf8),
+      cu: crypto.AES.decrypt(universitario[0].cu, "palabraClave").toString(
+        crypto.enc.Utf8
+      ),
+      carrera: crypto.AES.decrypt(
+        universitario[0].carrera,
+        "palabraClave"
+      ).toString(crypto.enc.Utf8),
+      cargo: crypto.AES.decrypt(
+        universitario[0].cargo,
+        "palabraClave"
+      ).toString(crypto.enc.Utf8),
+      password: universitario[0].password,
+    };
+
+    const passCorrecto = await bcryptjs.compare(
+      password,
+      universitario.password
+    );
     if (!passCorrecto) {
       return res.status(400).json({ msg: "Password Incorrecto" });
     }

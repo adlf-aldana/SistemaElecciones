@@ -13,7 +13,12 @@ univerCtrl.getUniversitarios = async (req, res) => {
     // const universitariosSinAdmins = await universitarioModel.find({
     //   cargo: { $gt: "Administrador" },
     // });
-    const universitariosSinAdmins = universitario.filter(res => crypto.AES.decrypt(res.cargo,'palabraClave').toString(crypto.enc.Utf8) !== 'Administrador')
+    const universitariosSinAdmins = universitario.filter(
+      (res) =>
+        crypto.AES.decrypt(res.cargo, "palabraClave").toString(
+          crypto.enc.Utf8
+        ) !== "Administrador"
+    );
 
     res.json({ universitario, universitariosSinAdmins });
   } catch (e) {
@@ -25,12 +30,13 @@ univerCtrl.getUniversitarios = async (req, res) => {
 
 // GUARDA UN NUEVO UNIVERSTARIO
 univerCtrl.createUniversitario = async (req, res) => {
-  const decryptData = crypto.AES.decrypt(req.body.cu, "palabraClave");
+  const decryptData = crypto.AES.decrypt(req.body.cu, "palabraClave").toString(
+    crypto.enc.Utf8
+  );
 
   // Revisar si hay errorres
   const errores = validationResult(req);
   if (!errores.isEmpty()) {
-    // return res.status(400).json({ errores: errores.data.array() })
     return res.status(400).json({ msg: errores.errors[0].msg });
   }
   // Extrayendo carnet universitario
@@ -38,10 +44,15 @@ univerCtrl.createUniversitario = async (req, res) => {
   try {
     const DecryptCu = decryptData.toString(crypto.enc.Utf8);
     // Revisar que el universitario sea unico
-    let universitario = await universitarioModel.findOne({ DecryptCu });
+    let universitarios = await universitarioModel.find();
+    let universitario = await universitarios.filter(
+      (res) =>
+        crypto.AES.decrypt(res.cu, "palabraClave").toString(crypto.enc.Utf8) ===
+        DecryptCu
+    );
 
     if (universitario) {
-      return res.status(400).json({ msg: "El universitario ya existe" });
+      return res.status(400).json({ msg: "Error: El universitario ya existe" });
     }
     if (password) {
       // hashear el password
@@ -82,7 +93,6 @@ univerCtrl.createUniversitario = async (req, res) => {
     // Mensaje de confirmación
     res.json({ msg: "Universitario creado correctamente" });
   } catch (e) {
-    console.log(e);
     res.status(400).json({ msg: "Hubo un error" });
   }
 };
@@ -95,6 +105,9 @@ univerCtrl.getUniversitario = async (req, res) => {
       crypto.AES.decrypt(res.cu, "palabraClave").toString(crypto.enc.Utf8) ===
       req.params.id
   );
+  if(universitario.length < 1){
+    return res.status(400).json({ msg: "Error: El universitario no existe" });
+  }
   universitario = {
     id: universitario[0].id,
     nombre: crypto.AES.decrypt(
@@ -116,7 +129,6 @@ univerCtrl.getUniversitario = async (req, res) => {
       crypto.enc.Utf8
     ),
   };
-  // const universitario = await universitarioModel.findOne({ cu: req.params.id });
   res.json({ estudiante: universitario });
 };
 

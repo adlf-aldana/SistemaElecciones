@@ -84,9 +84,7 @@ const UniversitarioState = (props) => {
           palabraClave
         ).toString(),
         cargo: crypto.AES.encrypt(univertario.cargo, palabraClave).toString(),
-        password: univertario.password
-          ? univertario.password
-          : null,
+        password: univertario.password ? univertario.password : null,
       };
       const regUniversitario = await usuarioAxios.post(
         "/api/lista_estudiantes",
@@ -98,12 +96,19 @@ const UniversitarioState = (props) => {
       });
       obtenerUniversitarios();
       limpiarFormulario();
-    } catch (error) {
-      console.log(error);
-      const alerta = {
-        msg: error.response.data.msg,
-        categoria: "danger",
-      };
+    } catch (e) {
+      let alerta = null;
+      if (e.response !== undefined) {
+        alerta = {
+          msg: e.response.data.msg,
+          categoria: "danger",
+        };
+      } else {
+        alerta = {
+          msg: "No se pudo conectar con el servidor",
+          categoria: "danger",
+        };
+      }
       dispatch({
         type: ERROR_UNIVERSITARIO,
         payload: alerta,
@@ -128,7 +133,10 @@ const UniversitarioState = (props) => {
   const actualizarUniversitario = async (id, universitario) => {
     try {
       const encryptData = {
-        nombre: crypto.AES.encrypt(universitario.nombre, palabraClave).toString(),
+        nombre: crypto.AES.encrypt(
+          universitario.nombre,
+          palabraClave
+        ).toString(),
         apellidos: crypto.AES.encrypt(
           universitario.apellidos,
           palabraClave
@@ -139,9 +147,7 @@ const UniversitarioState = (props) => {
           palabraClave
         ).toString(),
         cargo: crypto.AES.encrypt(universitario.cargo, palabraClave).toString(),
-        password: universitario.password
-          ? universitario.password
-          : null,
+        password: universitario.password ? universitario.password : null,
       };
       const data = await usuarioAxios.put(
         `/api/lista_estudiantes/${id}`,
@@ -159,13 +165,33 @@ const UniversitarioState = (props) => {
   };
 
   const busquedaUniversitario = async (carnetUniversitario) => {
-    const universitario = await usuarioAxios.get(
-      "/api/lista_estudiantes/" + carnetUniversitario
-    );
-    dispatch({
-      type: BUSQUEDA_UNIVERSITARIO,
-      payload: universitario.data.estudiante,
-    });
+    try {
+      const universitario = await usuarioAxios.get(
+        "/api/lista_estudiantes/" + carnetUniversitario
+      );
+      dispatch({
+        type: BUSQUEDA_UNIVERSITARIO,
+        payload: universitario.data.estudiante,
+      });
+    } catch (e) {
+      let alerta = null;
+      if (e.response) {
+        alerta = {
+          msg: e.response.data.msg,
+          categoria: "danger",
+        };
+      } else {
+        alerta = {
+          msg: "No se pudo conectar con el servidor",
+          categoria: "danger",
+        };
+      }
+      dispatch({
+        type: ERROR_UNIVERSITARIO,
+        payload: alerta,
+      });
+      return false;
+    }
   };
 
   const limpiarFormulario = () => {
@@ -197,10 +223,6 @@ const UniversitarioState = (props) => {
           "/api/frente_universitario/" + votante._idFrente
         ))
       : (resDataFrente = { data: { msg: { nombreFrente: "No votó" } } });
-
-    // const resDataFrente = await usuarioAxios.get(
-    //   "/api/frente_universitario/" + votante._idFrente
-    // );
 
     const dataVotante = {
       ...votante,

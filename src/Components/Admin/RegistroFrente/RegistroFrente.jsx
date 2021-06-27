@@ -87,7 +87,6 @@ const RegistroFrente = () => {
       celularEncargado: crypto.AES.decrypt(datos.celularEncargado,'palabraClave').toString(crypto.enc.Utf8),
       logoFrente: datos.logoFrente
     }
-    // setdatosForm(datos);
     seteditUni(datos);
     //   // setImgPreview("http://192.168.0.6:4000/" + datos.logoFrente);
     setImgPreview("http://localhost:4000/" + datos.logoFrente);

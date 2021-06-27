@@ -27,13 +27,6 @@ router
   .get(getFrentes)
   .post(upload.single("logoFrente"), createFrente);
 
-  // [check('nombreFrente', 'El nombre es obligatorio').not().isEmpty(),
-  // check('cuEncargado', 'El Carnet Universitario es obligatorio').not().isEmpty(),
-  // check('celularEncargado', 'El campo Celular es obligatorio').not().isEmpty(),
-  // check('logoFrente', 'Logo es obligatorio').not().isEmpty(),
-  // ],
-
-
 router
   .route("/:id")
   .get(getFrente)

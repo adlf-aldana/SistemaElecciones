@@ -7,6 +7,7 @@ import {
   LIMPIAR_MENSAJE,
   LIMPIAR_DATOS,
   OBTENER_VOTANTES,
+  BUSQUEDA_UNIVERSITARIO,
 } from "../../types";
 
 export default (state, action) => {
@@ -59,6 +60,11 @@ export default (state, action) => {
         ...state,
         votantes: action.payload.votantes,
         cantVotosFrente: action.payload.cantPartido,
+      };
+    case BUSQUEDA_UNIVERSITARIO:
+      return {
+        ...state,
+        estudiante: action.payload,
       };
     default:
       return state;

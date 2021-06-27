@@ -19,10 +19,8 @@ const RutaAdmin = ({ component: Component }, ...props) => {
         (usuario.cargo === "Encargado de Mesa" ||
           usuario.cargo === "Verificador de Votante" ||
           usuario.cargo === "Estudiante") ? (
-          // console.log(autenticado + ' - ' + cargando + '-' + !usuario.cargo === 'Encargado de Mesa')
           <Redirect to="/" />
         ) : (
-          // console.log(autenticado + ' - ' + cargando + '-' + !usuario.cargo === 'Encargado de Mesa')
           <Component {...props} />
         )
       }
