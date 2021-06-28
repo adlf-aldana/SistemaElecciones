@@ -9,12 +9,7 @@ const Votacion = () => {
   const frentesContext = useContext(FrentesContext);
   const { frentes, obtenerFrentes } = frentesContext;
   const votanteContext = useContext(VotanteContext);
-  const {
-    autorizandoVotante,
-    actualizarVotante,
-    datosVotante,
-    obtenerVotante,
-  } = votanteContext;
+  const { actualizarVotante, datosVotante, obtenerVotante } = votanteContext;
   const authContext = useContext(AuthContext);
   const { usuario } = authContext;
 
@@ -32,8 +27,8 @@ const Votacion = () => {
     setconfirmado(true);
   };
 
-  useEffect(() => {}, []);
   useEffect(() => {
+    obtenerVotante(usuario.cu);
     obtenerFrentes();
   }, []);
   return (
@@ -87,10 +82,10 @@ const Votacion = () => {
             </div>
           </div>
         ) : (
-          <h4>Usted aún no esta habilitado para votar</h4>
+          <h4>Usted aún no esta habilitado para votar2</h4>
         )
       ) : (
-        <h4>Usted aún no esta habilitado para votar</h4>
+        <h4>Usted aún no esta habilitado para votar3</h4>
       )}
 
       {/* {confirmado ? (

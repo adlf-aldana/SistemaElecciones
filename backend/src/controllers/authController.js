@@ -87,6 +87,9 @@ authCtrl.usuarioAutenticado = async (req, res) => {
       cu: crypto.AES.decrypt(usuario.cu, "palabraClave").toString(
         crypto.enc.Utf8
       ),
+      ci: crypto.AES.decrypt(usuario.ci, "palabraClave").toString(
+        crypto.enc.Utf8
+      ),
       carrera: crypto.AES.decrypt(usuario.carrera, "palabraClave").toString(
         crypto.enc.Utf8
       ),
