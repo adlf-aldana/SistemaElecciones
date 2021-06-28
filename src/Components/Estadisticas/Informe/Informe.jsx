@@ -7,7 +7,7 @@ import * as html2canvas from "html2canvas";
 import "jspdf-autotable";
 import { PdfMakeWrapper } from "pdfmake-wrapper";
 import pdfFonts from "pdfmake/build/vfs_fonts"; // fonts provided for pdfmake
-import * as crypto from 'crypto-js'
+import * as crypto from "crypto-js";
 
 import VotanteContext from "../../../context/votante/votanteContext";
 import FrenteContext from "../../../context/frentes/FrentesContext";
@@ -110,7 +110,6 @@ const Informe = () => {
     });
   };
 
-
   const consiguiendoDatosVotante = () => {
     const datos = [];
     votantes.map(async (votante) => {
@@ -119,14 +118,13 @@ const Informe = () => {
     });
   };
 
-  const listaVotaciones = () => {
+  const listaVotaciones = (votaron) => {
     const doc = new jsPDF({
       orientation: "landscape",
       format: "letter",
     });
 
     const widthPage = doc.internal.pageSize.getWidth();
-    const heightPage = doc.internal.pageSize.getHeight();
 
     doc.text("LISTA DE VOTACIONES", widthPage / 2, 10);
     doc.autoTable({
@@ -139,36 +137,73 @@ const Informe = () => {
           { content: "C.U." },
           { content: "Descripción Encargado de Mesa" },
           { content: "Descripción Verificador Votante" },
-          { content: "Nombre Frente" },
+          // { content: "Nombre Frente" },
         ],
       ],
     });
-    datosVotante.map((datoEstudiante) => {
-      doc.autoTable({
-        columnStyles: {
-          0: { cellWidth: 25 },
-          1: { cellWidth: 25 },
-          2: { cellWidth: 17 },
-          3: { cellWidth: 15 },
-          4: { cellWidth: 15 },
-          5: { cellWidth: 51 },
-          6: { cellWidth: 75 },
-          7: { cellWidth: 28 },
-        },
-        body: [
-          [
-            datoEstudiante.nombre,
-            datoEstudiante.apellidos,
-            datoEstudiante.carrera,
-            datoEstudiante.cargo,
-            datoEstudiante.cu,
-            datoEstudiante.descripcionProblemaEncargadoMesa,
-            datoEstudiante.descripcionProblemaVerificadorVotante,
-            crypto.AES.decrypt(datoEstudiante.nombreFrente,'palabraClave').toString(crypto.enc.Utf8),
-          ],
-        ],
-      });
-    });
+    votaron
+      ? datosVotante.map((datoEstudiante) => {
+          datoEstudiante.nombreFrente
+            ? doc.autoTable({
+                columnStyles: {
+                  0: { cellWidth: 30 },
+                  1: { cellWidth: 25 },
+                  2: { cellWidth: 20 },
+                  3: { cellWidth: 20 },
+                  4: { cellWidth: 15 },
+                  5: { cellWidth: 51 },
+                  6: { cellWidth: 75 },
+                  // 7: { cellWidth: 28 },
+                },
+                body: [
+                  [
+                    datoEstudiante.nombre,
+                    datoEstudiante.apellidos,
+                    datoEstudiante.carrera,
+                    datoEstudiante.cargo,
+                    datoEstudiante.cu,
+                    datoEstudiante.descripcionProblemaEncargadoMesa,
+                    datoEstudiante.descripcionProblemaVerificadorVotante,
+                    // crypto.AES.decrypt(
+                    //   datoEstudiante.nombreFrente,
+                    //   "palabraClave"
+                    // ).toString(crypto.enc.Utf8),
+                  ],
+                ],
+              })
+            : doc.autoTable({});
+        })
+      : datosVotante.map((datoEstudiante) => {
+          datoEstudiante.nombreFrente === null
+            ? doc.autoTable({
+                columnStyles: {
+                  0: { cellWidth: 30 },
+                  1: { cellWidth: 25 },
+                  2: { cellWidth: 20 },
+                  3: { cellWidth: 20 },
+                  4: { cellWidth: 15 },
+                  5: { cellWidth: 51 },
+                  6: { cellWidth: 75 },
+                  // 7: { cellWidth: 28 },
+                },
+                body: [
+                  [
+                    datoEstudiante.nombre,
+                    datoEstudiante.apellidos,
+                    datoEstudiante.carrera,
+                    datoEstudiante.cargo,
+                    datoEstudiante.cu,
+                    datoEstudiante.descripcionProblemaEncargadoMesa,
+                    datoEstudiante.descripcionProblemaVerificadorVotante,
+                    // crypto.AES.decrypt(
+                    //   datoEstudiante.nombreFrente,
+                    //   "palabraClave"
+                    // ).toString(crypto.enc.Utf8),
+                  ],
+                ],
+              })
+            : doc.autoTable({});
+        });
     doc.save("listaVotaciones.pdf");
   };
   useEffect(() => {
@@ -204,12 +239,19 @@ const Informe = () => {
                 >
                   Generar Reporte
                 </button>
-                
+
+                <button
+                  className="btn btn-success mr-3"
+                  onClick={() => listaVotaciones(true)}
+                >
+                  Reporte de los que votaron
+                </button>
+
                 <button
                   className="btn btn-success"
-                  onClick={() => listaVotaciones()}
+                  onClick={() => listaVotaciones(false)}
                 >
-                  Reporte Lista De Votaciones
+                  Reporte de los que no votaron
                 </button>
               </div>
               <br />

@@ -82,10 +82,10 @@ const Votacion = () => {
             </div>
           </div>
         ) : (
-          <h4>Usted aún no esta habilitado para votar2</h4>
+          <h3 className="text-center mt-5">Usted aún no esta habilitado para votar</h3>
         )
       ) : (
-        <h4>Usted aún no esta habilitado para votar3</h4>
+        <h3 className="text-center mt-5">Usted aún no esta habilitado para votar</h3>
       )}
 
       {/* {confirmado ? (

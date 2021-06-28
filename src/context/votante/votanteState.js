@@ -144,31 +144,6 @@ const VotanteState = (props) => {
     }catch(e){
       console.log(e.response);
     }
-      // const votante = await usuarioAxios.get("/api/votante/").then((res) =>
-    //     dispatch({
-    //       type: OBTENER_VOTANTES,
-    //       payload: res.data,
-    //     })
-    //   );
-    // } catch (e) {
-    //   let alerta = null;
-    //   if (e.response !== undefined) {
-    //     alerta = {
-    //       msg: e.response.data.msg,
-    //       categoria: "danger",
-    //     };
-    //   } else {
-    //     alerta = {
-    //       msg: "No se pudo conectar con el servidor",
-    //       categoria: "danger",
-    //     };
-    //   }
-    //   dispatch({
-    //     type: ERROR_VOTANTE,
-    //     payload: alerta,
-    //   });
-    //   return false;
-    // }
   };
 
   const obtenerVotantes = async () => {

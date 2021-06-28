@@ -239,11 +239,14 @@ const UniversitarioState = (props) => {
             },
           },
         })
-      : votante._idFrente !== null
-      ? (resDataFrente = await usuarioAxios.get(
-          "/api/frente_universitario/" + votante._idFrente
-        ))
-      : (resDataFrente = { data: { msg: { nombreFrente: "No votó" } } });
+      : votante._idFrente
+      ? (resDataFrente = { data: { msg: { nombreFrente: 'Votó' } } })
+      : (resDataFrente = { data: { msg: { nombreFrente: null } } });
+    // : votante._idFrente !== null
+    // ? (resDataFrente = await usuarioAxios.get(
+    //     "/api/frente_universitario/" + votante._idFrente
+    //   ))
+    // : (resDataFrente = { data: { msg: { nombreFrente: "No votó" } } });
 
     const dataVotante = {
       ...votante,
