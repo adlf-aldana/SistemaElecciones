@@ -106,9 +106,9 @@ univerCtrl.getUniversitario = async (req, res) => {
   const universitarios = await universitarioModel.find();
   let universitario = universitarios.filter(
     (res) =>
-      crypto.AES.decrypt(res.cu, "palabraClave").toString(crypto.enc.Utf8) ===
-      req.params.id
-  );
+    crypto.AES.decrypt(res.cu, "palabraClave").toString(crypto.enc.Utf8) ===
+    req.params.id
+    );
   if (universitario.length < 1) {
     return res.status(400).json({ msg: "Error: El universitario no existe" });
   }

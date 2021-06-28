@@ -169,7 +169,7 @@ const Informe = () => {
         ],
       });
     });
-    doc.save("listaEstudiantes.pdf");
+    doc.save("listaVotaciones.pdf");
   };
   useEffect(() => {
     obtenerVotantes();

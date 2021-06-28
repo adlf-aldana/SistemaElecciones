@@ -3,7 +3,11 @@ import alertaContext from "../../../context/alerta/alertaContext";
 import FrentesContext from "../../../context/frentes/FrentesContext";
 import FileImage from "./fileImg/FileImage";
 import ListaFrente from "./ListaFrente";
-import * as crypto from 'crypto-js'
+import * as crypto from "crypto-js";
+import UniversitarioContext from "../../../context/universitarios/UniversitarioContext";
+
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
 
 const RegistroFrente = () => {
   const frentesContext = useContext(FrentesContext);
@@ -24,9 +28,14 @@ const RegistroFrente = () => {
   const alertacontext = useContext(alertaContext);
   const { alerta, mostrarAlerta } = alertacontext;
 
+  const universitarioContext = useContext(UniversitarioContext);
+  const { obteniendoDatosVotante } = universitarioContext;
+
   const [editUni, seteditUni] = useState([]);
   const [imgPreview, setImgPreview] = useState(null);
   const [datosForm, setdatosForm] = useState(datosFormulario);
+
+  const [datosFrentes, setdatosFrentes] = useState({});
 
   const { nombreFrente, cuEncargado, celularEncargado, logoFrente } = datosForm;
 
@@ -45,24 +54,36 @@ const RegistroFrente = () => {
     }
     if (
       nombreFrente.length < 1 ||
-      cuEncargado.length < 6 
+      cuEncargado.length < 6
       // celularEncargado.length < 8
     ) {
       mostrarAlerta(
-        "Error: Los campos deben ser mayores a 3 caracteres, Carnet Universitario 6 digitos y celular 8 digitos",
+        "Error: Los campos deben ser mayores a 3 caracteres, Carnet Universitario 6 digitos",
         "danger"
       );
       return;
     }
     // if (cuEncargado.length > 6 || celularEncargado.length > 8) {
     if (cuEncargado.length > 6) {
-      mostrarAlerta("Error: Carnet Universitario Solo debe contener 6 dígitos", "danger");
+      mostrarAlerta(
+        "Error: Carnet Universitario Solo debe contener 6 dígitos",
+        "danger"
+      );
       return;
     }
     const dataimg = new FormData();
-    dataimg.append("nombreFrente", crypto.AES.encrypt(nombreFrente, "palabraClave").toString());
-    dataimg.append("cuEncargado", crypto.AES.encrypt(cuEncargado, "palabraClave").toString() );
-    dataimg.append("celularEncargado", crypto.AES.encrypt(celularEncargado, "palabraClave").toString() );
+    dataimg.append(
+      "nombreFrente",
+      crypto.AES.encrypt(nombreFrente, "palabraClave").toString()
+    );
+    dataimg.append(
+      "cuEncargado",
+      crypto.AES.encrypt(cuEncargado, "palabraClave").toString()
+    );
+    dataimg.append(
+      "celularEncargado",
+      crypto.AES.encrypt(celularEncargado, "palabraClave").toString()
+    );
     dataimg.append("logoFrente", logoFrente);
     if (editUni._id) {
       actualizarFrente(editUni._id, dataimg);
@@ -83,11 +104,20 @@ const RegistroFrente = () => {
   const editar = (datos) => {
     datos = {
       _id: datos._id,
-      nombreFrente: crypto.AES.decrypt(datos.nombreFrente,'palabraClave').toString(crypto.enc.Utf8),
-      cuEncargado: crypto.AES.decrypt(datos.cuEncargado,'palabraClave').toString(crypto.enc.Utf8),
-      celularEncargado: crypto.AES.decrypt(datos.celularEncargado,'palabraClave').toString(crypto.enc.Utf8),
-      logoFrente: datos.logoFrente
-    }
+      nombreFrente: crypto.AES.decrypt(
+        datos.nombreFrente,
+        "palabraClave"
+      ).toString(crypto.enc.Utf8),
+      cuEncargado: crypto.AES.decrypt(
+        datos.cuEncargado,
+        "palabraClave"
+      ).toString(crypto.enc.Utf8),
+      celularEncargado: crypto.AES.decrypt(
+        datos.celularEncargado,
+        "palabraClave"
+      ).toString(crypto.enc.Utf8),
+      logoFrente: datos.logoFrente,
+    };
     seteditUni(datos);
     //   // setImgPreview("http://192.168.0.6:4000/" + datos.logoFrente);
     setImgPreview("http://localhost:4000/" + datos.logoFrente);
@@ -100,6 +130,63 @@ const RegistroFrente = () => {
 
   const verificarEncargado = async () => {
     await busquedaUniversitario(cuEncargado);
+  };
+
+  const cargandoDatosFrente = () => {
+    const datos = [];
+    frentes.map(async (frente) =>
+      datos.push(await obteniendoDatosVotante(frente))
+    );
+    setdatosFrentes(datos);
+  };
+
+  const listaFrentes = () => {
+    const doc = new jsPDF({
+      orientation: "landscape",
+      format: "letter",
+    });
+
+    const widthPage = doc.internal.pageSize.getWidth();
+
+    doc.text("LISTA DE FRENTES", widthPage / 2, 10);
+    doc.autoTable({
+      head: [
+        [
+          { content: "Nombre Frente" },
+          { content: "Nombre Encargado" },
+          { content: "Apellido Encargado" },
+          { content: "C.U. Encargado" },
+          { content: "Celular" },
+        ],
+      ],
+    });
+    datosFrentes.map((frente) => {
+      doc.autoTable({
+        columnStyles: {
+          0: { cellWidth: 48 },
+          1: { cellWidth: 62 },
+          2: { cellWidth: 64 },
+          3: { cellWidth: 50 },
+        },
+        body: [
+          [
+            crypto.AES.decrypt(frente.nombreFrente, "palabraClave").toString(
+              crypto.enc.Utf8
+            ),
+            frente.nombre,
+            frente.apellidos,
+            crypto.AES.decrypt(frente.cuEncargado, "palabraClave").toString(
+              crypto.enc.Utf8
+            ),
+            crypto.AES.decrypt(
+              frente.celularEncargado,
+              "palabraClave"
+            ).toString(crypto.enc.Utf8),
+          ],
+        ],
+      });
+    });
+    doc.save("listaFrentes.pdf");
   };
 
   useEffect(() => {
@@ -129,6 +216,7 @@ const RegistroFrente = () => {
     seteditUni("");
   }, [datosFormulario]);
   useEffect(() => {
+    cargandoDatosFrente();
     obtenerFrentes();
   }, []);
 
@@ -139,6 +227,9 @@ const RegistroFrente = () => {
         {alerta ? (
           <div className={`alert alert-${alerta.categoria}`}>{alerta.msg}</div>
         ) : null}
+        <button className="btn btn-success mr-3" onClick={() => listaFrentes()}>
+          Reporte Lista de Frentes
+        </button>
         <form onSubmit={onSubmit}>
           <div className="row mt-3">
             <div className="col">
