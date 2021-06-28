@@ -37,24 +37,22 @@ frenteCtrl.createFrente = async (req, res) => {
         crypto.AES.decrypt(res.cu, "palabraClave").toString(crypto.enc.Utf8) ===
         cuEncargado
     );
-    if (!universitario) {
+    if (universitario.length < 1) {
       await unlink(path.resolve("./public/images/" + req.file.filename));
       return res.status(400).json({ msg: "Error: Universitario no existe " });
     }
     let frentes = await frenteModel.find();
     let encargado = await frentes.filter(
       (res) =>
-        crypto.AES.decrypt(cuEncargado, "palabraClave").toString(
+        crypto.AES.decrypt(res.cuEncargado, "palabraClave").toString(
           crypto.enc.Utf8
         ) === cuEncargado
     );
-    if (encargado) {
+    if (encargado.length > 0) {
       await unlink(path.resolve("./public/images/" + req.file.filename));
-      return res
-        .status(400)
-        .json({
-          msg: "Error: Ya existe un Frente con el Carnet Universitario",
-        });
+      return res.status(400).json({
+        msg: "Error: Ya existe un Frente con el Carnet Universitario",
+      });
     }
     const newFrente = new frenteModel({
       nombreFrente: req.body.nombreFrente,

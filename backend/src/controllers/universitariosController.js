@@ -30,7 +30,6 @@ univerCtrl.getUniversitarios = async (req, res) => {
 
 // GUARDA UN NUEVO UNIVERSTARIO
 univerCtrl.createUniversitario = async (req, res) => {
-  console.log(req.body);
   const decryptData = crypto.AES.decrypt(req.body.cu, "palabraClave").toString(
     crypto.enc.Utf8
   );
@@ -51,7 +50,6 @@ univerCtrl.createUniversitario = async (req, res) => {
         crypto.AES.decrypt(res.cu, "palabraClave").toString(crypto.enc.Utf8) ===
         DecryptCu
     );
-    console.log(universitario.length);
     if (universitario.length > 0) {
       return res.status(400).json({ msg: "Error: El universitario ya existe" });
     }

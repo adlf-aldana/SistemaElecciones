@@ -54,8 +54,9 @@ const RegistroFrente = () => {
       );
       return;
     }
-    if (cuEncargado.length > 6 || celularEncargado.length > 8) {
-      mostrarAlerta("Error: limites de", "danger");
+    // if (cuEncargado.length > 6 || celularEncargado.length > 8) {
+    if (cuEncargado.length > 6) {
+      mostrarAlerta("Error: Carnet Universitario Solo debe contener 6 dígitos", "danger");
       return;
     }
     const dataimg = new FormData();
