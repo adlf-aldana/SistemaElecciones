@@ -10,6 +10,7 @@ import {
   OBTENER_VOTANTES,
   BUSQUEDA_UNIVERSITARIO,
   LIMPIAR_UNIVERSITARIO_BUSCADO,
+  DATOS_VOTANTE,
 } from "../../types";
 
 import votanteContext from "./votanteContext";
@@ -22,7 +23,8 @@ const VotanteState = (props) => {
     mensaje: null,
     votantes: null,
     cantVotosFrente: null,
-    estudiante: null
+    estudiante: null,
+    datosVotante: null
   };
 
   const encargadoHabilitaVotante = async (votante) => {
@@ -105,6 +107,7 @@ const VotanteState = (props) => {
       limpiarDatos();
       return true;
     } catch (e) {
+      console.log(e.response);
       let alerta = null;
       if (e.response !== undefined) {
         alerta = {
@@ -131,7 +134,44 @@ const VotanteState = (props) => {
     });
   };
 
-  const obtenerVotante = async () => {
+  const obtenerVotante = async (cu) => {
+    try {
+      const res = await usuarioAxios.get("/api/votante/"+cu)
+      dispatch({
+        type: DATOS_VOTANTE,
+        payload: res.data.votante
+      })
+    }catch(e){
+      console.log(e.response);
+    }
+      // const votante = await usuarioAxios.get("/api/votante/").then((res) =>
+    //     dispatch({
+    //       type: OBTENER_VOTANTES,
+    //       payload: res.data,
+    //     })
+    //   );
+    // } catch (e) {
+    //   let alerta = null;
+    //   if (e.response !== undefined) {
+    //     alerta = {
+    //       msg: e.response.data.msg,
+    //       categoria: "danger",
+    //     };
+    //   } else {
+    //     alerta = {
+    //       msg: "No se pudo conectar con el servidor",
+    //       categoria: "danger",
+    //     };
+    //   }
+    //   dispatch({
+    //     type: ERROR_VOTANTE,
+    //     payload: alerta,
+    //   });
+    //   return false;
+    // }
+  };
+
+  const obtenerVotantes = async () => {
     try {
       await usuarioAxios.get("/api/votante/").then((res) =>
         dispatch({
@@ -206,13 +246,15 @@ const VotanteState = (props) => {
         votantes: state.votantes,
         cantVotosFrente: state.cantVotosFrente,
         estudiante: state.estudiante,
+        datosVotante: state.datosVotante,
         encargadoHabilitaVotante,
         ultimoVotante,
         limpiarMensaje,
         actualizarVotante,
-        obtenerVotante,
+        obtenerVotantes,
         busquedaUniversitario,
-        limpiarUniversitarioBuscado
+        limpiarUniversitarioBuscado,
+        obtenerVotante
       }}
     >
       {props.children}

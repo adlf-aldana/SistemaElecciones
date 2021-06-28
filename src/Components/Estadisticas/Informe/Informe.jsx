@@ -17,7 +17,7 @@ const Informe = () => {
   // Set the fonts to use
   PdfMakeWrapper.setFonts(pdfFonts);
   const votanteContext = useContext(VotanteContext);
-  const { obtenerVotante, cantVotosFrente, votantes } = votanteContext;
+  const { obtenerVotantes, cantVotosFrente, votantes } = votanteContext;
   const frenteContext = useContext(FrenteContext);
   const { frentes, obtenerFrentes } = frenteContext;
   const universitarioContext = useContext(UniversitarioContext);
@@ -46,7 +46,7 @@ const Informe = () => {
   };
 
   const obteniendoDatosFrentes = () => {
-    obtenerVotante();
+    obtenerVotantes();
     obtenerFrentes();
     obtenerUniversitarios();
     if (votantes && estudiantes) {
@@ -213,7 +213,7 @@ const Informe = () => {
     doc.save("listaEstudiantes.pdf");
   };
   useEffect(() => {
-    obtenerVotante();
+    obtenerVotantes();
     obtenerFrentes();
     obtenerUniversitarios();
     if (frentes && cantVotosFrente) {

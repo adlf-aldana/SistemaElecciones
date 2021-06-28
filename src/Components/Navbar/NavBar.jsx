@@ -129,7 +129,17 @@ const NavBar = () => {
                   </p>
                 </div>
               </>
-            ) : null
+            ) : (
+              <div className="d-flex flex-row-reverse">
+                <button
+                  className="btn btn-outline-success "
+                  type="button"
+                  onClick={() => cerrarSesion()}
+                >
+                  Cerrar Sesion
+                </button>
+              </div>
+            )
           ) : null}
         </div>
       </nav>

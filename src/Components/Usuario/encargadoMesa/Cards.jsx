@@ -48,7 +48,7 @@ const Cards = ({
               </label>
             </div>
             <div className="col">
-              <strong>Carnet Universitario: </strong>
+              <strong>Carnet Identidad: </strong>
               <label htmlFor="">
                 {estudiante ? estudiante.ci : usuario.ci}
               </label>

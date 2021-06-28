@@ -42,6 +42,10 @@ function App() {
               <Router>
                 <NavBar />
                 <Switch>
+                {/* <Route
+                    path="/registroUniversitario"
+                    component={UniversitarioIndex}
+                  /> */}
                   <RutaAdmin
                     path="/registroUniversitario"
                     component={UniversitarioIndex}

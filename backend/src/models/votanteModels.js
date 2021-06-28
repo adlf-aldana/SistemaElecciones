@@ -3,7 +3,7 @@ const { Schema, model } = require("mongoose");
 const votanteSchema = new Schema(
   {
     cu: {
-      type: Number,
+      type: String,
       require: true,
       trim: true,
       unique: true,

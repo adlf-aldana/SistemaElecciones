@@ -68,6 +68,9 @@ votanteCtrl.createVotante = async (req, res) => {
 votanteCtrl.getVotante = async (req, res) => {
   try {
     const votante = await votanteModels.findOne({ cu: req.params.id });
+    if (!votante) {
+      return res.status(400).json({ msg: "Aún no esta habilitado para votar" });
+    }
     res.json({ votante });
   } catch (error) {
     res.status(400).json({ msg: "Hubo un error al obtener a un vontante" });

@@ -8,7 +8,7 @@ const Login = (props) => {
   const alertaContext = useContext(AlertaContext);
   const { alerta, mostrarAlerta } = alertaContext;
   const authContext = useContext(AuthContext);
-  const { mensaje, autenticado, iniciarSesion, usuario, usuarioAutenticado } =
+  const { mensaje, autenticado, iniciarSesion, usuario } =
     authContext;
 
   const [usuarioForm, setusuario] = useState({

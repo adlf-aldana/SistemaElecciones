@@ -44,9 +44,9 @@ const RegistroFrente = () => {
       return;
     }
     if (
-      nombreFrente.length < 2 ||
-      cuEncargado.length < 6 ||
-      celularEncargado.length < 8
+      nombreFrente.length < 1 ||
+      cuEncargado.length < 6 
+      // celularEncargado.length < 8
     ) {
       mostrarAlerta(
         "Error: Los campos deben ser mayores a 3 caracteres, Carnet Universitario 6 digitos y celular 8 digitos",

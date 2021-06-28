@@ -9,6 +9,7 @@ import {
   OBTENER_VOTANTES,
   BUSQUEDA_UNIVERSITARIO,
   LIMPIAR_UNIVERSITARIO_BUSCADO,
+  DATOS_VOTANTE,
 } from "../../types";
 
 export default (state, action) => {
@@ -71,6 +72,11 @@ export default (state, action) => {
       return {
         ...state,
         estudiante: null,
+      };
+    case DATOS_VOTANTE:
+      return {
+        ...state,
+        datosVotante: action.payload,
       };
     default:
       return state;
