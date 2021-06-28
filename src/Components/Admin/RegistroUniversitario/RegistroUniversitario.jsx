@@ -34,15 +34,17 @@ const RegistroUniversitario = ({
           { content: "Carrera" },
           { content: "Cargo" },
           { content: "Carnet Universitario" },
+          { content: "Carnet Identidad" },
         ],
       ],
     });
     estudiantes.map((estudiante) => {
       doc.autoTable({
         columnStyles: {
-          0: { cellWidth: 48 },
-          1: { cellWidth: 52 },
-          2: { cellWidth: 36 },
+          0: { cellWidth: 38 },
+          1: { cellWidth: 40 },
+          2: { cellWidth: 30 },
+          3: { cellWidth: 25 },
           3: { cellWidth: 40 },
         },
         body: [
@@ -60,6 +62,9 @@ const RegistroUniversitario = ({
               crypto.enc.Utf8
             ),
             crypto.AES.decrypt(estudiante.cu, "palabraClave").toString(
+              crypto.enc.Utf8
+            ),
+            crypto.AES.decrypt(estudiante.ci, "palabraClave").toString(
               crypto.enc.Utf8
             ),
           ],
