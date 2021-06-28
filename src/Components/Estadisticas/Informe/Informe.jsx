@@ -109,48 +109,7 @@ const Informe = () => {
       doc.save("informe.pdf");
     });
   };
-  const listaEstudiantes = () => {
-    const doc = new jsPDF({
-      orientation: "landscape",
-      format: "letter",
-    });
 
-    const widthPage = doc.internal.pageSize.getWidth();
-    const heightPage = doc.internal.pageSize.getHeight();
-
-    doc.text("LISTA DE ESTUDIANTES UNIVERSITARIOS", widthPage / 2, 10);
-    doc.autoTable({
-      head: [
-        [
-          { content: "Nombre (s)" },
-          { content: "Apellido (s)" },
-          { content: "Carrera" },
-          { content: "Cargo" },
-          { content: "Carnet Universitario" },
-        ],
-      ],
-    });
-    estudiantes.map((estudiante) => {
-      doc.autoTable({
-        columnStyles: {
-          0: { cellWidth: 48 },
-          1: { cellWidth: 52 },
-          2: { cellWidth: 36 },
-          3: { cellWidth: 40 },
-        },
-        body: [
-          [
-            crypto.AES.decrypt(estudiante.nombre,'palabraClave').toString(crypto.enc.Utf8),
-            crypto.AES.decrypt(estudiante.apellidos,'palabraClave').toString(crypto.enc.Utf8) ,
-            crypto.AES.decrypt(estudiante.carrera,'palabraClave').toString(crypto.enc.Utf8) ,
-            crypto.AES.decrypt(estudiante.cargo,'palabraClave').toString(crypto.enc.Utf8),
-            crypto.AES.decrypt(estudiante.cu,'palabraClave').toString(crypto.enc.Utf8),
-          ],
-        ],
-      });
-    });
-    doc.save("listaEstudiantes.pdf");
-  };
 
   const consiguiendoDatosVotante = () => {
     const datos = [];
@@ -245,12 +204,7 @@ const Informe = () => {
                 >
                   Generar Reporte
                 </button>
-                <button
-                  className="btn btn-success mr-3"
-                  onClick={() => listaEstudiantes()}
-                >
-                  Reporte Lista de Estudiantes
-                </button>
+                
                 <button
                   className="btn btn-success"
                   onClick={() => listaVotaciones()}

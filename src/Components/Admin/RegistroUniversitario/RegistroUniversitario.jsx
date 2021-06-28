@@ -1,4 +1,8 @@
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment, useContext, useEffect } from "react";
+import UniversitarioContext from "../../../context/universitarios/UniversitarioContext";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
+import * as crypto from "crypto-js";
 
 const RegistroUniversitario = ({
   datosEstudiantes,
@@ -9,12 +13,71 @@ const RegistroUniversitario = ({
   alerta,
   editUni,
 }) => {
-  const { nombre, apellidos, cu, ci, carrera, cargo, password, confirPassword } =
-    datosEstudiantes;
+  const { nombre, apellidos, cu, ci, carrera, cargo } = datosEstudiantes;
+  const universitarioContext = useContext(UniversitarioContext);
+  const { estudiantes } = universitarioContext;
+
+  const listaEstudiantes = () => {
+    const doc = new jsPDF({
+      orientation: "landscape",
+      format: "letter",
+    });
+
+    const widthPage = doc.internal.pageSize.getWidth();
+
+    doc.text("LISTA DE ESTUDIANTES UNIVERSITARIOS", widthPage / 2, 10);
+    doc.autoTable({
+      head: [
+        [
+          { content: "Nombre (s)" },
+          { content: "Apellido (s)" },
+          { content: "Carrera" },
+          { content: "Cargo" },
+          { content: "Carnet Universitario" },
+        ],
+      ],
+    });
+    estudiantes.map((estudiante) => {
+      doc.autoTable({
+        columnStyles: {
+          0: { cellWidth: 48 },
+          1: { cellWidth: 52 },
+          2: { cellWidth: 36 },
+          3: { cellWidth: 40 },
+        },
+        body: [
+          [
+            crypto.AES.decrypt(estudiante.nombre, "palabraClave").toString(
+              crypto.enc.Utf8
+            ),
+            crypto.AES.decrypt(estudiante.apellidos, "palabraClave").toString(
+              crypto.enc.Utf8
+            ),
+            crypto.AES.decrypt(estudiante.carrera, "palabraClave").toString(
+              crypto.enc.Utf8
+            ),
+            crypto.AES.decrypt(estudiante.cargo, "palabraClave").toString(
+              crypto.enc.Utf8
+            ),
+            crypto.AES.decrypt(estudiante.cu, "palabraClave").toString(
+              crypto.enc.Utf8
+            ),
+          ],
+        ],
+      });
+    });
+    doc.save("listaEstudiantes.pdf");
+  };
 
   return (
     <Fragment>
       <h3 className="text-center m-3">Registro Universitario</h3>
+      <button
+        className="btn btn-success mr-3"
+        onClick={() => listaEstudiantes()}
+      >
+        Reporte Lista de Estudiantes
+      </button>
       <form onSubmit={onSubmitForm}>
         <span className="badge bg-light text-dark">
           (*) Campos Obligatorios
