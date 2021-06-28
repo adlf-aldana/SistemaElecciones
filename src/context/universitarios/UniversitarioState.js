@@ -30,6 +30,7 @@ const UniversitarioState = (props) => {
       nombre: "",
       apellidos: "",
       cu: "",
+      ci: "",
       carrera: "",
       cargo: "",
       password: "",
@@ -79,12 +80,13 @@ const UniversitarioState = (props) => {
           palabraClave
         ).toString(),
         cu: crypto.AES.encrypt(univertario.cu, palabraClave).toString(),
+        ci: crypto.AES.encrypt(univertario.ci, palabraClave).toString(),
         carrera: crypto.AES.encrypt(
           univertario.carrera,
           palabraClave
         ).toString(),
         cargo: crypto.AES.encrypt(univertario.cargo, palabraClave).toString(),
-        password: univertario.password ? univertario.password : null,
+        password: univertario.password ? univertario.password : univertario.ci,
       };
       const regUniversitario = await usuarioAxios.post(
         "/api/lista_estudiantes",
@@ -142,6 +144,7 @@ const UniversitarioState = (props) => {
           palabraClave
         ).toString(),
         cu: crypto.AES.encrypt(universitario.cu, palabraClave).toString(),
+        ci: crypto.AES.encrypt(universitario.ci, palabraClave).toString(),
         carrera: crypto.AES.encrypt(
           universitario.carrera,
           palabraClave

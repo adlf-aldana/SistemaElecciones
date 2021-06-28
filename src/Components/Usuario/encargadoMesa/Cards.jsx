@@ -48,6 +48,12 @@ const Cards = ({
               </label>
             </div>
             <div className="col">
+              <strong>Carnet Universitario: </strong>
+              <label htmlFor="">
+                {estudiante ? estudiante.ci : usuario.ci}
+              </label>
+            </div>
+            <div className="col">
               <strong>Carrera: </strong>
               <label htmlFor="">
                 {estudiante ? estudiante.carrera : usuario.carrera}

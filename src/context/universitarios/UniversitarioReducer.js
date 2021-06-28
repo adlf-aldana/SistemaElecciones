@@ -55,6 +55,7 @@ export default (state, action) => {
           nombre: "",
           apellidos: "",
           cu: "",
+          ci: "",
           carrera: "",
           cargo: "",
         },

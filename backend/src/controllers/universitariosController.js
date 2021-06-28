@@ -30,6 +30,7 @@ univerCtrl.getUniversitarios = async (req, res) => {
 
 // GUARDA UN NUEVO UNIVERSTARIO
 univerCtrl.createUniversitario = async (req, res) => {
+  console.log(req.body);
   const decryptData = crypto.AES.decrypt(req.body.cu, "palabraClave").toString(
     crypto.enc.Utf8
   );
@@ -40,7 +41,7 @@ univerCtrl.createUniversitario = async (req, res) => {
     return res.status(400).json({ msg: errores.errors[0].msg });
   }
   // Extrayendo carnet universitario
-  const { nombre, apellidos, cu, carrera, cargo, password } = req.body;
+  const { password } = req.body;
   try {
     const DecryptCu = decryptData.toString(crypto.enc.Utf8);
     // Revisar que el universitario sea unico
@@ -50,26 +51,31 @@ univerCtrl.createUniversitario = async (req, res) => {
         crypto.AES.decrypt(res.cu, "palabraClave").toString(crypto.enc.Utf8) ===
         DecryptCu
     );
-
-    if (universitario) {
+    console.log(universitario.length);
+    if (universitario.length > 0) {
       return res.status(400).json({ msg: "Error: El universitario ya existe" });
     }
-    if (password) {
-      // hashear el password
-      const salt = await bcryptjs.genSalt(10);
-      req.body.password = await bcryptjs.hash(password, salt);
-      // Crea universitario
-      universitario = new universitarioModel(req.body);
-    } else {
-      // Crea universitario
-      universitario = new universitarioModel({
-        nombre,
-        apellidos,
-        cu,
-        carrera,
-        cargo,
-      });
-    }
+    //   // hashear el password
+    const salt = await bcryptjs.genSalt(10);
+    req.body.password = await bcryptjs.hash(password, salt);
+    // Crea universitario
+    universitario = new universitarioModel(req.body);
+    // if (password) {
+    //   // hashear el password
+    //   const salt = await bcryptjs.genSalt(10);
+    //   req.body.password = await bcryptjs.hash(password, salt);
+    //   // Crea universitario
+    //   universitario = new universitarioModel(req.body);
+    // } else {
+    //   // Crea universitario
+    //   universitario = new universitarioModel({
+    //     nombre,
+    //     apellidos,
+    //     cu,
+    //     carrera,
+    //     cargo,
+    //   });
+    // }
     // Guarda a Universitario
     await universitario.save();
     // // crear y firmar JWT
@@ -105,7 +111,7 @@ univerCtrl.getUniversitario = async (req, res) => {
       crypto.AES.decrypt(res.cu, "palabraClave").toString(crypto.enc.Utf8) ===
       req.params.id
   );
-  if(universitario.length < 1){
+  if (universitario.length < 1) {
     return res.status(400).json({ msg: "Error: El universitario no existe" });
   }
   universitario = {
@@ -119,6 +125,9 @@ univerCtrl.getUniversitario = async (req, res) => {
       "palabraClave"
     ).toString(crypto.enc.Utf8),
     cu: crypto.AES.decrypt(universitario[0].cu, "palabraClave").toString(
+      crypto.enc.Utf8
+    ),
+    ci: crypto.AES.decrypt(universitario[0].ci, "palabraClave").toString(
       crypto.enc.Utf8
     ),
     carrera: crypto.AES.decrypt(

@@ -1,6 +1,6 @@
 import React, { Fragment, useContext, useEffect, useState } from "react";
 import Cards from "../../Usuario/encargadoMesa/Cards";
-import ListaUniversitarios from "./ListaUniversitarios";
+// import ListaUniversitarios from "./ListaUniversitarios";
 import RegistroUniversitario from "./RegistroUniversitario";
 import UniversitarioContext from "../../../context/universitarios/UniversitarioContext";
 import alertaContext from "../../../context/alerta/alertaContext";
@@ -12,7 +12,6 @@ const UniversitarioIndex = () => {
   const { mostrarAlerta } = alerta;
   const universitarioContext = useContext(UniversitarioContext);
   const {
-    estudiantes,
     mensaje,
     estudiante,
     datosFormulario,
@@ -51,7 +50,7 @@ const UniversitarioIndex = () => {
     });
   };
 
-  const { nombre, apellidos, cu, carrera, cargo, password, confirPassword } =
+  const { nombre, apellidos, cu, ci, carrera, cargo, password, confirPassword } =
     datosEstudiantes;
 
   // SUBMIT FORM
@@ -62,7 +61,8 @@ const UniversitarioIndex = () => {
       nombre.trim() === "" ||
       apellidos.trim() === "" ||
       carrera.trim() === "" ||
-      cargo.trim() === ""
+      cargo.trim() === "" ||
+      ci.trim() === ""
     ) {
       return mostrarAlerta("Todos los campos deben estar llenos", "danger");
     }
@@ -80,6 +80,12 @@ const UniversitarioIndex = () => {
     if (cu.toString().length !== 6) {
       return mostrarAlerta(
         "El carnet universitario debe tener 6 caracteres",
+        "danger"
+      );
+    }
+    if (ci.toString().length !== 7) {
+      return mostrarAlerta(
+        "El carnet de identidad debe tener 7 caracteres",
         "danger"
       );
     }
@@ -142,6 +148,7 @@ const UniversitarioIndex = () => {
         nombre: editUni.nombre,
         apellidos: editUni.apellidos,
         cu: editUni.cu,
+        ci: editUni.ci,
         carrera: editUni.carrera,
         cargo: editUni.cargo,
       });
@@ -151,6 +158,7 @@ const UniversitarioIndex = () => {
       nombre: "",
       apellidos: "",
       cu: "",
+      ci: "",
       carrera: "",
       cargo: "",
       password: "",

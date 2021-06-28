@@ -9,7 +9,7 @@ const RegistroUniversitario = ({
   alerta,
   editUni,
 }) => {
-  const { nombre, apellidos, cu, carrera, cargo, password, confirPassword } =
+  const { nombre, apellidos, cu, ci, carrera, cargo, password, confirPassword } =
     datosEstudiantes;
 
   return (
@@ -61,6 +61,18 @@ const RegistroUniversitario = ({
               className="form-control"
               onChange={handleForm}
               value={cu}
+            />
+            <span class="badge bg-light text-dark">Solo números</span>
+          </div>
+          <div className="col">
+            <label htmlFor="">Carnet de Identidad: *</label>
+            <input
+              type="number"
+              name="ci"
+              placeholder="Carnet Identidad"
+              className="form-control"
+              onChange={handleForm}
+              value={ci}
             />
             <span class="badge bg-light text-dark">Solo números</span>
           </div>

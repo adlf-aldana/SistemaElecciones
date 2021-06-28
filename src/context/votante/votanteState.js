@@ -65,6 +65,7 @@ const VotanteState = (props) => {
         nombre: datosEstudiante.data.estudiante.nombre,
         apellidos: datosEstudiante.data.estudiante.apellidos,
         cu: datosEstudiante.data.estudiante.cu,
+        ci: datosEstudiante.data.estudiante.ci,
         carrera: datosEstudiante.data.estudiante.carrera,
         encargadoMesa: res.data.votante[0].encargadoMesa,
         verificadorVotante: res.data.votante[0].verificadorVotante,
