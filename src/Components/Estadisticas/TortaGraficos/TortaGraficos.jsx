@@ -1,10 +1,10 @@
 import React, { Fragment } from "react";
 import { Pie } from "react-chartjs-2";
 
-const BarGraphics = ({ datosGraficos }) => {
+const BarraGraphics = ({ datosGraficos }) => {
   return (
     <Fragment>
-      <h3 className="text-center mt-5">Gráfica</h3>
+      <h3 className="text-center mt-5">Gráfica de Torta</h3>
       <Pie
         data={() => datosGraficos}
         redraw
@@ -26,4 +26,4 @@ const BarGraphics = ({ datosGraficos }) => {
   );
 };
 
-export default BarGraphics;
+export default BarraGraphics;

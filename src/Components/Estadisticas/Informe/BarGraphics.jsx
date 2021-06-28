@@ -11,7 +11,6 @@ export const dataGraphics = (datosGraficos) => {
   const nombres = Object.values(datosGraficos).map((key) =>  crypto.AES.decrypt(key.nombreFrente,'palabraClave').toString(crypto.enc.Utf8));
   const porcentaje = Object.values(datosGraficos).map((key) => key.porcentaje);
   return {
-    type: "pie",
     labels: nombres,
     datasets: [
       {

@@ -1,5 +1,6 @@
 import React, { Fragment, useState, useEffect, useContext } from "react";
 import BarGraphics from "../TortaGraficos/TortaGraficos";
+import BarraGraphics from "../TortaGraficos/BarraGraficos";
 import Tabla from "../Tabla/Tabla";
 import { dataGraphics } from "./BarGraphics";
 import { jsPDF } from "jspdf";
@@ -7,7 +8,6 @@ import * as html2canvas from "html2canvas";
 import "jspdf-autotable";
 import { PdfMakeWrapper } from "pdfmake-wrapper";
 import pdfFonts from "pdfmake/build/vfs_fonts"; // fonts provided for pdfmake
-import * as crypto from "crypto-js";
 
 import VotanteContext from "../../../context/votante/votanteContext";
 import FrenteContext from "../../../context/frentes/FrentesContext";
@@ -105,7 +105,7 @@ const Informe = () => {
     html2canvas(document.getElementById("grafico")).then(function (canvas) {
       var img = canvas.toDataURL("image/png");
       // doc.addImage(img, "JPEG", 10, 25, widthPage - 15, heightPage - 25);
-      doc.addImage(img, "JPEG", 15, 25, widthPage - 65, heightPage - 75);
+      doc.addImage(img, "JPEG", 15, 25, widthPage - 65, heightPage - 25);
       doc.save("informe.pdf");
     });
   };
@@ -280,10 +280,12 @@ const Informe = () => {
               ) : null}
             </div>
             <div id="tablaDatos"></div>
-            <div id="grafico">
-              <Tabla datosFrente={datosFrente} />
-              <BarGraphics datosGraficos={datosGraficos} />
-            </div>
+              <div id="grafico">
+                <Tabla datosFrente={datosFrente} />
+                <BarGraphics datosGraficos={datosGraficos} />
+                <BarraGraphics datosGraficos={datosGraficos} />
+              </div>
+            
           </div>
         ) : (
           <p>No hay datos</p>
@@ -294,3 +296,28 @@ const Informe = () => {
 };
 
 export default Informe;
+
+{/* 
+<div id="carouselExampleControlsNoTouching" className="carousel slide" data-bs-touch="false" data-bs-interval="false">
+  <div className="carousel-inner">
+    <div className="carousel-item active">
+      <h2>GOLA</h2>
+    </div>
+    <div className="carousel-item">
+    <h2>GEQWE</h2>
+    </div>
+    <div className="carousel-item">
+    <h2>GASDASD</h2>
+    </div>
+  </div>
+  <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="prev">
+    <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span className="visually-hidden">Previous</span>
+  </button>
+  <button className="carousel-control-next" type="button" data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="next">
+    <span className="carousel-control-next-icon" aria-hidden="true"></span>
+    <span className="visually-hidden">Next</span>
+  </button>
+</div> */}
+
+{/* <img src="../../../../backend/public/images/df886a9c-2b32-4458-abcc-0a9ffb396909.jpg" width="459" height="500" alt=""/> */}
