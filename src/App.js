@@ -25,6 +25,7 @@ import tokenAuth from "./config/token";
 import RutaAdmin from "./Components/rutas/RutaAdmin";
 import RutaEncargado from "./Components/rutas/RutaEncargado";
 import RutaVerificador from "./Components/rutas/RutaVerificador";
+import RutaUniversitario from "./Components/rutas/RutaUniversitario";
 
 // Revisar si tenemos un token
 const token = localStorage.getItem("token");
@@ -58,7 +59,7 @@ function App() {
                     path="/verificadorVotante"
                     component={EncargadoMesa}
                   />
-                  <Route path="/votacion" component={Votacion} />
+                  <RutaUniversitario path="/votacion" component={Votacion} />
                   <Route path="/" exact component={Login} />
                 </Switch>
               </Router>

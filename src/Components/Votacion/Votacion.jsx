@@ -89,12 +89,12 @@ const Votacion = () => {
           <div className="text-center mt-3">
             <h3>ADVERTENCIA</h3>
             <hr />
-            <h4>Antes realizar su voto verifique sus datos por favor</h4>
+            <h4>Usted aún no esta habilitado para votar</h4>
             <button
               className="btn btn-success mt-4"
               onClick={() => ultimoVotante()}
             >
-              Empezar
+              Actualizar
             </button>
           </div>
         )
@@ -102,12 +102,12 @@ const Votacion = () => {
         <div className="text-center mt-3">
           <h3>ADVERTENCIA</h3>
           <hr />
-          <h4>Antes realizar su voto verifique sus datos por favor</h4>
+          <h4>Usted aún no esta habilitado para votar</h4>
           <button
             className="btn btn-success mt-4"
             onClick={() => ultimoVotante()}
           >
-            Empezar
+            Actualizar
           </button>
         </div>
       )}

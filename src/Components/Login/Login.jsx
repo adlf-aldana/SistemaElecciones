@@ -43,6 +43,8 @@ const Login = (props) => {
         props.history.push("/encargadoMesa");
       } else if (usuario.cargo === "Verificador de Votante") {
         props.history.push("/verificadorVotante");
+      } else if (usuario.cargo === "Estudiante") {
+        props.history.push("/votacion");
       }
     }
     if (mensaje) {
