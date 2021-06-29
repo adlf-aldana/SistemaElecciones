@@ -2,6 +2,7 @@ import React, { Fragment, useEffect } from "react";
 import * as  crypto from 'crypto-js'
 
 const ListaFrente = ({ frentes, eliminar, editar }) => {
+  const URL = process.env.REACT_APP_BACKEND_URL;
   return (
     <Fragment>
       <div className="container mt-3">
@@ -28,8 +29,8 @@ const ListaFrente = ({ frentes, eliminar, editar }) => {
                 <td>{crypto.AES.decrypt(frente.celularEncargado,'palabraClave').toString(crypto.enc.Utf8)}</td>
                 <td>
                   <img
-                    src={`http://localhost:4000${frente.logoFrente}`}
-                    // src={`http://192.168.0.6:4000${frente.logoFrente}`}
+                    // src={`http://localhost:4000${frente.logoFrente}`}
+                    src={`${URL}/${frente.logoFrente}`}
                     alt=""
                     width="80"
                     height="100"
