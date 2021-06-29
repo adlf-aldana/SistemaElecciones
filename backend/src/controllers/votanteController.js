@@ -3,7 +3,7 @@ const votanteModels = require("../models/votanteModels");
 
 const Web3 = require("web3");
 const TruffleContract = require("truffle-contract");
-const JSONvotacion = require("../../../build/contracts/votacion");
+const JSONvotacion = require("../../../build2/contracts/votacion");
 Web3.providers.HttpProvider.prototype.sendAsync =
   Web3.providers.HttpProvider.prototype.send;
 const web3Provider = new Web3.providers.HttpProvider("http://127.0.0.1:8545");
