@@ -54,6 +54,16 @@ const NavBar = () => {
 
                   <li className="nav-item">
                     <NavLink
+                      to="gestionarMesas"
+                      activeclassname="active"
+                      className="nav-link"
+                    >
+                      Gestion Mesas
+                    </NavLink>
+                  </li>
+
+                  <li className="nav-item">
+                    <NavLink
                       to="informe"
                       activeclassname="active"
                       className="nav-link"

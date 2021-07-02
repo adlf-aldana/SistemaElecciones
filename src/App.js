@@ -26,6 +26,7 @@ import RutaAdmin from "./Components/rutas/RutaAdmin";
 import RutaEncargado from "./Components/rutas/RutaEncargado";
 import RutaVerificador from "./Components/rutas/RutaVerificador";
 import RutaUniversitario from "./Components/rutas/RutaUniversitario";
+import GestionarMesas from "./Components/Admin/GestionMesas/GestionarMesas";
 
 // Revisar si tenemos un token
 const token = localStorage.getItem("token");
@@ -53,6 +54,10 @@ function App() {
                   <RutaAdmin
                     path="/registroFrente"
                     component={RegistroFrente}
+                  />
+                   <RutaAdmin
+                    path="/gestionarMesas"
+                    component={GestionarMesas}
                   />
                   <RutaAdmin path="/informe" component={Informe} />
                   <RutaEncargado

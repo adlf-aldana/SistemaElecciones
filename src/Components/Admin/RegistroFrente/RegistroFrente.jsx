@@ -183,7 +183,7 @@ const RegistroFrente = () => {
 
   const cargandoDatosFrente = () => {
     const datos = [];
-    frentes[0].map(async (frente) =>
+    frentes[0] && frentes[0].map(async (frente) =>
       datos.push(await obteniendoDatosVotante(frente))
     );
     setdatosFrentes(datos);
