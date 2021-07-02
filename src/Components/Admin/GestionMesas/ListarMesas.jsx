@@ -1,21 +1,22 @@
 import React, { useEffect, useState } from "react";
 import usuarioAxios from "../../../config/axios";
 
-const ListarMesas = () => {
+const ListarMesas = ({ actualizarLista,eliminar }) => {
   const [mesas, setMesas] = useState();
 
   // HABILITA O DESHABILITA UNA MESA PARA VOTAR
   const habilitarMesa = async (habilitado, ids) => {
-      console.log(habilitado);
     try {
       ids.map(async (id) => {
         const res = await usuarioAxios.put(`/api/mesas/${id}`, habilitado);
-        console.log(res);
+        setMesas(res.data.numMesa);
       });
     } catch (error) {
       console.log(error.response);
     }
   };
+
+  
 
   // OBTENIENDO MESAS E IDS
   useEffect(async () => {
@@ -25,8 +26,8 @@ const ListarMesas = () => {
     } catch (e) {
       console.log(e.response);
     }
-  }, []);
-  
+  }, [actualizarLista]);
+
   return (
     <div className="container mt-5">
       <h1 className="text-center">Lista de Mesas</h1>
@@ -45,7 +46,7 @@ const ListarMesas = () => {
                   <td>{index + 1}</td>
                   <td>{mesa._id}</td>
                   <td>
-                    {mesa.habilitado ? (
+                    {mesa.habilitado[0] ? (
                       <button
                         className="btn btn-primary mr-2"
                         onClick={() => habilitarMesa(mesa.habilitado, mesa.id)}
@@ -69,7 +70,7 @@ const ListarMesas = () => {
                     </button>
                     <button
                       className="btn btn-danger"
-                      //   onClick={() => eliminar(frente._id)}
+                      onClick={() => eliminar(mesa.id)}
                     >
                       Eliminar
                     </button>

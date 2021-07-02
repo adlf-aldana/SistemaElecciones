@@ -13,6 +13,7 @@ const GestionarMesas = () => {
       habilitado: null,
     },
   ]);
+  const [actualizarLista, setactualizarLista] = useState(false);
   const [editMesa, seteditMesa] = useState();
   const [alerta, setalerta] = useState();
 
@@ -25,16 +26,20 @@ const GestionarMesas = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
     if (datosForm) {
-      if (datosForm[0].mesa === "") {
+      if (datosForm[0].mesa === "" || datosForm[0].mesa === null) {
+        setTimeout(() => {
+          setalerta({});
+        }, 3000);
         setalerta({
           categoria: "danger",
           msg: "Error: Todos los campos deben estar llenos",
         });
+        return;
       }
     }
     try {
-      let datos = []
-      datosForm.map(form =>{
+      let datos = [];
+      datosForm.map((form) => {
         datos.push({
           mesa: datosForm[0].mesa,
           cargo: form.cargo,
@@ -42,14 +47,20 @@ const GestionarMesas = () => {
           celularEncargado: form.celularEncargado,
           habilitado: false,
         });
-      })
+      });
 
       await usuarioAxios.post("/api/mesas", datos);
+      setTimeout(() => {
+        setalerta({});
+      }, 3000);
       setalerta({
         categoria: "success",
-        msg: "Correctamente: Guardado Correctamente",
+        msg: "Guardado Correctamente",
       });
-      // limpiarDatos();
+
+      // PARA ACTUALIZAR LA LISTA DE MESAS EN EL USE EFFECT
+      setactualizarLista(!actualizarLista);
+      limpiarDatos();
     } catch (e) {
       console.log(e.response);
     }
@@ -84,6 +95,20 @@ const GestionarMesas = () => {
     console.log("limpiando");
   };
 
+  const eliminar = async (ids) => {
+    try {
+      ids.map(async (id) => {
+        await usuarioAxios.delete(`/api/mesas/${id}`);
+      });
+      setalerta({
+        categoria: "success",
+        msg: "Correctamente: Eliminado correctamente",
+      });
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
+
   return (
     <>
       <div className="container mt-3">
@@ -94,7 +119,7 @@ const GestionarMesas = () => {
         ) : null}
 
         {/* <button className="btn btn-success mr-3" onClick={() => listaFrentes()}>
-            Reporte Lista de Frentes
+            Reporte Lista de Mesas
           </button> */}
         <form onSubmit={onSubmit}>
           <div className="col">
@@ -169,6 +194,9 @@ const GestionarMesas = () => {
                   //   }
                 />
               </div>
+              <div className="col">
+                <button className="btn btn-primary">Añadir Contraseña</button>
+              </div>
             </div>
           ))}
 
@@ -181,32 +209,6 @@ const GestionarMesas = () => {
               Agregar Encargado
             </button>
           </div>
-
-          {/* <div className="row mt-3">
-            {estudiante ? (
-              <div className="col">
-                <div className="row">
-                  <strong>
-                    <label htmlFor="">DATOS ENCARGADO</label>
-                  </strong>
-                </div>
-
-                <div className="row">
-                  <strong>
-                    <label htmlFor="">Nombre encagado: </label>
-                  </strong>
-                  <label htmlFor="">{estudiante.nombre}</label>
-                </div>
-
-                <div className="row">
-                  <strong>
-                    <label htmlFor="">Apellidos encagado: </label>
-                  </strong>
-                  <label htmlFor="">{estudiante.apellidos}</label>
-                </div>
-              </div>
-            ) : null}
-          </div> */}
 
           <div className="row flex-row-reverse">
             <button
@@ -227,7 +229,7 @@ const GestionarMesas = () => {
             )}
           </div>
         </form>
-        <ListarMesas />
+        <ListarMesas actualizarLista={actualizarLista} eliminar={eliminar} />
       </div>
     </>
   );
