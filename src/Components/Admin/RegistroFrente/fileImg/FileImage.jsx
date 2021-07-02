@@ -14,7 +14,10 @@ const FileImage = ({ datosForm, setdatosForm, setImgPreview, imgPreview }) => {
         setImgPreview(reader.result);
       };
       reader.readAsDataURL(selected);
-      setdatosForm({ ...datosForm, logoFrente: selected });
+      // setdatosForm([ ...datosForm, {logoFrente: selected }]);
+      const values = [...datosForm];
+      values[0]["logoFrente"] = selected;
+      setdatosForm(values);
     } else {
       setError(true);
     }

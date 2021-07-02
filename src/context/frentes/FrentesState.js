@@ -18,11 +18,13 @@ import {
 const FrentesState = (props) => {
   const initialState = {
     frentes: [],
+    nombreLogoUnico: [],
     datosFormulario: {
       nombreFrente: "",
       cuEncargado: "",
       celularEncargado: "",
       logoFrente: "",
+      cargo: ""
     },
     mensaje: null,
     estudiante: null,
@@ -131,6 +133,8 @@ const FrentesState = (props) => {
         datosFormulario: state.datosFormulario,
         mensaje: state.mensaje,
         estudiante: state.estudiante,
+        cargo: state.cargo,
+        nombreLogoUnico: state.nombreLogoUnico,
         obtenerFrentes,
         agregarFrente,
         eliminarFrente,

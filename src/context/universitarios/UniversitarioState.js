@@ -229,7 +229,6 @@ const UniversitarioState = (props) => {
           )
       );
     }
-
     let resDataFrente;
     votante.nombreFrente
       ? (resDataFrente = {
@@ -240,7 +239,7 @@ const UniversitarioState = (props) => {
           },
         })
       : votante._idFrente
-      ? (resDataFrente = { data: { msg: { nombreFrente: 'Votó' } } })
+      ? (resDataFrente = { data: { msg: { nombreFrente: "Votó" } } })
       : (resDataFrente = { data: { msg: { nombreFrente: null } } });
     // : votante._idFrente !== null
     // ? (resDataFrente = await usuarioAxios.get(
