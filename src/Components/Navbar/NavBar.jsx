@@ -32,6 +32,16 @@ const NavBar = () => {
             usuario.cargo === "Administrador" ? (
               <>
                 <ul className="navbar-nav mr-auto">
+                <li className="nav-item">
+                    <NavLink
+                      to="proceso-eleccionario"
+                      activeclassname="active"
+                      className="nav-link"
+                    >
+                      Proceso Eleccionario
+                    </NavLink>
+                  </li>
+
                   <li className="nav-item">
                     <NavLink
                       to="registroUniversitario"

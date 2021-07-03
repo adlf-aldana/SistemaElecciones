@@ -27,6 +27,7 @@ import RutaEncargado from "./Components/rutas/RutaEncargado";
 import RutaVerificador from "./Components/rutas/RutaVerificador";
 import RutaUniversitario from "./Components/rutas/RutaUniversitario";
 import GestionarMesas from "./Components/Admin/GestionMesas/GestionarMesas";
+import ProcesoEleccionario from "./Components/Admin/procesoEleccionario/procesoEleccionario";
 
 // Revisar si tenemos un token
 const token = localStorage.getItem("token");
@@ -47,6 +48,10 @@ function App() {
                     path="/registroUniversitario"
                     component={UniversitarioIndex}
                   /> */}
+                  <RutaAdmin
+                    path="/proceso-eleccionario"
+                    component={ProcesoEleccionario}
+                  />
                   <RutaAdmin
                     path="/registroUniversitario"
                     component={UniversitarioIndex}
