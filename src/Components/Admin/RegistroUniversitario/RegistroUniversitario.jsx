@@ -15,7 +15,7 @@ const RegistroUniversitario = ({
 }) => {
   const { nombre, apellidos, cu, ci, carrera, cargo } = datosEstudiantes;
   const universitarioContext = useContext(UniversitarioContext);
-  const { estudiantes } = universitarioContext;
+  const { estudiantes, estudiantesPorRegistro } = universitarioContext;
 
   const listaEstudiantes = () => {
     const doc = new jsPDF({
@@ -25,8 +25,12 @@ const RegistroUniversitario = ({
 
     const widthPage = doc.internal.pageSize.getWidth();
 
-    doc.text("LISTA DE ESTUDIANTES UNIVERSITARIOS", widthPage / 2, 10);
+    doc.text(`LISTA DE ESTUDIANTES UNIVERSITARIOS`, widthPage / 3, 10);
+    doc.text(`Fecha Proceso Electoral ${estudiantesPorRegistro[0].registro}`, widthPage / 12, 20);
+
+    
     doc.autoTable({
+      startY: 25,
       head: [
         [
           { content: "Nombre (s)" },
@@ -38,7 +42,7 @@ const RegistroUniversitario = ({
         ],
       ],
     });
-    estudiantes.map((estudiante) => {
+    estudiantesPorRegistro.map((estudiante) => {
       doc.autoTable({
         columnStyles: {
           0: { cellWidth: 38 },

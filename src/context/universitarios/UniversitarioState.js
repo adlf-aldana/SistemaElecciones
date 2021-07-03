@@ -15,6 +15,7 @@ import {
   LIMPIAR_FORMULARIO,
   LIMPIAR_MENSAJE,
   LIMPIAR_UNIVERSITARIO_BUSCADO,
+  OBTENER_ESTUDIANTE_REGISTRO,
 } from "../../types/";
 
 import usuarioAxios from "../../config/axios";
@@ -37,18 +38,26 @@ const UniversitarioState = (props) => {
       confirPassword: "",
     },
     datosVotantes: [],
+    estudiantesPorRegistro: [],
   };
 
   // Dispatch para ejecutar las acciones
   const [state, dispatch] = useReducer(UniversitarioReducer, initialState);
 
   // Obtener los Universitarios
-  const obtenerUniversitarios = async () => {
+  const obtenerUniversitarios = async (ultimoProcesoElectoral) => {
     try {
       const res = await usuarioAxios.get("/api/lista_estudiantes");
+      const registro = await usuarioAxios.get(
+        "/api/lista_estudiantes/" + ultimoProcesoElectoral[0].registro
+      );
       dispatch({
         type: OBTENER_UNIVERSITARIOS,
         payload: res.data,
+      });
+      dispatch({
+        type: OBTENER_ESTUDIANTE_REGISTRO,
+        payload: registro.data.registroUniversitario,
       });
     } catch (e) {
       let alerta = null;
@@ -71,7 +80,7 @@ const UniversitarioState = (props) => {
   };
 
   // Agregar Universitario
-  const agregarUniversitario = async (univertario) => {
+  const agregarUniversitario = async (univertario, registro) => {
     try {
       const encryptData = {
         nombre: crypto.AES.encrypt(univertario.nombre, palabraClave).toString(),
@@ -86,7 +95,9 @@ const UniversitarioState = (props) => {
           palabraClave
         ).toString(),
         cargo: crypto.AES.encrypt(univertario.cargo, palabraClave).toString(),
-        password: univertario.password ? univertario.password : univertario.ci,
+        registro: registro,
+        password: univertario.password,
+        // password: univertario.password ? univertario.password : univertario.ci,
       };
       const regUniversitario = await usuarioAxios.post(
         "/api/lista_estudiantes",
@@ -263,6 +274,7 @@ const UniversitarioState = (props) => {
         datosFormulario: state.datosFormulario,
         datosVotantes: state.datosVotantes,
         estudiantesSinAdmin: state.estudiantesSinAdmin,
+        estudiantesPorRegistro: state.estudiantesPorRegistro,
         obtenerUniversitarios,
         agregarUniversitario,
         eliminarUniversitario,

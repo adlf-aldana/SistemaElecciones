@@ -5,6 +5,7 @@ import RegistroUniversitario from "./RegistroUniversitario";
 import UniversitarioContext from "../../../context/universitarios/UniversitarioContext";
 import alertaContext from "../../../context/alerta/alertaContext";
 import AuthContext from "../../../context/autenticacion/authContext";
+import usuarioAxios from "../../../config/axios";
 
 const UniversitarioIndex = () => {
   // CONTEXT
@@ -30,6 +31,7 @@ const UniversitarioIndex = () => {
   const [editUni, seteditUni] = useState([]);
   const [carnetUniversitario, setCarnetUniversitario] = useState("");
   const [mensajeBusqueda, setMensajeBusqueda] = useState("");
+  const [ultimoProcesoElectoral, setultimoProcesoElectoral] = useState([]);
 
   // STATE OPCIONES
   const [optionCargo, setoptionCargo] = useState([
@@ -50,8 +52,16 @@ const UniversitarioIndex = () => {
     });
   };
 
-  const { nombre, apellidos, cu, ci, carrera, cargo, password, confirPassword } =
-    datosEstudiantes;
+  const {
+    nombre,
+    apellidos,
+    cu,
+    ci,
+    carrera,
+    cargo,
+    password,
+    confirPassword,
+  } = datosEstudiantes;
 
   // SUBMIT FORM
   const onSubmitForm = async (e) => {
@@ -99,7 +109,10 @@ const UniversitarioIndex = () => {
       actualizarUniversitario(editUni.id, datosEstudiantes);
       mostrarAlerta("Editado correctamenta", "success");
     } else {
-      agregarUniversitario(datosEstudiantes);
+      agregarUniversitario(
+        datosEstudiantes,
+        ultimoProcesoElectoral[0].registro
+      );
       mostrarAlerta("Guardado correctamenta", "success");
     }
   };
@@ -136,7 +149,17 @@ const UniversitarioIndex = () => {
   };
 
   useEffect(() => {
-    obtenerUniversitarios();
+    const ultimoProcesoEleccionario = () => {
+      usuarioAxios.get("/api/procesoElectoral").then((res) => {
+        setultimoProcesoElectoral(res.data.ultimoProcesoElectoral);
+        obtenerUniversitarios(res.data.ultimoProcesoElectoral);
+      });
+      
+      // const res = await usuarioAxios.get("/api/procesoElectoral");
+      // setultimoProcesoElectoral(res.data.ultimoProcesoElectoral);
+    };
+    ultimoProcesoEleccionario();
+    // obtenerUniversitarios(ultimoProcesoElectoral);
   }, []);
   useEffect(() => {
     if (mensaje) {
@@ -170,54 +193,67 @@ const UniversitarioIndex = () => {
   return (
     <Fragment>
       <div className="container">
-        <RegistroUniversitario
-          datosEstudiantes={datosEstudiantes}
-          handleForm={handleForm}
-          onSubmitForm={onSubmitForm}
-          optionCargo={optionCargo}
-          limpiarFormulario={limpiarFormulario}
-          alerta={alerta}
-          editUni={editUni}
-        />
-        {/* <ListaUniversitarios
+        {ultimoProcesoElectoral.length > 0 ? (
+          ultimoProcesoElectoral[0].estado ? (
+            <>
+              <RegistroUniversitario
+                datosEstudiantes={datosEstudiantes}
+                handleForm={handleForm}
+                onSubmitForm={onSubmitForm}
+                optionCargo={optionCargo}
+                limpiarFormulario={limpiarFormulario}
+                alerta={alerta}
+                editUni={editUni}
+              />
+              {/* <ListaUniversitarios
           estudiantes={estudiantes}
           eliminar={eliminar}
           editarUniversitario={editarUniversitario}
         /> */}
-        <br />
-        <form onSubmit={onSubmitBusqueda}>
-          <h3 className="text-center">Buscar Estudiante</h3>
+              <br />
+              <form onSubmit={onSubmitBusqueda}>
+                <h3 className="text-center">Buscar Estudiante</h3>
 
-          <div className="row">
-            <div className="col">
-              <input
-                type="text"
-                name="cuUniversitario"
-                className="form-control"
-                placeholder="Introduzca carnet universitario"
-                onChange={handleBusqueda}
-                value={carnetUniversitario}
-              />
-            </div>
-            <div className="col-md-4">
-              <button type="submit" className="btn btn-success">
-                Buscar
-              </button>
-            </div>
-          </div>
-          {estudiante ? (
-            <Cards
-              estudiante={estudiante}
-              editarUniversitario={editarUniversitario}
-              eliminar={eliminar}
-              usuario={usuario}
-            />
+                <div className="row">
+                  <div className="col">
+                    <input
+                      type="text"
+                      name="cuUniversitario"
+                      className="form-control"
+                      placeholder="Introduzca carnet universitario"
+                      onChange={handleBusqueda}
+                      value={carnetUniversitario}
+                    />
+                  </div>
+                  <div className="col-md-4">
+                    <button type="submit" className="btn btn-success">
+                      Buscar
+                    </button>
+                  </div>
+                </div>
+
+                {estudiante ? (
+                  <Cards
+                    estudiante={estudiante}
+                    editarUniversitario={editarUniversitario}
+                    eliminar={eliminar}
+                    usuario={usuario}
+                  />
+                ) : (
+                  <strong>
+                    <p className="text-center mt-3">{mensajeBusqueda}</p>
+                  </strong>
+                )}
+              </form>
+            </>
           ) : (
-            <strong>
-              <p className="text-center mt-3">{mensajeBusqueda}</p>
-            </strong>
-          )}
-        </form>
+            <h3 className="text-center mt-5">
+              Todos los procesos electorales estan cerrados
+            </h3>
+          )
+        ) : (
+          <h3 className="text-center mt-5">No ningún Proceso Electoral</h3>
+        )}
       </div>
     </Fragment>
   );

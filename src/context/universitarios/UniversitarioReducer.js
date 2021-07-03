@@ -8,7 +8,7 @@ import {
   LIMPIAR_FORMULARIO,
   LIMPIAR_MENSAJE,
   LIMPIAR_UNIVERSITARIO_BUSCADO,
-  OBTENER_DATOS_VOTANTE,
+  OBTENER_ESTUDIANTE_REGISTRO,
 } from "../../types";
 
 export default (state, action) => {
@@ -18,6 +18,11 @@ export default (state, action) => {
         ...state,
         estudiantes: action.payload.universitario,
         estudiantesSinAdmin: action.payload.universitariosSinAdmins,
+      };
+    case OBTENER_ESTUDIANTE_REGISTRO:
+      return {
+        ...state,
+        estudiantesPorRegistro: action.payload,
       };
     case AGREGAR_UNIVERSITARIO:
       return {
