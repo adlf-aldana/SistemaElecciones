@@ -35,8 +35,8 @@ const UniversitarioIndex = () => {
   const [optionCargo, setoptionCargo] = useState([
     { name: "Administrador" },
     { name: "Estudiante" },
-    { name: "Encargado de Mesa" },
-    { name: "Verificador de Votante" },
+    // { name: "Encargado de Mesa" },
+    // { name: "Verificador de Votante" },
   ]);
 
   // STATE FORM

@@ -16,23 +16,23 @@ const ListaProcesosEleccionarios = ({ ProcesosElectorales }) => {
             </tr>
           </thead>
           <tbody>
-            {ProcesosElectorales.length > 0 ? (
-              ProcesosElectorales.map((proceso) => (
-                <tr>
-                  <td>{proceso._id}</td>
-                  <td>
-                    <button
-                      className="btn btn-warning mr-2"
-                      onClick={() => imprimirReporte(proceso.id)}
-                    >
-                      Reporte
-                    </button>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <p>nada</p>
-            )}
+            {ProcesosElectorales.length > 0
+              ? ProcesosElectorales.map((proceso) =>
+                  !proceso.estado[0] ? (
+                    <tr>
+                      <td>{proceso._id}</td>
+                      <td>
+                        <button
+                          className="btn btn-warning mr-2"
+                          onClick={() => imprimirReporte(proceso.id)}
+                        >
+                          Reporte
+                        </button>
+                      </td>
+                    </tr>
+                  ) : null
+                )
+              : null}
           </tbody>
         </table>
       </div>
