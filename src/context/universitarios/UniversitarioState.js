@@ -246,6 +246,7 @@ const UniversitarioState = (props) => {
           data: {
             msg: {
               nombreFrente: votante.nombreFrente,
+              cargoFrente: votante.cargo
             },
           },
         })

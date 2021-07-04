@@ -13,6 +13,7 @@ import {
   ERROR_FRENTE,
   BUSQUEDA_UNIVERSITARIO,
   LIMPIAR_MENSAJE,
+  OBTENER_FRENTE_REGISTRO,
 } from "../../types";
 
 const FrentesState = (props) => {
@@ -24,19 +25,27 @@ const FrentesState = (props) => {
       cuEncargado: "",
       celularEncargado: "",
       logoFrente: "",
-      cargo: ""
+      cargo: "",
     },
     mensaje: null,
     estudiante: null,
+    frentesPorRegistro: [],
   };
   const [state, dispatch] = useReducer(FrentesReducer, initialState);
 
-  const obtenerFrentes = async () => {
+  const obtenerFrentes = async (ultimoProcesoElectoral) => {
     try {
-      let res = await usuarioAxios.get("/api/frente_universitario");
+      const res = await usuarioAxios.get("/api/frente_universitario");
+      const registro = await usuarioAxios.get(
+        "/api/frente_universitario/" + ultimoProcesoElectoral[0].registro
+      );
       dispatch({
         type: OBTENER_FRENTES,
-        payload: res.data,
+        payload: registro.data,
+      });
+      dispatch({
+        type: OBTENER_FRENTE_REGISTRO,
+        payload: registro.data.registroFrentes,
       });
     } catch (error) {
       console.log(error);
@@ -135,6 +144,7 @@ const FrentesState = (props) => {
         estudiante: state.estudiante,
         cargo: state.cargo,
         nombreLogoUnico: state.nombreLogoUnico,
+        frentesPorRegistro: state.frentesPorRegistro,
         obtenerFrentes,
         agregarFrente,
         eliminarFrente,

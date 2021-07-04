@@ -8,6 +8,7 @@ import UniversitarioContext from "../../../context/universitarios/UniversitarioC
 
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
+import usuarioAxios from "../../../config/axios";
 
 const RegistroFrente = () => {
   const frentesContext = useContext(FrentesContext);
@@ -16,12 +17,11 @@ const RegistroFrente = () => {
     datosFormulario,
     mensaje,
     estudiante,
-    cargo,
     nombreLogoUnico,
+    frentesPorRegistro,
     obtenerFrentes,
     agregarFrente,
     eliminarFrente,
-    actualizarFrente,
     limpiarFormulario,
     busquedaUniversitario,
     limpiarMensaje,
@@ -36,10 +36,11 @@ const RegistroFrente = () => {
   const [editUni, seteditUni] = useState([]);
   const [imgPreview, setImgPreview] = useState(null);
   const [datosForm, setdatosForm] = useState([datosFormulario]);
+  const [ultimoProcesoElectoral, setultimoProcesoElectoral] = useState([]);
 
   const [datosFrentes, setdatosFrentes] = useState({});
 
-  const { nombreFrente, cuEncargado, celularEncargado, logoFrente } = datosForm;
+  const { nombreFrente } = datosForm;
 
   // const handleChange = ( event) => {
   //   console.log(event.target.value);
@@ -51,12 +52,6 @@ const RegistroFrente = () => {
 
   const handleChange = (index, event) => {
     const values = [...datosForm];
-    // [event.target.name] === nombreFrente
-    //   ? setdatosForm({
-    //       ...datosForm,
-    //       [event.target.name]: event.target.value,
-    //     })
-    //   : (values[index][event.target.name] = [event.target.value]);
     values[index][event.target.name] = event.target.value;
     setdatosForm(values);
   };
@@ -101,7 +96,7 @@ const RegistroFrente = () => {
     datosForm.map((dato) => {
       dataimg.append(
         "cargo",
-        dato.cargoZ
+        dato.cargo
         // crypto.AES.encrypt(datosForm.cargo, "palabraClave").toString()
       );
       dataimg.append(
@@ -118,16 +113,25 @@ const RegistroFrente = () => {
         //   "palabraClave"
         // ).toString()
       );
+      dataimg.append(
+        "registro",
+        ultimoProcesoElectoral[0].registro
+
+        // crypto.AES.encrypt(
+        //   datosForm.celularEncargado,
+        //   "palabraClave"
+        // ).toString()
+      );
     });
-    if (editUni[0]._id) {
-      console.log(editUni);
-      console.log(dataimg);
-      // actualizarFrente(editUni._id, dataimg);
-      mostrarAlerta("Actualizacion Existosa", "success");
-    } else {
-      agregarFrente(dataimg);
-      mostrarAlerta("Guardado Existoso", "success");
-    }
+    console.log(editUni);
+    // if (editUni[0]._id) {
+    //   console.log(dataimg);
+    //   // actualizarFrente(editUni._id, dataimg);
+    //   mostrarAlerta("Actualizacion Existosa", "success");
+    // } else {
+    agregarFrente(dataimg);
+    mostrarAlerta("Guardado Existoso", "success");
+    // }
   };
 
   const eliminar = async (id) => {
@@ -183,9 +187,8 @@ const RegistroFrente = () => {
 
   const cargandoDatosFrente = () => {
     const datos = [];
-    frentes[0] && frentes[0].map(async (frente) =>
-      datos.push(await obteniendoDatosVotante(frente))
-    );
+    frentes[0] &&
+      frentes[0].map(async frente => datos.push(await obteniendoDatosVotante(frente)));
     setdatosFrentes(datos);
   };
 
@@ -198,7 +201,13 @@ const RegistroFrente = () => {
     const widthPage = doc.internal.pageSize.getWidth();
 
     doc.text("LISTA DE FRENTES", widthPage / 2, 10);
+    doc.text(
+      `Fecha Proceso Electoral ${frentesPorRegistro[0].registro}`,
+      widthPage / 12,
+      20
+    );
     doc.autoTable({
+      startY: 25,
       head: [
         [
           { content: "Nombre Frente" },
@@ -222,7 +231,7 @@ const RegistroFrente = () => {
         body: [
           [
             frente.nombreFrente,
-            frente.cargo,
+            frente.cargoFrente,
             frente.nombre,
             frente.apellidos,
             crypto.AES.decrypt(
@@ -232,7 +241,6 @@ const RegistroFrente = () => {
             crypto.AES.decrypt(frente.cuEncargado, "palabraClave").toString(
               crypto.enc.Utf8
             ),
-            
 
             // crypto.AES.decrypt(frente.nombreFrente, "palabraClave").toString(
             //   crypto.enc.Utf8
@@ -308,46 +316,63 @@ const RegistroFrente = () => {
   }, [datosFormulario]);
   useEffect(() => {
     cargandoDatosFrente();
-    obtenerFrentes();
+    // obtenerFrentes();
+    const ultimoProcesoEleccionario = () => {
+      usuarioAxios.get("/api/procesoElectoral").then((res) => {
+        setultimoProcesoElectoral(res.data.ultimoProcesoElectoral);
+        obtenerFrentes(res.data.ultimoProcesoElectoral);
+      });
+    };
+    ultimoProcesoEleccionario();
   }, []);
 
   return (
     <Fragment>
       <div className="container mt-3">
-        <h1 className="text-center">Registro Frente</h1>
+        {ultimoProcesoElectoral.length > 0 ? (
+          ultimoProcesoElectoral[0].estado ? (
+            <>
+              <h1 className="text-center">Registro Frente</h1>
 
-        {alerta ? (
-          <div className={`alert alert-${alerta.categoria}`}>{alerta.msg}</div>
-        ) : null}
-        <button className="btn btn-success mr-3" onClick={() => listaFrentes()}>
-          Reporte Lista de Frentes
-        </button>
-        <form onSubmit={onSubmit}>
-          <div className="col">
-            <label htmlFor="">Nombre del Frente:</label>
-            <input
-              type="text"
-              name="nombreFrente"
-              placeholder="Nombre del Frente"
-              className="form-control"
-              onChange={(event) => handleChange(0, event)}
-              value={datosForm[0] ? datosForm[0].nombreFrente : nombreFrente}
-              maxLength={30}
-            />
-          </div>
+              {alerta ? (
+                <div className={`alert alert-${alerta.categoria}`}>
+                  {alerta.msg}
+                </div>
+              ) : null}
+              <button
+                className="btn btn-success mr-3"
+                onClick={() => listaFrentes()}
+              >
+                Reporte Lista de Frentes
+              </button>
+              <form onSubmit={onSubmit}>
+                <div className="col">
+                  <label htmlFor="">Nombre del Frente:</label>
+                  <input
+                    type="text"
+                    name="nombreFrente"
+                    placeholder="Nombre del Frente"
+                    className="form-control"
+                    onChange={(event) => handleChange(0, event)}
+                    value={
+                      datosForm[0] ? datosForm[0].nombreFrente : nombreFrente
+                    }
+                    maxLength={30}
+                  />
+                </div>
 
-          <div className="row mt-3">
-            <div className="col-md-10">
-              <FileImage
-                setImgPreview={setImgPreview}
-                imgPreview={imgPreview}
-                datosForm={datosForm}
-                setdatosForm={setdatosForm}
-              />
-            </div>
-          </div>
+                <div className="row mt-3">
+                  <div className="col-md-10">
+                    <FileImage
+                      setImgPreview={setImgPreview}
+                      imgPreview={imgPreview}
+                      datosForm={datosForm}
+                      setdatosForm={setdatosForm}
+                    />
+                  </div>
+                </div>
 
-          {/* <div className="col">
+                {/* <div className="col">
             <label htmlFor="">Carnet Universitario del Encagado:</label>
             <input
               type="number"
@@ -366,9 +391,9 @@ const RegistroFrente = () => {
             </button>
           </div> */}
 
-          <h3 className="text-center">DATOS DE LOS ENCARGADOS</h3>
+                <h3 className="text-center">DATOS DE LOS ENCARGADOS</h3>
 
-          {/* <div className="row mt-3">
+                {/* <div className="row mt-3">
               <div className="col">
                 <label htmlFor="">Cargo:</label>
                 <input
@@ -412,135 +437,145 @@ const RegistroFrente = () => {
                 />
               </div>
             </div> */}
-          {/* {datosForm ? <p>{datosForm[0].nombreFrente}</p> : <p>nad</p>} */}
+                {/* {datosForm ? <p>{datosForm[0].nombreFrente}</p> : <p>nad</p>} */}
 
-          {datosForm.map((dato, index) => (
-            <div className="row mt-3" key={index}>
-              <div className="col">
-                <label htmlFor="">Cargo:</label>
-                <input
-                  type="text"
-                  name="cargo"
-                  placeholder="Cargo"
-                  className="form-control"
-                  onChange={(event) => handleChange(index, event)}
-                  value={dato.cargo}
-                />
-              </div>
+                {datosForm.map((dato, index) => (
+                  <div className="row mt-3" key={index}>
+                    <div className="col">
+                      <label htmlFor="">Cargo:</label>
+                      <input
+                        type="text"
+                        name="cargo"
+                        placeholder="Cargo"
+                        className="form-control"
+                        onChange={(event) => handleChange(index, event)}
+                        value={dato.cargo}
+                      />
+                    </div>
 
-              <div className="col">
-                <label htmlFor="">Carnet Universitario:</label>
-                <input
-                  type="number"
-                  name="cuEncargado"
-                  placeholder="Carnet Universitario"
-                  className="form-control"
-                  onChange={(event) => handleChange(index, event)}
-                  value={
-                    dato.cuEncargado.length > 10
-                      ? crypto.AES.decrypt(
-                          dato.cuEncargado,
-                          "palabraClave"
-                        ).toString(crypto.enc.Utf8)
-                      : dato.cuEncargado
-                  }
-                />
-                <button
-                  type="button"
-                  className="btn btn-success mt-2"
-                  onClick={() => verificarEncargado(dato.cuEncargado)}
-                >
-                  Verificar
-                </button>
-              </div>
+                    <div className="col">
+                      <label htmlFor="">Carnet Universitario:</label>
+                      <input
+                        type="number"
+                        name="cuEncargado"
+                        placeholder="Carnet Universitario"
+                        className="form-control"
+                        onChange={(event) => handleChange(index, event)}
+                        value={
+                          dato.cuEncargado.length > 10
+                            ? crypto.AES.decrypt(
+                                dato.cuEncargado,
+                                "palabraClave"
+                              ).toString(crypto.enc.Utf8)
+                            : dato.cuEncargado
+                        }
+                      />
+                      <button
+                        type="button"
+                        className="btn btn-success mt-2"
+                        onClick={() => verificarEncargado(dato.cuEncargado)}
+                      >
+                        Verificar
+                      </button>
+                    </div>
 
-              <div className="col">
-                <label htmlFor="">Celular:</label>
-                <input
-                  type="number"
-                  name="celularEncargado"
-                  placeholder="Celular"
-                  className="form-control"
-                  onChange={(event) => handleChange(index, event)}
-                  value={
-                    dato.celularEncargado.length > 10
-                      ? crypto.AES.decrypt(
-                          dato.celularEncargado,
-                          "palabraClave"
-                        ).toString(crypto.enc.Utf8)
-                      : dato.celularEncargado
-                  }
-                />
-              </div>
-            </div>
-          ))}
+                    <div className="col">
+                      <label htmlFor="">Celular:</label>
+                      <input
+                        type="number"
+                        name="celularEncargado"
+                        placeholder="Celular"
+                        className="form-control"
+                        onChange={(event) => handleChange(index, event)}
+                        value={
+                          dato.celularEncargado.length > 10
+                            ? crypto.AES.decrypt(
+                                dato.celularEncargado,
+                                "palabraClave"
+                              ).toString(crypto.enc.Utf8)
+                            : dato.celularEncargado
+                        }
+                      />
+                    </div>
+                  </div>
+                ))}
 
-          <div class="col mt-3">
-            <button
-              type="button"
-              className="btn btn-success col-12"
-              onClick={agregarInput}
-            >
-              Agregar Encargado
-            </button>
-          </div>
-
-          <div className="row mt-3">
-            {estudiante ? (
-              <div className="col">
-                <div className="row">
-                  <strong>
-                    <label htmlFor="">DATOS ENCARGADO</label>
-                  </strong>
+                <div class="col mt-3">
+                  <button
+                    type="button"
+                    className="btn btn-success col-12"
+                    onClick={agregarInput}
+                  >
+                    Agregar Encargado
+                  </button>
                 </div>
 
-                <div className="row">
-                  <strong>
-                    <label htmlFor="">Nombre encagado: </label>
-                  </strong>
-                  <label htmlFor="">{estudiante.nombre}</label>
+                <div className="row mt-3">
+                  {estudiante ? (
+                    <div className="col">
+                      <div className="row">
+                        <strong>
+                          <label htmlFor="">DATOS ENCARGADO</label>
+                        </strong>
+                      </div>
+
+                      <div className="row">
+                        <strong>
+                          <label htmlFor="">Nombre encagado: </label>
+                        </strong>
+                        <label htmlFor="">{estudiante.nombre}</label>
+                      </div>
+
+                      <div className="row">
+                        <strong>
+                          <label htmlFor="">Apellidos encagado: </label>
+                        </strong>
+                        <label htmlFor="">{estudiante.apellidos}</label>
+                      </div>
+                    </div>
+                  ) : null}
                 </div>
 
-                <div className="row">
-                  <strong>
-                    <label htmlFor="">Apellidos encagado: </label>
-                  </strong>
-                  <label htmlFor="">{estudiante.apellidos}</label>
+                <div className="row flex-row-reverse">
+                  <button
+                    className="btn btn-primary m-1"
+                    type="button"
+                    onClick={cleanForm}
+                  >
+                    Limpiar
+                  </button>
+                  {editUni[0] ? (
+                    editUni[0]._id ? (
+                      <button className="btn btn-warning m-1" type="submit">
+                        Editar
+                      </button>
+                    ) : null
+                  ) : (
+                    <button className="btn btn-success m-1" type="submit">
+                      Guardar
+                    </button>
+                  )}
                 </div>
-              </div>
-            ) : null}
-          </div>
+              </form>
 
-          <div className="row flex-row-reverse">
-            <button
-              className="btn btn-primary m-1"
-              type="button"
-              onClick={cleanForm}
-            >
-              Limpiar
-            </button>
-            {editUni[0] ? (
-              editUni[0]._id ? (
-                <button className="btn btn-warning m-1" type="submit">
-                  Editar
-                </button>
-              ) : null
-            ) : (
-              <button className="btn btn-success m-1" type="submit">
-                Guardar
-              </button>
-            )}
-          </div>
-        </form>
-        {nombreLogoUnico.length > 0 ? (
-          <ListaFrente
-            className="mt-5"
-            frentes={nombreLogoUnico}
-            eliminar={eliminar}
-            editar={editar}
-          />
+              {nombreLogoUnico.length > 0 ? (
+                <ListaFrente
+                  className="mt-5"
+                  frentes={nombreLogoUnico}
+                  eliminar={eliminar}
+                  editar={editar}
+                />
+              ) : (
+                <p>No hay datos</p>
+              )}
+            </>
+          ) : (
+            <h3 className="text-center mt-5">
+              Todos los procesos electorales estan cerrados
+            </h3>
+          )
         ) : (
-          <p>No hay datos</p>
+          <h3 className="text-center mt-5">No ningún Proceso Electoral</h3>
         )}
       </div>
     </Fragment>

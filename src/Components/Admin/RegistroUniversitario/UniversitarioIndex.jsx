@@ -154,12 +154,8 @@ const UniversitarioIndex = () => {
         setultimoProcesoElectoral(res.data.ultimoProcesoElectoral);
         obtenerUniversitarios(res.data.ultimoProcesoElectoral);
       });
-      
-      // const res = await usuarioAxios.get("/api/procesoElectoral");
-      // setultimoProcesoElectoral(res.data.ultimoProcesoElectoral);
     };
     ultimoProcesoEleccionario();
-    // obtenerUniversitarios(ultimoProcesoElectoral);
   }, []);
   useEffect(() => {
     if (mensaje) {
@@ -204,6 +200,7 @@ const UniversitarioIndex = () => {
                 limpiarFormulario={limpiarFormulario}
                 alerta={alerta}
                 editUni={editUni}
+                mostrarAlerta={mostrarAlerta}
               />
               {/* <ListaUniversitarios
           estudiantes={estudiantes}

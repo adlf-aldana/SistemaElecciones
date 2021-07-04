@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useEffect } from "react";
+import React, { Fragment, useContext } from "react";
 import UniversitarioContext from "../../../context/universitarios/UniversitarioContext";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
@@ -12,70 +12,82 @@ const RegistroUniversitario = ({
   limpiarFormulario,
   alerta,
   editUni,
+  mostrarAlerta
 }) => {
   const { nombre, apellidos, cu, ci, carrera, cargo } = datosEstudiantes;
   const universitarioContext = useContext(UniversitarioContext);
-  const { estudiantes, estudiantesPorRegistro } = universitarioContext;
+  const { estudiantesPorRegistro } = universitarioContext;
 
   const listaEstudiantes = () => {
-    const doc = new jsPDF({
-      orientation: "landscape",
-      format: "letter",
-    });
+    try {
+      const doc = new jsPDF({
+        orientation: "landscape",
+        format: "letter",
+      });
 
-    const widthPage = doc.internal.pageSize.getWidth();
+      const widthPage = doc.internal.pageSize.getWidth();
 
-    doc.text(`LISTA DE ESTUDIANTES UNIVERSITARIOS`, widthPage / 3, 10);
-    doc.text(`Fecha Proceso Electoral ${estudiantesPorRegistro[0].registro}`, widthPage / 12, 20);
+      doc.text(`LISTA DE ESTUDIANTES UNIVERSITARIOS`, widthPage / 3, 10);
+      doc.text(
+        `Fecha Proceso Electoral ${estudiantesPorRegistro[0].registro}`,
+        widthPage / 12,
+        20
+      );
 
-    
-    doc.autoTable({
-      startY: 25,
-      head: [
-        [
-          { content: "Nombre (s)" },
-          { content: "Apellido (s)" },
-          { content: "Carrera" },
-          { content: "Cargo" },
-          { content: "Carnet Universitario" },
-          { content: "Carnet Identidad" },
-        ],
-      ],
-    });
-    estudiantesPorRegistro.map((estudiante) => {
       doc.autoTable({
-        columnStyles: {
-          0: { cellWidth: 38 },
-          1: { cellWidth: 40 },
-          2: { cellWidth: 30 },
-          3: { cellWidth: 25 },
-          3: { cellWidth: 40 },
-        },
-        body: [
+        startY: 25,
+        head: [
           [
-            crypto.AES.decrypt(estudiante.nombre, "palabraClave").toString(
-              crypto.enc.Utf8
-            ),
-            crypto.AES.decrypt(estudiante.apellidos, "palabraClave").toString(
-              crypto.enc.Utf8
-            ),
-            crypto.AES.decrypt(estudiante.carrera, "palabraClave").toString(
-              crypto.enc.Utf8
-            ),
-            crypto.AES.decrypt(estudiante.cargo, "palabraClave").toString(
-              crypto.enc.Utf8
-            ),
-            crypto.AES.decrypt(estudiante.cu, "palabraClave").toString(
-              crypto.enc.Utf8
-            ),
-            crypto.AES.decrypt(estudiante.ci, "palabraClave").toString(
-              crypto.enc.Utf8
-            ),
+            { content: "Nombre (s)" },
+            { content: "Apellido (s)" },
+            { content: "Carrera" },
+            { content: "Cargo" },
+            { content: "Carnet Universitario" },
+            { content: "Carnet Identidad" },
           ],
         ],
       });
-    });
-    doc.save("listaEstudiantes.pdf");
+      estudiantesPorRegistro.map((estudiante) => {
+        doc.autoTable({
+          columnStyles: {
+            0: { cellWidth: 38 },
+            1: { cellWidth: 40 },
+            2: { cellWidth: 30 },
+            3: { cellWidth: 25 },
+            3: { cellWidth: 40 },
+          },
+          body: [
+            [
+              crypto.AES.decrypt(estudiante.nombre, "palabraClave").toString(
+                crypto.enc.Utf8
+              ),
+              crypto.AES.decrypt(estudiante.apellidos, "palabraClave").toString(
+                crypto.enc.Utf8
+              ),
+              crypto.AES.decrypt(estudiante.carrera, "palabraClave").toString(
+                crypto.enc.Utf8
+              ),
+              crypto.AES.decrypt(estudiante.cargo, "palabraClave").toString(
+                crypto.enc.Utf8
+              ),
+              crypto.AES.decrypt(estudiante.cu, "palabraClave").toString(
+                crypto.enc.Utf8
+              ),
+              crypto.AES.decrypt(estudiante.ci, "palabraClave").toString(
+                crypto.enc.Utf8
+              ),
+            ],
+          ],
+        });
+      });
+      doc.save("listaEstudiantes.pdf");
+    } catch (error) {
+      console.log(error);
+      mostrarAlerta(
+        "Aun no hay estudiantes registrados",
+        "danger"
+      );
+    }
   };
 
   return (

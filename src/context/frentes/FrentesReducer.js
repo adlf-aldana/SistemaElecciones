@@ -7,6 +7,7 @@ import {
   LIMPIAR_FORMULARIO,
   LIMPIAR_MENSAJE,
   OBTENER_FRENTES,
+  OBTENER_FRENTE_REGISTRO,
 } from "../../types";
 
 export default (state, action) => {
@@ -14,8 +15,15 @@ export default (state, action) => {
     case OBTENER_FRENTES:
       return {
         ...state,
-        frentes: [...state.frentes, action.payload.frente],
-        nombreLogoUnico: [action.payload.nombre],
+        frentes: [...state.frentes, action.payload.registroFrentes],
+        nombreLogoUnico: [action.payload.nombreCadaFrentePorRegistro],
+        // frentes: [...state.frentes, action.payload.frente],
+        // nombreLogoUnico: [action.payload.nombre],
+      };
+    case OBTENER_FRENTE_REGISTRO:
+      return {
+        ...state,
+        frentesPorRegistro: action.payload,
       };
     case AGREGAR_FRENTE:
       return {
