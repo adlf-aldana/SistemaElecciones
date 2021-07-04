@@ -12,6 +12,7 @@ import pdfFonts from "pdfmake/build/vfs_fonts"; // fonts provided for pdfmake
 import VotanteContext from "../../../context/votante/votanteContext";
 import FrenteContext from "../../../context/frentes/FrentesContext";
 import UniversitarioContext from "../../../context/universitarios/UniversitarioContext";
+import usuarioAxios from "../../../config/axios";
 
 const Informe = () => {
   // Set the fonts to use
@@ -36,6 +37,7 @@ const Informe = () => {
 
   const [datosFrente, setDatosFrente] = useState([]);
   const [datosVotante, setdatosVotante] = useState([]);
+  const [ultimoProcesoElectoral, setultimoProcesoElectoral] = useState([]);
 
   const informacionCantidadVotos = () => {
     setcantidades({
@@ -214,6 +216,13 @@ const Informe = () => {
       consiguiendoDatosVotante();
       obteniendoDatosFrentes();
     }
+    const ultimoProcesoEleccionario = () => {
+      usuarioAxios.get("/api/procesoElectoral").then((res) => {
+        setultimoProcesoElectoral(res.data.ultimoProcesoElectoral);
+        // obtenerUniversitarios(res.data.ultimoProcesoElectoral);
+      });
+    };
+    ultimoProcesoEleccionario();
   }, []);
 
   useEffect(() => {
@@ -228,67 +237,78 @@ const Informe = () => {
   return (
     <Fragment>
       <div className="container">
-        <h1 className="text-center p-4">REPORTE</h1>
-        {Object.keys(frentes).length > 0 ? (
-          <div>
-            <div className="col">
-              <div className="row-md-12">
-                <button
-                  className="btn btn-success mr-3"
-                  onClick={() => generarPDF()}
-                >
-                  Generar Reporte
-                </button>
+        {ultimoProcesoElectoral.length > 0 ? (
+          ultimoProcesoElectoral[0].estado ? (
+            <>
+              <h1 className="text-center p-4">REPORTE</h1>
+              {Object.keys(frentes).length > 0 ? (
+                <div>
+                  <div className="col">
+                    <div className="row-md-12">
+                      <button
+                        className="btn btn-success mr-3"
+                        onClick={() => generarPDF()}
+                      >
+                        Generar Reporte
+                      </button>
 
-                <button
-                  className="btn btn-success mr-3"
-                  onClick={() => listaVotaciones(true)}
-                >
-                  Reporte de los que votaron
-                </button>
+                      <button
+                        className="btn btn-success mr-3"
+                        onClick={() => listaVotaciones(true)}
+                      >
+                        Reporte de los que votaron
+                      </button>
 
-                <button
-                  className="btn btn-success"
-                  onClick={() => listaVotaciones(false)}
-                >
-                  Reporte de los que no votaron
-                </button>
-              </div>
-              <br />
+                      <button
+                        className="btn btn-success"
+                        onClick={() => listaVotaciones(false)}
+                      >
+                        Reporte de los que no votaron
+                      </button>
+                    </div>
+                    <br />
 
-              {cantidades.totalUniversitarios ? (
-                <>
-                  <div className="row">
-                    <p>
-                      <strong>Total Estudiantes: </strong>
-                      {cantidades.totalUniversitarios}
-                    </p>
+                    {cantidades.totalUniversitarios ? (
+                      <>
+                        <div className="row">
+                          <p>
+                            <strong>Total Estudiantes: </strong>
+                            {cantidades.totalUniversitarios}
+                          </p>
+                        </div>
+                        <div className="row">
+                          <p>
+                            <strong>Total que votaron: </strong>
+                            {cantidades.votaron}
+                          </p>
+                        </div>
+                        <div className="row">
+                          <p>
+                            <strong>Total que NO votaron: </strong>
+                            {cantidades.noVotaron}
+                          </p>
+                        </div>
+                      </>
+                    ) : null}
                   </div>
-                  <div className="row">
-                    <p>
-                      <strong>Total que votaron: </strong>
-                      {cantidades.votaron}
-                    </p>
+                  <div id="tablaDatos"></div>
+                  <div id="grafico">
+                    <Tabla datosFrente={datosFrente} />
+                    <BarGraphics datosGraficos={datosGraficos} />
+                    <BarraGraphics datosGraficos={datosGraficos} />
                   </div>
-                  <div className="row">
-                    <p>
-                      <strong>Total que NO votaron: </strong>
-                      {cantidades.noVotaron}
-                    </p>
-                  </div>
-                </>
-              ) : null}
-            </div>
-            <div id="tablaDatos"></div>
-              <div id="grafico">
-                <Tabla datosFrente={datosFrente} />
-                <BarGraphics datosGraficos={datosGraficos} />
-                <BarraGraphics datosGraficos={datosGraficos} />
-              </div>
-            
-          </div>
+                </div>
+              ) : (
+                <p>No hay datos</p>
+              )}
+            </>
+          ) : (
+            <h3 className="text-center mt-5">
+              Todos los procesos electorales estan cerrados
+            </h3>
+          )
         ) : (
-          <p>No hay datos</p>
+          <h3 className="text-center mt-5">No ningún Proceso Electoral</h3>
         )}
       </div>
     </Fragment>
@@ -297,7 +317,8 @@ const Informe = () => {
 
 export default Informe;
 
-{/* 
+{
+  /* 
 <div id="carouselExampleControlsNoTouching" className="carousel slide" data-bs-touch="false" data-bs-interval="false">
   <div className="carousel-inner">
     <div className="carousel-item active">
@@ -318,6 +339,9 @@ export default Informe;
     <span className="carousel-control-next-icon" aria-hidden="true"></span>
     <span className="visually-hidden">Next</span>
   </button>
-</div> */}
+</div> */
+}
 
-{/* <img src="../../../../backend/public/images/df886a9c-2b32-4458-abcc-0a9ffb396909.jpg" width="459" height="500" alt=""/> */}
+{
+  /* <img src="../../../../backend/public/images/df886a9c-2b32-4458-abcc-0a9ffb396909.jpg" width="459" height="500" alt=""/> */
+}

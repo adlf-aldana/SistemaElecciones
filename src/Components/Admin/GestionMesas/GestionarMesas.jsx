@@ -1,9 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import usuarioAxios from "../../../config/axios";
+import FrentesContext from "../../../context/frentes/FrentesContext";
 
 import ListarMesas from "../../Admin/GestionMesas/ListarMesas";
 
 const GestionarMesas = () => {
+  const frentesContext = useContext(FrentesContext);
+  const {
+    busquedaUniversitario,
+    estudiante
+  } = frentesContext;
+
   const [datosForm, setdatosForm] = useState([
     {
       mesa: null,
@@ -11,7 +18,7 @@ const GestionarMesas = () => {
       cuEncargado: null,
       celularEncargado: null,
       habilitado: false,
-      password: null,
+      password: "",
     },
   ]);
   const [actualizarLista, setactualizarLista] = useState(false);
@@ -19,8 +26,8 @@ const GestionarMesas = () => {
   const [alerta, setalerta] = useState();
   const [mesas, setMesas] = useState();
   const [ultimoProcesoElectoral, setultimoProcesoElectoral] = useState([]);
-  const [addPassword, setaddPassword] = useState(false);
-  const [dospasswords, setdospasswords] = useState(0);
+  // const [addPassword, setaddPassword] = useState(false);
+  // const [dospasswords, setdospasswords] = useState(0);
 
   const handleChange = (index, event) => {
     const values = [...datosForm];
@@ -28,9 +35,13 @@ const GestionarMesas = () => {
     setdatosForm(values);
   };
 
+  const verificarEncargado = async (cu) => {
+    await busquedaUniversitario(cu);
+  };
+
   const onSubmit = async (e) => {
     e.preventDefault();
-    let i =0;
+    let i = 0;
 
     if (datosForm) {
       if (datosForm[0].mesa === "" || datosForm[0].mesa === null) {
@@ -44,13 +55,14 @@ const GestionarMesas = () => {
         return;
       }
     }
-    for(let i =0; i<datosForm.length; i++){
-    // datosForm.map((form) => {
+
+    let j = 0;
+    for (let i = 0; i < datosForm.length; i++) {
+      // datosForm.map((form) => {
       if (
         datosForm[i].cargo === "" ||
         datosForm[i].cuEncargado === "" ||
-        datosForm[i].celularEncargado === "" ||
-        datosForm[i].password === ""
+        datosForm[i].celularEncargado === ""
       ) {
         setTimeout(() => {
           setalerta({});
@@ -62,7 +74,7 @@ const GestionarMesas = () => {
         return;
       }
 
-      if (datosForm[i].password !== "" && dospasswords > 1) {
+      if (datosForm[i].password !== null && j > 1) {
         setTimeout(() => {
           setalerta({});
         }, 3000);
@@ -74,7 +86,7 @@ const GestionarMesas = () => {
       }
 
       if (datosForm.password !== "") {
-        setdospasswords(dospasswords + 1);
+        j++;
       }
     }
     // });
@@ -120,12 +132,12 @@ const GestionarMesas = () => {
   const limpiarDatos = () => {
     setdatosForm([
       {
-        mesa: null,
+        mesa: "",
         cargo: "",
-        cuEncargado: null,
-        celularEncargado: null,
-        habilitado: null,
-        password: null,
+        cuEncargado: 0,
+        celularEncargado: 0,
+        habilitado: false,
+        password: "",
       },
     ]);
   };
@@ -145,27 +157,30 @@ const GestionarMesas = () => {
   };
 
   const cleanForm = () => {
-    console.log("limpiando");
+    console.log(datosForm);
+    limpiarDatos();
   };
 
   const eliminar = async (ids) => {
-    try {
-      ids.map(async (id) => {
-        await usuarioAxios.delete(`/api/mesas/${id}`);
-      });
-      setalerta({
-        categoria: "success",
-        msg: "Correctamente: Eliminado correctamente",
-      });
-    } catch (error) {
-      console.log(error.response);
+    if (window.confirm("¿Esta seguro de eliminar?")) {
+      try {
+        ids.map(async (id) => {
+          await usuarioAxios.delete(`/api/mesas/${id}`);
+        });
+        setalerta({
+          categoria: "success",
+          msg: "Correctamente: Eliminado correctamente",
+        });
+      } catch (error) {
+        console.log(error.response);
+      }
     }
   };
 
-  const agregarPassword = () => {
-    setaddPassword(!addPassword);
-    setdospasswords(dospasswords + 1);
-  };
+  // const agregarPassword = () => {
+  //   setaddPassword(!addPassword);
+  //   setdospasswords(dospasswords + 1);
+  // };
 
   useEffect(() => {
     const ultimoProcesoEleccionario = () => {
@@ -207,12 +222,15 @@ const GestionarMesas = () => {
                     placeholder="N° de Mesa"
                     className="form-control"
                     onChange={(event) => handleChange(0, event)}
+                    value={datosForm[0].mesa}
                     // value={datosForm[0] ? datosForm[0].nombreFrente : nombreFrente}
                   />
                 </div>
 
                 <h3 className="text-center mt-3">DATOS DE LOS ENCARGADOS</h3>
-                <p className="text-danger">*Importante: Solo dos encargados pueden contener contraseña.</p>
+                <p className="text-danger">
+                  *Importante: Solo dos encargados pueden contener contraseña.
+                </p>
 
                 {datosForm.map((dato, index) => (
                   <div className="row mt-3" key={index}>
@@ -236,19 +254,12 @@ const GestionarMesas = () => {
                         placeholder="Carnet Universitario"
                         className="form-control"
                         onChange={(event) => handleChange(index, event)}
-                        //   value={
-                        //     dato.cuEncargado.length > 10
-                        //       ? crypto.AES.decrypt(
-                        //           dato.cuEncargado,
-                        //           "palabraClave"
-                        //         ).toString(crypto.enc.Utf8)
-                        //       : dato.cuEncargado
-                        //   }
+                        value={dato.cuEncargado}
                       />
                       <button
                         type="button"
                         className="btn btn-success mt-2"
-                        //   onClick={() => verificarEncargado(dato.cuEncargado)}
+                          onClick={() => verificarEncargado(dato.cuEncargado)}
                       >
                         Verificar
                       </button>
@@ -262,14 +273,7 @@ const GestionarMesas = () => {
                         placeholder="Celular"
                         className="form-control"
                         onChange={(event) => handleChange(index, event)}
-                        //   value={
-                        //     dato.celularEncargado.length > 10
-                        //       ? crypto.AES.decrypt(
-                        //           dato.celularEncargado,
-                        //           "palabraClave"
-                        //         ).toString(crypto.enc.Utf8)
-                        //       : dato.celularEncargado
-                        //   }
+                        value={dato.celularEncargado}
                       />
                     </div>
 
@@ -281,14 +285,7 @@ const GestionarMesas = () => {
                         placeholder="Agregue una contraseña"
                         className="form-control"
                         onChange={(event) => handleChange(index, event)}
-                        //   value={
-                        //     dato.celularEncargado.length > 10
-                        //       ? crypto.AES.decrypt(
-                        //           dato.celularEncargado,
-                        //           "palabraClave"
-                        //         ).toString(crypto.enc.Utf8)
-                        //       : dato.celularEncargado
-                        //   }
+                        value={dato.password}
                       />
                     </div>
                     {/* {addPassword ? (
@@ -351,6 +348,31 @@ const GestionarMesas = () => {
                       Guardar
                     </button>
                   )}
+                </div>
+                <div className="row mt-3">
+                  {estudiante ? (
+                    <div className="col">
+                      <div className="row">
+                        <strong>
+                          <label htmlFor="">DATOS ENCARGADO</label>
+                        </strong>
+                      </div>
+
+                      <div className="row">
+                        <strong>
+                          <label htmlFor="">Nombre encagado: </label>
+                        </strong>
+                        <label htmlFor="">{estudiante.nombre}</label>
+                      </div>
+
+                      <div className="row">
+                        <strong>
+                          <label htmlFor="">Apellidos encagado: </label>
+                        </strong>
+                        <label htmlFor="">{estudiante.apellidos}</label>
+                      </div>
+                    </div>
+                  ) : null}
                 </div>
               </form>
               <ListarMesas

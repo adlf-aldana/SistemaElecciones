@@ -66,12 +66,13 @@ const UniversitarioState = (props) => {
           msg: e.response.data.msg,
           categoria: "danger",
         };
-      } else {
-        alerta = {
-          msg: "No se pudo conectar con el servidor",
-          categoria: "danger",
-        };
-      }
+      } 
+      // else {
+      //   alerta = {
+      //     msg: "No se pudo conectar con el servidor",
+      //     categoria: "danger",
+      //   };
+      // }
       dispatch({
         type: ERROR_UNIVERSITARIO,
         payload: alerta,
@@ -96,8 +97,8 @@ const UniversitarioState = (props) => {
         ).toString(),
         cargo: crypto.AES.encrypt(univertario.cargo, palabraClave).toString(),
         registro: registro,
-        password: univertario.password,
-        // password: univertario.password ? univertario.password : univertario.ci,
+        // password: univertario.password,
+        password: univertario.password ? univertario.password : univertario.ci,
       };
       const regUniversitario = await usuarioAxios.post(
         "/api/lista_estudiantes",
@@ -116,12 +117,13 @@ const UniversitarioState = (props) => {
           msg: e.response.data.msg,
           categoria: "danger",
         };
-      } else {
-        alerta = {
-          msg: "No se pudo conectar con el servidor",
-          categoria: "danger",
-        };
-      }
+      } 
+      // else {
+      //   alerta = {
+      //     msg: "No se pudo conectar con el servidor",
+      //     categoria: "danger",
+      //   };
+      // }
       dispatch({
         type: ERROR_UNIVERSITARIO,
         payload: alerta,
