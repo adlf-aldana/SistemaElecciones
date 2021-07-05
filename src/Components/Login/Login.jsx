@@ -61,7 +61,8 @@ const Login = (props) => {
     if (autenticado) {
       if (usuario === null) {
       } else if (usuario.cargo === "Administrador") {
-        props.history.push("/registroUniversitario");
+        // props.history.push("/registroUniversitario");
+        props.history.push("/proceso-eleccionario");
       } else if (usuario.cargoLogin === "Encargado de Mesa") {
         props.history.push("/encargadoMesa");
       } else if (usuario.cargoLogin === "Verificador de Votante") {

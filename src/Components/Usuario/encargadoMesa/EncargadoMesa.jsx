@@ -5,6 +5,7 @@ import AuthContext from "../../../context/autenticacion/authContext";
 import UniversitarioContext from "../../../context/universitarios/UniversitarioContext";
 import VotanteContext from "../../../context/votante/votanteContext";
 import AlertaContext from "../../../context/alerta/alertaContext";
+import usuarioAxios from "../../../config/axios";
 
 const EncargadoMesa = () => {
   const alertaContext = useContext(AlertaContext);
@@ -24,7 +25,7 @@ const EncargadoMesa = () => {
     actualizarVotante,
     busquedaUniversitario,
     estudiante,
-    limpiarUniversitarioBuscado
+    limpiarUniversitarioBuscado,
   } = votanteContext;
 
   // DATOS DEL FORMULARIO
@@ -33,6 +34,8 @@ const EncargadoMesa = () => {
   });
   const [motivoRechazo, setmotivoRechazo] = useState({ descripcion: "" });
   const { descripcion } = motivoRechazo;
+  const [mesaHabilitada, setmesaHabilitada] = useState(false);
+
   const handleMotivo = (e) => {
     setmotivoRechazo({
       ...motivoRechazo,
@@ -63,12 +66,18 @@ const EncargadoMesa = () => {
       }, 3000);
     }
   }, [mensaje]);
+  useEffect(() => {
+    if (usuario) {
+      usuarioAxios.get(`/api/mesas/${usuario.cu}`).then((res) => {
+        setmesaHabilitada(res.data.mesaAbierta[0].habilitado);
+      });
+    }
+  }, []);
 
   const confirmar = async () => {
     if (usuario) {
       // if (usuario.cargo === "Encargado de Mesa") {
       if (usuario.cargoLogin === "Encargado de Mesa") {
-        console.log('aca');
         const votante = {
           cu: estudiante.cu,
           encargadoMesa: true,
@@ -86,9 +95,9 @@ const EncargadoMesa = () => {
           });
           limpiarUniversitarioBuscado();
         }
-      // } else if (usuario.cargo === "Verificador de Votante") {
+        // } else if (usuario.cargo === "Verificador de Votante") {
       } else if (usuario.cargoLogin === "Verificador de Votante") {
-        console.log('aca2');
+        console.log("aca2");
         const votante = {
           cu: autorizandoVotante.cu,
           descripcionProblemaVerificadorVotante: "",
@@ -136,7 +145,7 @@ const EncargadoMesa = () => {
           });
           limpiarUniversitarioBuscado();
         }
-      // } else if (usuario.cargo === "Verificador de Votante") {
+        // } else if (usuario.cargo === "Verificador de Votante") {
       } else if (usuario.cargoLogin === "Verificador de Votante") {
         if (!descripcion)
           return mostrarAlerta(
@@ -167,7 +176,79 @@ const EncargadoMesa = () => {
   return (
     <Fragment>
       <div className="container mt-3">
-        {usuario ? <Cards usuario={usuario} /> : null}
+        {!mesaHabilitada ? (
+          <p className="text-center mt-3">Mesa no habilitada</p>
+        ) : (
+          <>
+            {usuario ? <Cards usuario={usuario} /> : null}
+            {usuario ? (
+              usuario.cargo === "Verificador de Votante" ? null : (
+                <form onSubmit={onSubmit}>
+                  <div className="row mt-3">
+                    <div className="col-md-3">
+                      <strong>Habilitar a Votante:</strong>
+                    </div>
+                    <div className="col-md-5">
+                      <input
+                        type="number"
+                        name="cuUniversitario"
+                        className="form-control"
+                        placeholder="Introduzca carnet universitario"
+                        onChange={handleChange}
+                        value={cuUniversitario}
+                      />
+                    </div>
+                    <div className="col-md-4">
+                      <button type="submit" className="btn btn-success">
+                        Buscar
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              )
+            ) : null}
+            {alerta ? (
+              <div className={`alert alert-${alerta.categoria}`}>
+                {alerta.msg}
+              </div>
+            ) : null}
+            {estudiante ? (
+              <Cards
+                estudiante={estudiante}
+                usuario={usuario}
+                confirmar={confirmar}
+                rechazar={rechazar}
+                setmotivoRechazo={setmotivoRechazo}
+                motivoRechazo={motivoRechazo}
+                handleMotivo={handleMotivo}
+                descripcion={descripcion}
+              />
+            ) : null}
+
+            {usuario ? (
+              autorizandoVotante &&
+              usuario.cargo === "Verificador de Votante" ? (
+                autorizandoVotante.verificadorVotante &&
+                autorizandoVotante.encargadoMesa ? null : (
+                  <Cards
+                    estudiante={autorizandoVotante}
+                    usuario={usuario}
+                    confirmar={confirmar}
+                    autorizandoVotante={autorizandoVotante}
+                    rechazar={rechazar}
+                    setmotivoRechazo={setmotivoRechazo}
+                    motivoRechazo={motivoRechazo}
+                    handleMotivo={handleMotivo}
+                    descripcion={descripcion}
+                  />
+                )
+              ) : null
+            ) : null}
+          </>
+        )}
+
+        {/*
+              {usuario ? <Cards usuario={usuario} /> : null}
         {usuario ? (
           usuario.cargo === "Verificador de Votante" ? null : (
             <form onSubmit={onSubmit}>
@@ -227,7 +308,7 @@ const EncargadoMesa = () => {
               />
             )
           ) : null
-        ) : null}
+            ) : null} */}
       </div>
     </Fragment>
   );
