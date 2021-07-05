@@ -7,6 +7,8 @@ const ListarMesas = ({ actualizarLista, eliminar, setMesas, mesas }) => {
     try {
       ids.map(async (id) => {
         const res = await usuarioAxios.put(`/api/mesas/${id}`, habilitado);
+        // console.log(res.data);
+        // setMesas(res.data.mesas);
         setMesas(res.data.numMesa);
       });
     } catch (error) {

@@ -3,6 +3,7 @@ import usuarioAxios from "../../../config/axios";
 import FrentesContext from "../../../context/frentes/FrentesContext";
 
 import ListarMesas from "../../Admin/GestionMesas/ListarMesas";
+import * as crypto from "crypto-js";
 
 const GestionarMesas = () => {
   const frentesContext = useContext(FrentesContext);
@@ -34,6 +35,7 @@ const GestionarMesas = () => {
   const [alerta, setalerta] = useState();
   const [mesas, setMesas] = useState();
   const [ultimoProcesoElectoral, setultimoProcesoElectoral] = useState([]);
+  const [datosEstudiante, setdatosEstudiante] = useState([]);
   // const [addPassword, setaddPassword] = useState(false);
   // const [dospasswords, setdospasswords] = useState(0);
 
@@ -167,10 +169,15 @@ const GestionarMesas = () => {
         });
       });
 
-      usuarioAxios.put(`/api/lista_estudiantes/${datos[0].cuEncargadoMesa}`, {cargoLogin: datos[0].cargoEncargadoMesa})
-      usuarioAxios.put(`/api/lista_estudiantes/${datos[0].cuVerificador}`, {cargoLogin: datos[0].cargoVerificador})
+      usuarioAxios.put(`/api/lista_estudiantes/${datos[0].cuEncargadoMesa}`, {
+        cargoLogin: datos[0].cargoEncargadoMesa,
+      });
+      usuarioAxios.put(`/api/lista_estudiantes/${datos[0].cuVerificador}`, {
+        cargoLogin: datos[0].cargoVerificador,
+      });
       // GUARDANDO CONTRASEÑA EN UNIVERSITARIOS
-      await usuarioAxios.post("/api/mesas", datos);
+      await usuarioAxios.post("/api/mesas/", datos);
+
       setTimeout(() => {
         setalerta({});
       }, 3000);
@@ -199,8 +206,8 @@ const GestionarMesas = () => {
       {
         mesa: "",
         cargo: "",
-        cuEncargado: 0,
-        celularEncargado: 0,
+        cuEncargado: "",
+        celularEncargado: "",
         habilitado: false,
         password: "",
       },
@@ -208,15 +215,15 @@ const GestionarMesas = () => {
 
     setdatoEncargadoMesa({
       cargoEncargadoMesa: "Encargado de Mesa",
-      cuEncargadoMesa: 0,
-      celularEncargadoMesa: 0,
+      cuEncargadoMesa: "",
+      celularEncargadoMesa: "",
       passwordEncargadoMesa: "",
     });
 
     setdatoVerificadorMesa({
       cargoVerificador: "Encargado de Mesa",
-      cuVerificadorMesa: 0,
-      celularVerificadorMesa: 0,
+      cuVerificadorMesa: "",
+      celularVerificadorMesa: "",
       passwordVerificadorMesa: "",
     });
   };
@@ -255,6 +262,72 @@ const GestionarMesas = () => {
     }
   };
 
+  const listaMesasPDF = () => {
+    console.log(mesas);
+    // console.log(datosEstudiante);
+
+    // const doc = new jsPDF({
+    //   orientation: "landscape",
+    //   format: "letter",
+    // });
+
+    // const widthPage = doc.internal.pageSize.getWidth();
+
+    // doc.text("LISTA DE MESAS", widthPage / 2, 10);
+    // doc.text(
+    //   `Fecha Proceso Electoral ${frentesPorRegistro[0].registro}`,
+    //   widthPage / 12,
+    //   20
+    // );
+    // doc.autoTable({
+    //   startY: 25,
+    //   head: [
+    //     [
+    //       { content: "N° Mesa" },
+    //       { content: "Nombre" },
+    //       { content: "Apellidos" },
+    //       { content: "Cargo" },
+    //       { content: "Celular" },
+    //       { content: "C.U." },
+    //     ],
+    //   ],
+    // });
+
+    // mesas.map(mesa => {
+    //   console.log(mesa.cargo.length);
+    //   for(let i=0; i<mesa.cargo.length;i++){
+    //   }
+    // })
+
+    // datosFrentes.map((frente) => {
+    //   doc.autoTable({
+    //     columnStyles: {
+    //       0: { cellWidth: 65 },
+    //       1: { cellWidth: 40 },
+    //       2: { cellWidth: 40 },
+    //       3: { cellWidth: 40 },
+    //       4: { cellWidth: 40 },
+    //     },
+    //     body: [
+    //       [
+    //         frente.nombreFrente,
+    //         frente.cargoFrente,
+    //         frente.nombre,
+    //         frente.apellidos,
+    //         crypto.AES.decrypt(
+    //           frente.celularEncargado,
+    //           "palabraClave"
+    //         ).toString(crypto.enc.Utf8),
+    //         crypto.AES.decrypt(frente.cuEncargado, "palabraClave").toString(
+    //           crypto.enc.Utf8
+    //         ),
+    //       ],
+    //     ],
+    //   });
+    // });
+    // doc.save("listaFrentes.pdf");
+  };
+
   // const agregarPassword = () => {
   //   setaddPassword(!addPassword);
   //   setdospasswords(dospasswords + 1);
@@ -268,12 +341,39 @@ const GestionarMesas = () => {
         const data = await usuarioAxios.get(
           `/api/mesas/${res.data.ultimoProcesoElectoral[0].registro}`
         );
+        console.log(data);
         setMesas(data.data.nombreCadaMesaPorRegistro);
       });
     };
-
     ultimoProcesoEleccionario();
   }, [actualizarLista]);
+
+  useEffect(() => {
+    var data = [];
+    if (mesas !== undefined) {
+      if (mesas.length > 0) {
+        mesas.map((mesa) => {
+          console.log(mesa);
+          for (let i = 0; i < mesa.cuEncargado.length; i++) {
+            usuarioAxios
+              .get(
+                `/api/lista_estudiantes/` +
+                  crypto.AES.decrypt(
+                    mesa.cuEncargado[i],
+                    "palabraClave"
+                  ).toString(crypto.enc.Utf8)
+              )
+              .then((res) => {
+                console.log(res.data.estudiante);
+                data.push(res.data.estudiante);
+              });
+          }
+          setdatosEstudiante(data);
+        });
+      }
+    }
+  }, [mesas]);
+
   return (
     <>
       <div className="container mt-3">
@@ -288,9 +388,12 @@ const GestionarMesas = () => {
                 </div>
               ) : null}
 
-              {/* <button className="btn btn-success mr-3" onClick={() => listaFrentes()}>
-            Reporte Lista de Mesas
-          </button> */}
+              <button
+                className="btn btn-success mr-3"
+                onClick={() => listaMesasPDF()}
+              >
+                Reporte Lista de Mesas
+              </button>
               <form onSubmit={onSubmit}>
                 <div className="col">
                   <label htmlFor="">N° de Mesa:</label>

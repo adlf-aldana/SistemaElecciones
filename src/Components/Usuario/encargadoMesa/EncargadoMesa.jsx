@@ -68,7 +68,10 @@ const EncargadoMesa = () => {
   }, [mensaje]);
   useEffect(() => {
     if (usuario) {
+      console.log(usuario.cu);
+
       usuarioAxios.get(`/api/mesas/${usuario.cu}`).then((res) => {
+        console.log(res.data);
         setmesaHabilitada(res.data.mesaAbierta[0].habilitado);
       });
     }
