@@ -147,7 +147,7 @@ const Votacion = () => {
                   <h1 className="text-center mt-4">Votación</h1>
                   <div className="row">
                     {/* {frentes.length > 0 ? ( */}
-                    {nombreLogoUnico ? (
+                    {nombreLogoUnico.length > 0 ? (
                       nombreLogoUnico[0].map((frente) => (
                         <div className="col-md-4 mt-3" key={frente._id}>
                           <div
@@ -155,8 +155,8 @@ const Votacion = () => {
                             style={{ width: "18rem", display: "block" }}
                           >
                             <img
-                              src={`http://localhost:4000/${frente.logoFrente[0]}`}
-                              // src={`${URL}/${frente.logoFrente}`}
+                              // src={`http://localhost:4000/${frente.logoFrente[0]}`}
+                              src={`${URL}/${frente.logoFrente[0]}`}
                               alt="..."
                               width="150"
                               height="160"

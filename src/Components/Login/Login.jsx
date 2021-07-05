@@ -59,6 +59,7 @@ const Login = (props) => {
     // }
 
     if (autenticado) {
+      console.log(usuario);
       if (usuario === null) {
       } else if (usuario.cargo === "Administrador") {
         // props.history.push("/registroUniversitario");

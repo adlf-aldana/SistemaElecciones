@@ -66,7 +66,7 @@ const UniversitarioState = (props) => {
           msg: e.response.data.msg,
           categoria: "danger",
         };
-      } 
+      }
       // else {
       //   alerta = {
       //     msg: "No se pudo conectar con el servidor",
@@ -96,7 +96,7 @@ const UniversitarioState = (props) => {
           palabraClave
         ).toString(),
         cargo: crypto.AES.encrypt(univertario.cargo, palabraClave).toString(),
-        registro: registro,
+        registro: registro ? registro : null,
         // password: univertario.password,
         password: univertario.password ? univertario.password : univertario.ci,
       };
@@ -117,7 +117,7 @@ const UniversitarioState = (props) => {
           msg: e.response.data.msg,
           categoria: "danger",
         };
-      } 
+      }
       // else {
       //   alerta = {
       //     msg: "No se pudo conectar con el servidor",
@@ -248,7 +248,7 @@ const UniversitarioState = (props) => {
           data: {
             msg: {
               nombreFrente: votante.nombreFrente,
-              cargoFrente: votante.cargo
+              cargoFrente: votante.cargo,
             },
           },
         })

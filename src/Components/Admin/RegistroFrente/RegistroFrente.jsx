@@ -186,6 +186,7 @@ const RegistroFrente = () => {
   };
 
   const cargandoDatosFrente = () => {
+    console.log(frentes);
     const datos = [];
     frentes[0] &&
       frentes[0].map(async frente => datos.push(await obteniendoDatosVotante(frente)));

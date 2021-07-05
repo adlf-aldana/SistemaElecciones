@@ -44,7 +44,7 @@ function App() {
               <Router>
                 <NavBar />
                 <Switch>
-                {/* <Route
+                  {/* <Route
                     path="/registroUniversitario"
                     component={UniversitarioIndex}
                   /> */}
@@ -60,7 +60,7 @@ function App() {
                     path="/registroFrente"
                     component={RegistroFrente}
                   />
-                   <RutaAdmin
+                  <RutaAdmin
                     path="/gestionarMesas"
                     component={GestionarMesas}
                   />

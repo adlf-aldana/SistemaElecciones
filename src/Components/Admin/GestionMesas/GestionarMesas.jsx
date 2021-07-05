@@ -333,7 +333,9 @@ const GestionarMesas = () => {
   //   setdospasswords(dospasswords + 1);
   // };
 
+  // BUSCANDO SI HAY UN PROCESO ELECTORAL
   useEffect(() => {
+    // if (ultimoProcesoElectoral.length > 0) {
     const ultimoProcesoEleccionario = () => {
       usuarioAxios.get("/api/procesoElectoral").then(async (res) => {
         setultimoProcesoElectoral(res.data.ultimoProcesoElectoral);
@@ -341,19 +343,61 @@ const GestionarMesas = () => {
         const data = await usuarioAxios.get(
           `/api/mesas/${res.data.ultimoProcesoElectoral[0].registro}`
         );
-        console.log(data);
         setMesas(data.data.nombreCadaMesaPorRegistro);
       });
     };
     ultimoProcesoEleccionario();
+    // }
   }, [actualizarLista]);
+
+  const obteniendoDatosMesa = (cu) => {
+    usuarioAxios
+      .get(
+        `/api/lista_estudiantes/` + cu
+        // crypto.AES.decrypt(mesa.cuEncargado[i], "palabraClave").toString(
+        //   crypto.enc.Utf8
+        // )
+      )
+      .then((res) => {
+        return res.data.estudiante;
+      });
+  };
 
   useEffect(() => {
     var data = [];
     if (mesas !== undefined) {
       if (mesas.length > 0) {
         mesas.map((mesa) => {
-          console.log(mesa);
+          // if (res.cuEncargado) {
+          //   data.push(
+          //     obteniendoDatosMesa(
+          //       crypto.AES.decrypt(
+          //         mesa.cuEncargado[i],
+          //         "palabraClave"
+          //       ).toString(crypto.enc.Utf8)
+          //     )
+          //   );
+          // }
+
+          // if(res.cuEncargadoMesa){
+          //   data.push(
+          //     obteniendoDatosMesa(
+          //         mesa.cuEncargadoMesa[0]
+          //     )
+          //   );
+          // }
+
+          // if(res.cuVerificador){
+          //   data.push(
+          //     obteniendoDatosMesa(
+          //         mesa.cuVerificador[0]
+          //     )
+          //   );
+          // }
+
+
+
+
           for (let i = 0; i < mesa.cuEncargado.length; i++) {
             usuarioAxios
               .get(
@@ -364,10 +408,10 @@ const GestionarMesas = () => {
                   ).toString(crypto.enc.Utf8)
               )
               .then((res) => {
-                console.log(res.data.estudiante);
                 data.push(res.data.estudiante);
               });
           }
+          console.log(data);
           setdatosEstudiante(data);
         });
       }
