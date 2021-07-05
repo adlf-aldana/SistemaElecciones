@@ -18,8 +18,9 @@ const RutaVerificador = ({ component: Component }, ...props) => {
         autenticado &&
         !cargando &&
         (usuario.cargo === "Administrador" ||
-          usuario.cargo === "Encargado de Mesa" ||
-          usuario.cargo === "Estudiante") ? (
+          usuario.cargo === "Encargado de Mesa" 
+          // usuario.cargo === "Estudiante") ? (
+          ) ? (
           <Redirect to="/" />
         ) : (
           <Component {...props} />

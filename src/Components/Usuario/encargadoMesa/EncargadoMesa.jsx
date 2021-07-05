@@ -66,7 +66,9 @@ const EncargadoMesa = () => {
 
   const confirmar = async () => {
     if (usuario) {
-      if (usuario.cargo === "Encargado de Mesa") {
+      // if (usuario.cargo === "Encargado de Mesa") {
+      if (usuario.cargoLogin === "Encargado de Mesa") {
+        console.log('aca');
         const votante = {
           cu: estudiante.cu,
           encargadoMesa: true,
@@ -84,7 +86,9 @@ const EncargadoMesa = () => {
           });
           limpiarUniversitarioBuscado();
         }
-      } else if (usuario.cargo === "Verificador de Votante") {
+      // } else if (usuario.cargo === "Verificador de Votante") {
+      } else if (usuario.cargoLogin === "Verificador de Votante") {
+        console.log('aca2');
         const votante = {
           cu: autorizandoVotante.cu,
           descripcionProblemaVerificadorVotante: "",
@@ -108,7 +112,8 @@ const EncargadoMesa = () => {
 
   const rechazar = async () => {
     if (usuario) {
-      if (usuario.cargo === "Encargado de Mesa") {
+      // if (usuario.cargo === "Encargado de Mesa") {
+      if (usuario.cargoLogin === "Encargado de Mesa") {
         if (!descripcion)
           return mostrarAlerta(
             "Complete el campo de motivo de rechazo",
@@ -131,7 +136,8 @@ const EncargadoMesa = () => {
           });
           limpiarUniversitarioBuscado();
         }
-      } else if (usuario.cargo === "Verificador de Votante") {
+      // } else if (usuario.cargo === "Verificador de Votante") {
+      } else if (usuario.cargoLogin === "Verificador de Votante") {
         if (!descripcion)
           return mostrarAlerta(
             "Complete el campo de motivo de rechazo",

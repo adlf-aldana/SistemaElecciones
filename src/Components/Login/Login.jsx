@@ -1,4 +1,5 @@
 import React, { Fragment, useContext, useState, useEffect } from "react";
+import usuarioAxios from "../../config/axios.js";
 
 import AlertaContext from "../../context/alerta/alertaContext.js";
 import AuthContext from "../../context/autenticacion/authContext";
@@ -8,8 +9,7 @@ const Login = (props) => {
   const alertaContext = useContext(AlertaContext);
   const { alerta, mostrarAlerta } = alertaContext;
   const authContext = useContext(AuthContext);
-  const { mensaje, autenticado, iniciarSesion, usuario } =
-    authContext;
+  const { mensaje, autenticado, iniciarSesion, usuario } = authContext;
 
   const [usuarioForm, setusuario] = useState({
     cu: "",
@@ -35,18 +35,42 @@ const Login = (props) => {
 
   // En caso de que el password o usuario no exista
   useEffect(() => {
+    // let encargadoMesa = false;
+    // let verificador = false;
+    // if (usuario !== null) {
+    //   const obteniendoEncargados = () => {
+    //     usuarioAxios.get(`/api/mesas/${usuario.cu}`).then((res) => {
+    //       if (res.data.datosEncargadoMesa.length > 1) {
+    //         if (res.data.datosEncargadoMesa[0].passwordEncargadoMesa) {
+    //           encargadoMesa = true;
+    //         }
+    //       }
+
+    //       if (res.data.datosVerificador.length > 1) {
+    //         if (res.data.datosVerificador[0].passwordVerificador) {
+    //           verificador = true;
+    //         }
+    //       }
+
+    //       console.log(encargadoMesa);
+    //     });
+    //   };
+    //   obteniendoEncargados();
+    // }
+
     if (autenticado) {
       if (usuario === null) {
       } else if (usuario.cargo === "Administrador") {
         props.history.push("/registroUniversitario");
-      } else if (usuario.cargo === "Encargado de Mesa") {
+      } else if (usuario.cargoLogin === "Encargado de Mesa") {
         props.history.push("/encargadoMesa");
-      } else if (usuario.cargo === "Verificador de Votante") {
+      } else if (usuario.cargoLogin === "Verificador de Votante") {
         props.history.push("/verificadorVotante");
       } else if (usuario.cargo === "Estudiante") {
         props.history.push("/votacion");
       }
     }
+
     if (mensaje) {
       mostrarAlerta(mensaje.msg, mensaje.categoria);
     }

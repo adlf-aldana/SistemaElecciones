@@ -18,8 +18,9 @@ const RutaEncargado = ({ component: Component }, ...props) => {
         autenticado &&
         !cargando &&
         (usuario.cargo === "Administrador" ||
-          usuario.cargo === "Verificador de Votante" ||
-          usuario.cargo === "Estudiante") ? (
+          usuario.cargo === "Verificador de Votante" 
+          // usuario.cargo === "Estudiante") ? (
+          ) ? (
           <Redirect to="/" />
         ) : (
           <Component {...props} />

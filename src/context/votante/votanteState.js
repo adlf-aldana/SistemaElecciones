@@ -180,6 +180,7 @@ const VotanteState = (props) => {
       const universitario = await usuarioAxios.get(
         "/api/lista_estudiantes/" + carnetUniversitario
       );
+      console.log(universitario);
       dispatch({
         type: BUSQUEDA_UNIVERSITARIO,
         payload: universitario.data.estudiante,

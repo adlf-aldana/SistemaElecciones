@@ -22,8 +22,11 @@ const Cards = ({
     <Fragment>
       <div className="card mt-5">
         <div className="card-header text-center">
-          <strong>{estudiante ? "DATOS DEL ESTUDIANTE" : usuario.cargo}</strong>
+          <strong>
+            {estudiante ? "DATOS DEL ESTUDIANTE" : usuario.cargoLogin}
+          </strong>
         </div>
+
         <div className="card-body">
           <div className="row mt-3">
             <div className="col">
@@ -61,8 +64,10 @@ const Cards = ({
             </div>
           </div>
 
+          {/* MOSTRAR MENSAJE SI HUBIERA PROBLEMAS */}
           {estudiante && usuario ? (
             usuario.cargo === "Verificador de Votante" ? (
+            // usuario.cargoLogin === "Verificador de Votante" ? (
               <div className="row mt-3">
                 {estudiante.estadoEncargadoMesa ? (
                   <div className="col">
@@ -72,6 +77,7 @@ const Cards = ({
                   <div className="col">
                     <strong>Descripcion de Problema: </strong>
                     <label className="text-danger">
+                      {console.log(estudiante)}
                       {estudiante.descripcionProblemaEncargadoMesa}
                     </label>
                   </div>
@@ -95,10 +101,13 @@ const Cards = ({
             </div>
           ) : null}
 
+          {/* BOTONES CONFIRMAR RECHAZAR */}
           {usuario ? (
-            (estudiante && usuario.cargo === "Encargado de Mesa") ||
-            (autorizandoVotante &&
-              usuario.cargo === "Verificador de Votante") ? (
+            // (estudiante && usuario.cargo === "Encargado de Mesa") ||
+            (estudiante && usuario.cargoLogin === "Encargado de Mesa") ||
+            // (autorizandoVotante &&
+            //   usuario.cargo === "Verificador de Votante") ? (
+            (estudiante && usuario.cargoLogin === "Verificador de Votante") ?(
               rechazando ? (
                 <div className="mt-3">
                   <button
