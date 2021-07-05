@@ -6,21 +6,29 @@ import ListarMesas from "../../Admin/GestionMesas/ListarMesas";
 
 const GestionarMesas = () => {
   const frentesContext = useContext(FrentesContext);
-  const {
-    busquedaUniversitario,
-    estudiante
-  } = frentesContext;
+  const { busquedaUniversitario, estudiante } = frentesContext;
 
   const [datosForm, setdatosForm] = useState([
     {
-      mesa: null,
+      mesa: "",
       cargo: "",
       cuEncargado: null,
       celularEncargado: null,
       habilitado: false,
-      password: "",
     },
   ]);
+  const [datoEncargadoMesa, setdatoEncargadoMesa] = useState({
+    cargoEncargadoMesa: "Encargado de Mesa",
+    cuEncargadoMesa: null,
+    celularEncargadoMesa: null,
+    passwordEncargadoMesa: "",
+  });
+  const [datoVerificadorMesa, setdatoVerificadorMesa] = useState({
+    cargoVerificador: "Verificador de Votante",
+    cuVerificadorMesa: null,
+    celularVerificadorMesa: null,
+    passwordVerificadorMesa: "",
+  });
   const [actualizarLista, setactualizarLista] = useState(false);
   const [editMesa, seteditMesa] = useState();
   const [alerta, setalerta] = useState();
@@ -34,6 +42,18 @@ const GestionarMesas = () => {
     values[index][event.target.name] = event.target.value;
     setdatosForm(values);
   };
+  const handleChangeEncargadoMesa = (e) => {
+    setdatoEncargadoMesa({
+      ...datoEncargadoMesa,
+      [e.target.name]: e.target.value,
+    });
+  };
+  const handleChangeVerificadorMesa = (e) => {
+    setdatoVerificadorMesa({
+      ...datoVerificadorMesa,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   const verificarEncargado = async (cu) => {
     await busquedaUniversitario(cu);
@@ -41,8 +61,41 @@ const GestionarMesas = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    let i = 0;
+    // VALIDANDO DATOS DE ENCARGADO DE MESA
+    if (
+      datoEncargadoMesa.cargo === "" ||
+      datoEncargadoMesa.cuEncargado === "" ||
+      datoEncargadoMesa.celularEncargado === "" ||
+      datoEncargadoMesa.passwordEncargadoMesa === ""
+    ) {
+      setTimeout(() => {
+        setalerta({});
+      }, 3000);
+      setalerta({
+        categoria: "danger",
+        msg: "Error: Todos los campos deben estar llenos",
+      });
+      return;
+    }
 
+    // VALIDANDO DATOS DE VERIFICADOR DE VOTANTE
+    if (
+      datoVerificadorMesa.cargo === "" ||
+      datoVerificadorMesa.cuEncargado === "" ||
+      datoVerificadorMesa.celularEncargado === "" ||
+      datoVerificadorMesa.passwordEncargadoMesa === ""
+    ) {
+      setTimeout(() => {
+        setalerta({});
+      }, 3000);
+      setalerta({
+        categoria: "danger",
+        msg: "Error: Todos los campos deben estar llenos",
+      });
+      return;
+    }
+
+    // VALIDANDO NUMERO DE MESA
     if (datosForm) {
       if (datosForm[0].mesa === "" || datosForm[0].mesa === null) {
         setTimeout(() => {
@@ -56,6 +109,7 @@ const GestionarMesas = () => {
       }
     }
 
+    // VALIDANDO OTROS CAMPOS DE DATOS DE OTRAS PERSONAS
     let j = 0;
     for (let i = 0; i < datosForm.length; i++) {
       // datosForm.map((form) => {
@@ -89,7 +143,7 @@ const GestionarMesas = () => {
         j++;
       }
     }
-    // });
+    // // });
 
     try {
       let datos = [];
@@ -101,10 +155,19 @@ const GestionarMesas = () => {
           celularEncargado: form.celularEncargado,
           habilitado: false,
           registro: ultimoProcesoElectoral[0].registro,
-          password: form.password,
+
+          cargoEncargadoMesa: datoEncargadoMesa.cargoEncargadoMesa,
+          cuEncargadoMesa: datoEncargadoMesa.cuEncargadoMesa,
+          celularEncargadoMesa: datoEncargadoMesa.celularEncargadoMesa,
+          passwordEncargadoMesa: datoEncargadoMesa.passwordEncargadoMesa,
+          cargoVerificador: datoVerificadorMesa.cargoVerificador,
+          cuVerificador: datoVerificadorMesa.cuVerificadorMesa,
+          celularVerificador: datoVerificadorMesa.celularVerificadorMesa,
+          passwordVerificador: datoVerificadorMesa.passwordVerificadorMesa,
         });
       });
 
+      // GUARDANDO CONTRASEÑA EN UNIVERSITARIOS
       await usuarioAxios.post("/api/mesas", datos);
       setTimeout(() => {
         setalerta({});
@@ -140,6 +203,20 @@ const GestionarMesas = () => {
         password: "",
       },
     ]);
+
+    setdatoEncargadoMesa({
+      cargoEncargadoMesa: "Encargado de Mesa",
+      cuEncargadoMesa: 0,
+      celularEncargadoMesa: 0,
+      passwordEncargadoMesa: "",
+    });
+
+    setdatoVerificadorMesa({
+      cargoVerificador: "Encargado de Mesa",
+      cuVerificadorMesa: 0,
+      celularVerificadorMesa: 0,
+      passwordVerificadorMesa: "",
+    });
   };
 
   const agregarInput = () => {
@@ -157,7 +234,6 @@ const GestionarMesas = () => {
   };
 
   const cleanForm = () => {
-    console.log(datosForm);
     limpiarDatos();
   };
 
@@ -227,10 +303,135 @@ const GestionarMesas = () => {
                   />
                 </div>
 
-                <h3 className="text-center mt-3">DATOS DE LOS ENCARGADOS</h3>
-                <p className="text-danger">
+                {/* DATOS ENCARGADO DE MESA */}
+                <div className="row mt-3">
+                  <div className="col">
+                    <h5 htmlFor="">
+                      <b>Encargado de Mesa:</b>
+                    </h5>
+                    <input
+                      type="hidden"
+                      name="cargoEncargadoMesa"
+                      placeholder="Cargo"
+                      className="form-control"
+                      value="Encargado de Mesa"
+                    />
+                  </div>
+
+                  <div className="col">
+                    <label htmlFor="">Carnet Universitario:</label>
+                    <input
+                      type="number"
+                      name="cuEncargadoMesa"
+                      placeholder="Carnet Universitario"
+                      className="form-control"
+                      onChange={(event) => handleChangeEncargadoMesa(event)}
+                      value={datoEncargadoMesa.cuEncargadoMesa}
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-success mt-2"
+                      onClick={() =>
+                        verificarEncargado(datoEncargadoMesa.cuEncargadoMesa)
+                      }
+                    >
+                      Verificar
+                    </button>
+                  </div>
+
+                  <div className="col">
+                    <label htmlFor="">Celular:</label>
+                    <input
+                      type="number"
+                      name="celularEncargadoMesa"
+                      placeholder="Celular"
+                      className="form-control"
+                      onChange={(event) => handleChangeEncargadoMesa(event)}
+                      value={datoEncargadoMesa.celularEncargadoMesa}
+                    />
+                  </div>
+
+                  <div className="col">
+                    <label htmlFor="">Contraseña:</label>
+                    <input
+                      type="password"
+                      name="passwordEncargadoMesa"
+                      placeholder="Agregue una contraseña"
+                      className="form-control"
+                      onChange={(event) => handleChangeEncargadoMesa(event)}
+                      value={datoEncargadoMesa.passwordEncargadoMesa}
+                    />
+                  </div>
+                </div>
+
+                {/* DATOS VERIFICADOR DE VOTANTE */}
+                <div className="row mt-3">
+                  <div className="col">
+                    <h5 htmlFor="">
+                      <b>Verificador de Votante:</b>
+                    </h5>
+                    <input
+                      type="hidden"
+                      name="cargoVerificador"
+                      placeholder="Cargo"
+                      className="form-control"
+                      // onChange={(event) => handleChange(1, event)}
+                      value="Verificador de Votante"
+                    />
+                  </div>
+
+                  <div className="col">
+                    <label htmlFor="">Carnet Universitario:</label>
+                    <input
+                      type="number"
+                      name="cuVerificadorMesa"
+                      placeholder="Carnet Universitario"
+                      className="form-control"
+                      onChange={(event) => handleChangeVerificadorMesa(event)}
+                      value={datoVerificadorMesa.cuVerificadorMesa}
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-success mt-2"
+                      onClick={() =>
+                        verificarEncargado(
+                          datoVerificadorMesa.cuVerificadorMesa
+                        )
+                      }
+                    >
+                      Verificar
+                    </button>
+                  </div>
+
+                  <div className="col">
+                    <label htmlFor="">Celular:</label>
+                    <input
+                      type="number"
+                      name="celularVerificadorMesa"
+                      placeholder="Celular"
+                      className="form-control"
+                      onChange={(event) => handleChangeVerificadorMesa(event)}
+                      value={datoVerificadorMesa.celularVerificadorMesa}
+                    />
+                  </div>
+
+                  <div className="col">
+                    <label htmlFor="">Contraseña:</label>
+                    <input
+                      type="password"
+                      name="passwordVerificadorMesa"
+                      placeholder="Agregue una contraseña"
+                      className="form-control"
+                      onChange={(event) => handleChangeVerificadorMesa(event)}
+                      value={datoVerificadorMesa.passwordVerificadorMesa}
+                    />
+                  </div>
+                </div>
+
+                <h3 className="text-center mt-3">DATOS DE OTRAS PERSONAS</h3>
+                {/* <p className="text-danger">
                   *Importante: Solo dos encargados pueden contener contraseña.
-                </p>
+                </p> */}
 
                 {datosForm.map((dato, index) => (
                   <div className="row mt-3" key={index}>
@@ -259,7 +460,7 @@ const GestionarMesas = () => {
                       <button
                         type="button"
                         className="btn btn-success mt-2"
-                          onClick={() => verificarEncargado(dato.cuEncargado)}
+                        onClick={() => verificarEncargado(dato.cuEncargado)}
                       >
                         Verificar
                       </button>
@@ -276,48 +477,6 @@ const GestionarMesas = () => {
                         value={dato.celularEncargado}
                       />
                     </div>
-
-                    <div className="col">
-                      <label htmlFor="">Contraseña:</label>
-                      <input
-                        type="password"
-                        name="password"
-                        placeholder="Agregue una contraseña"
-                        className="form-control"
-                        onChange={(event) => handleChange(index, event)}
-                        value={dato.password}
-                      />
-                    </div>
-                    {/* {addPassword ? (
-                      <div className="col">
-                        <label htmlFor="">Contraseña:</label>
-                        <input
-                          type="password"
-                          name="password"
-                          placeholder="Agregue una contraseña"
-                          className="form-control"
-                          onChange={(event) => handleChange(index, event)}
-                          //   value={
-                          //     dato.celularEncargado.length > 10
-                          //       ? crypto.AES.decrypt(
-                          //           dato.celularEncargado,
-                          //           "palabraClave"
-                          //         ).toString(crypto.enc.Utf8)
-                          //       : dato.celularEncargado
-                          //   }
-                        />
-                      </div>
-                    ) : dospasswords < 2 ? (
-                      <div className="col">
-                        <button
-                          type="button"
-                          className="btn btn-primary"
-                          onClick={() => agregarPassword()}
-                        >
-                          Añadir Contraseña
-                        </button>
-                      </div>
-                    ) : null} */}
                   </div>
                 ))}
 
