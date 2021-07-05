@@ -20,10 +20,11 @@ const Informe = () => {
   const votanteContext = useContext(VotanteContext);
   const { obtenerVotantes, cantVotosFrente, votantes } = votanteContext;
   const frenteContext = useContext(FrenteContext);
-  const { frentes, obtenerFrentes } = frenteContext;
+  const { frentes, obtenerFrentes, nombreLogoUnico } = frenteContext;
   const universitarioContext = useContext(UniversitarioContext);
   const {
     estudiantes,
+    estudiantesPorRegistro,
     obtenerUniversitarios,
     estudiantesSinAdmin,
     obteniendoDatosVotante,
@@ -48,22 +49,25 @@ const Informe = () => {
   };
 
   const obteniendoDatosFrentes = () => {
-    obtenerVotantes();
-    obtenerFrentes();
-    obtenerUniversitarios();
+    // obtenerVotantes();
+    // obtenerFrentes();
+    // obtenerUniversitarios();
     if (votantes && estudiantes) {
       informacionCantidadVotos();
     }
 
-    frentes.map((frente) => {
+    nombreLogoUnico[0].map((frente) => {
       cantVotosFrente.map((cantidad) => {
-        if (frente._id === cantidad._id) {
+        if (frente.id[0] === cantidad._id) {
           setDatosFrente((dato) => [
             ...dato,
             {
-              nombreFrente: frente.nombreFrente,
+              nombreFrente: frente._id,
               cantVotos: cantidad.total,
-              porcentaje: ((cantidad.total * 100) / estudiantes.length)
+              porcentaje: (
+                (cantidad.total * 100) /
+                estudiantesPorRegistro.length
+              )
                 // cantidades.totalUniversitarios
                 .toFixed(2),
             },
@@ -209,20 +213,20 @@ const Informe = () => {
     doc.save("listaVotaciones.pdf");
   };
   useEffect(() => {
-    obtenerVotantes();
-    obtenerFrentes();
-    obtenerUniversitarios();
+    // obtenerVotantes();
+    // obtenerFrentes();
+    // obtenerUniversitarios();
     if (frentes && cantVotosFrente) {
       consiguiendoDatosVotante();
       obteniendoDatosFrentes();
     }
-    const ultimoProcesoEleccionario = () => {
-      usuarioAxios.get("/api/procesoElectoral").then((res) => {
-        setultimoProcesoElectoral(res.data.ultimoProcesoElectoral);
-        // obtenerUniversitarios(res.data.ultimoProcesoElectoral);
-      });
-    };
-    ultimoProcesoEleccionario();
+    // const ultimoProcesoEleccionario = () => {
+    //   usuarioAxios.get("/api/procesoElectoral").then((res) => {
+    //     setultimoProcesoElectoral(res.data.ultimoProcesoElectoral);
+    //     obtenerUniversitarios(res.data.ultimoProcesoElectoral);
+    //   });
+    // };
+    // ultimoProcesoEleccionario();
   }, []);
 
   useEffect(() => {
@@ -234,6 +238,18 @@ const Informe = () => {
     graficando();
   }, [datosFrente]);
 
+  useEffect(() => {
+    // cargandoDatosFrente();
+    // obtenerFrentes();
+    const ultimoProcesoEleccionario = () => {
+      usuarioAxios.get("/api/procesoElectoral").then((res) => {
+        setultimoProcesoElectoral(res.data.ultimoProcesoElectoral);
+        obtenerFrentes(res.data.ultimoProcesoElectoral);
+        obtenerUniversitarios(res.data.ultimoProcesoElectoral);
+      });
+    };
+    ultimoProcesoEleccionario();
+  }, []);
   return (
     <Fragment>
       <div className="container">

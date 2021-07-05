@@ -19,7 +19,7 @@ export default (state, action) => {
         estudiantes: action.payload.universitario,
         estudiantesSinAdmin: action.payload.universitariosSinAdmins,
       };
-    case OBTENER_ESTUDIANTE_REGISTRO:
+      case OBTENER_ESTUDIANTE_REGISTRO:
       return {
         ...state,
         estudiantesPorRegistro: action.payload,
