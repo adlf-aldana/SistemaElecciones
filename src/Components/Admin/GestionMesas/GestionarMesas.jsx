@@ -4,6 +4,8 @@ import FrentesContext from "../../../context/frentes/FrentesContext";
 
 import ListarMesas from "../../Admin/GestionMesas/ListarMesas";
 import * as crypto from "crypto-js";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
 
 const GestionarMesas = () => {
   const frentesContext = useContext(FrentesContext);
@@ -35,6 +37,8 @@ const GestionarMesas = () => {
   const [alerta, setalerta] = useState();
   const [mesas, setMesas] = useState();
   const [ultimoProcesoElectoral, setultimoProcesoElectoral] = useState([]);
+  const [datosEncargadoMesa, setdatosEncargadoMesa] = useState([]);
+  const [datosVerificador, setdatosVerificador] = useState([]);
   const [datosEstudiante, setdatosEstudiante] = useState([]);
   // const [addPassword, setaddPassword] = useState(false);
   // const [dospasswords, setdospasswords] = useState(0);
@@ -264,68 +268,134 @@ const GestionarMesas = () => {
 
   const listaMesasPDF = () => {
     console.log(mesas);
-    // console.log(datosEstudiante);
+    console.log(datosEstudiante);
+    // console.log(datosEncargadoMesa);
+    // console.log(datosVerificador);
 
-    // const doc = new jsPDF({
-    //   orientation: "landscape",
-    //   format: "letter",
-    // });
+    let datosPDF = [];
+    // Todos los estudiantes de todas las mesas
+    datosEstudiante.map((res) => {
+      // Por cantidad de mesas
+      for (let i = 0; i < mesas.length; i++) {
+        // Por cada mesa
+        for (let j = 0; j < mesas[i].cargo.length; j++) {
+          if (
+            res.cu ===
+            crypto.AES.decrypt(
+              mesas[i].cuEncargado[j],
+              "palabraClave"
+            ).toString(crypto.enc.Utf8)
+          ) {
+            datosPDF.push({
+              mesa: mesas[i]._id,
+              nombre: res.nombre,
+              apellidos: res.apellidos,
+              cu: res.cu,
+              cargo: mesas[i].cargo[j],
+              celular: crypto.AES.decrypt(
+                mesas[i].celularEncargado[j],
+                "palabraClave"
+              ).toString(crypto.enc.Utf8),
+            });
+            // console.log(mesas[i]._id);
+            // console.log(res.nombre);
+            // console.log(res.apellidos);
+            // console.log(res.cu);
+            // console.log(mesas[i].cargo[j]);
+            // console.log(mesas[i].celularEncargado[j]);
+          }
 
-    // const widthPage = doc.internal.pageSize.getWidth();
+          if (res.cu === mesas[i].cuEncargadoMesa[j] && j < 1) {
+            datosPDF.push({
+              mesa: mesas[i]._id,
+              nombre: res.nombre,
+              apellidos: res.apellidos,
+              cu: res.cu,
+              cargo: mesas[i].cargoEncargadoMesa[j],
+              celular: mesas[i].celularEncargadoMesa[j],
+            });
 
-    // doc.text("LISTA DE MESAS", widthPage / 2, 10);
-    // doc.text(
-    //   `Fecha Proceso Electoral ${frentesPorRegistro[0].registro}`,
-    //   widthPage / 12,
-    //   20
-    // );
-    // doc.autoTable({
-    //   startY: 25,
-    //   head: [
-    //     [
-    //       { content: "N° Mesa" },
-    //       { content: "Nombre" },
-    //       { content: "Apellidos" },
-    //       { content: "Cargo" },
-    //       { content: "Celular" },
-    //       { content: "C.U." },
-    //     ],
-    //   ],
-    // });
+            // console.log(mesas[i]._id);
+            // console.log(res.nombre);
+            // console.log(res.apellidos);
+            // console.log(res.cu);
+            // console.log(mesas[i].cargoEncargadoMesa[j]);
+            // console.log(mesas[i].celularEncargadoMesa[j]);
+          }
 
-    // mesas.map(mesa => {
-    //   console.log(mesa.cargo.length);
-    //   for(let i=0; i<mesa.cargo.length;i++){
-    //   }
-    // })
+          if (res.cu === mesas[i].cuVerificador[j] && j < 1) {
+            datosPDF.push({
+              mesa: mesas[i]._id,
+              nombre: res.nombre,
+              apellidos: res.apellidos,
+              cu: res.cu,
+              cargo: mesas[i].cargoVerificador[j],
+              celular: mesas[i].celularVerificador[j],
+            });
+            // console.log(mesas[i]._id);
+            // console.log(res.nombre);
+            // console.log(res.apellidos);
+            // console.log(res.cu);
+            // console.log(mesas[i].cargoVerificador[j]);
+            // console.log(mesas[i].celularVerificador[j]);
+          }
+        }
+      }
+    });
 
-    // datosFrentes.map((frente) => {
-    //   doc.autoTable({
-    //     columnStyles: {
-    //       0: { cellWidth: 65 },
-    //       1: { cellWidth: 40 },
-    //       2: { cellWidth: 40 },
-    //       3: { cellWidth: 40 },
-    //       4: { cellWidth: 40 },
-    //     },
-    //     body: [
-    //       [
-    //         frente.nombreFrente,
-    //         frente.cargoFrente,
-    //         frente.nombre,
-    //         frente.apellidos,
-    //         crypto.AES.decrypt(
-    //           frente.celularEncargado,
-    //           "palabraClave"
-    //         ).toString(crypto.enc.Utf8),
-    //         crypto.AES.decrypt(frente.cuEncargado, "palabraClave").toString(
-    //           crypto.enc.Utf8
-    //         ),
-    //       ],
-    //     ],
-    //   });
-    // });
-    // doc.save("listaFrentes.pdf");
+    console.log(datosPDF);
+
+    const doc = new jsPDF({
+      orientation: "landscape",
+      format: "letter",
+    });
+
+    const widthPage = doc.internal.pageSize.getWidth();
+
+    doc.text("LISTA DE MESAS", widthPage / 2, 10);
+
+    doc.autoTable({
+      startY: 25,
+      head: [
+        [
+          { content: "N° Mesa" },
+          { content: "Nombre" },
+          { content: "Apellidos" },
+          { content: "Cargo" },
+          { content: "Celular" },
+          { content: "C.U." },
+        ],
+      ],
+    });
+
+    mesas.map((mesa) => {
+      console.log(mesa.cargo.length);
+      for (let i = 0; i < mesa.cargo.length; i++) {}
+    });
+
+    datosPDF.map((mesa) => {
+      doc.autoTable({
+        columnStyles: {
+          0: { cellWidth: 45 },
+          1: { cellWidth: 47 },
+          2: { cellWidth: 50 },
+          3: { cellWidth: 40 },
+          4: { cellWidth: 40 },
+          5: { cellWidth: 40 },
+        },
+        body: [
+          [
+            mesa.mesa,
+            mesa.nombre,
+            mesa.apellidos,
+            mesa.cargo,
+            mesa.celular,
+            mesa.cu,
+          ],
+        ],
+      });
+    });
+    doc.save("listaMesas.pdf");
   };
 
   // const agregarPassword = () => {
@@ -350,7 +420,7 @@ const GestionarMesas = () => {
     // }
   }, [actualizarLista]);
 
-  const obteniendoDatosMesa = (cu) => {
+  const obteniendoDatosMesa = async (cu) => {
     usuarioAxios
       .get(
         `/api/lista_estudiantes/` + cu
@@ -368,50 +438,40 @@ const GestionarMesas = () => {
     if (mesas !== undefined) {
       if (mesas.length > 0) {
         mesas.map((mesa) => {
-          // if (res.cuEncargado) {
-          //   data.push(
-          //     obteniendoDatosMesa(
-          //       crypto.AES.decrypt(
-          //         mesa.cuEncargado[i],
-          //         "palabraClave"
-          //       ).toString(crypto.enc.Utf8)
-          //     )
-          //   );
-          // }
-
-          // if(res.cuEncargadoMesa){
-          //   data.push(
-          //     obteniendoDatosMesa(
-          //         mesa.cuEncargadoMesa[0]
-          //     )
-          //   );
-          // }
-
-          // if(res.cuVerificador){
-          //   data.push(
-          //     obteniendoDatosMesa(
-          //         mesa.cuVerificador[0]
-          //     )
-          //   );
-          // }
-
-
-
-
           for (let i = 0; i < mesa.cuEncargado.length; i++) {
+            if (mesa.cuEncargado) {
+              usuarioAxios
+                .get(
+                  `/api/lista_estudiantes/` +
+                    crypto.AES.decrypt(
+                      mesa.cuEncargado[i],
+                      "palabraClave"
+                    ).toString(crypto.enc.Utf8)
+                )
+                .then((res) => {
+                  data.push(res.data.estudiante);
+                });
+            }
+          }
+          setdatosEstudiante(data);
+
+          if (mesa.cuEncargadoMesa) {
             usuarioAxios
-              .get(
-                `/api/lista_estudiantes/` +
-                  crypto.AES.decrypt(
-                    mesa.cuEncargado[i],
-                    "palabraClave"
-                  ).toString(crypto.enc.Utf8)
-              )
+              .get(`/api/lista_estudiantes/` + mesa.cuEncargadoMesa[0])
               .then((res) => {
                 data.push(res.data.estudiante);
               });
           }
-          console.log(data);
+          // setdatoEncargadoMesa(data);
+
+          if (mesa.cuVerificador) {
+            usuarioAxios
+              .get(`/api/lista_estudiantes/` + mesa.cuVerificador[0])
+              .then((res) => {
+                data.push(res.data.estudiante);
+              });
+          }
+          // setdatosVerificador(data);
           setdatosEstudiante(data);
         });
       }

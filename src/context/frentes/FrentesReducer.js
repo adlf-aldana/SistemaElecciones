@@ -13,7 +13,6 @@ import {
 export default (state, action) => {
   switch (action.type) {
     case OBTENER_FRENTES:
-      console.log(action.payload.registroFrentes);
       return {
         // ...state,
         frentes: [action.payload.registroFrentes],

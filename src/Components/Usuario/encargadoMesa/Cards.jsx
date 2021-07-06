@@ -77,7 +77,6 @@ const Cards = ({
                   <div className="col">
                     <strong>Descripcion de Problema: </strong>
                     <label className="text-danger">
-                      {console.log(estudiante)}
                       {estudiante.descripcionProblemaEncargadoMesa}
                     </label>
                   </div>

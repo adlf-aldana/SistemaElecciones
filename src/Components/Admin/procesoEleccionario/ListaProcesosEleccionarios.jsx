@@ -2,7 +2,6 @@ import React from "react";
 
 const ListaProcesosEleccionarios = ({ ProcesosElectorales }) => {
   const imprimirReporte = (id) => {
-    console.log(id);
   };
   return (
     <>

@@ -215,10 +215,8 @@ const Informe = () => {
     obtenerVotantes();
     obtenerFrentes();
     obtenerUniversitarios();
-    console.log(cantVotosFrente);
 
     if (frentes && cantVotosFrente) {
-      console.log('entra');
       consiguiendoDatosVotante();
       obteniendoDatosFrentes();
     }
@@ -245,7 +243,6 @@ const Informe = () => {
     // obtenerFrentes();
     const ultimoProcesoEleccionario = () => {
       usuarioAxios.get("/api/procesoElectoral").then((res) => {
-        console.log(res);
         setultimoProcesoElectoral(res.data.ultimoProcesoElectoral);
         obtenerFrentes(res.data.ultimoProcesoElectoral);
         obtenerUniversitarios(res.data.ultimoProcesoElectoral);
