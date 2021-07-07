@@ -1,8 +1,9 @@
 import React from "react";
 
 const ListaProcesosEleccionarios = ({ ProcesosElectorales }) => {
-  const imprimirReporte = (id) => {
+  const imprimirReporte = (proceso) => {
   };
+  
   return (
     <>
       <div className="container mt-5">
@@ -23,7 +24,7 @@ const ListaProcesosEleccionarios = ({ ProcesosElectorales }) => {
                       <td>
                         <button
                           className="btn btn-warning mr-2"
-                          onClick={() => imprimirReporte(proceso.id)}
+                          onClick={() => imprimirReporte(proceso)}
                         >
                           Reporte
                         </button>

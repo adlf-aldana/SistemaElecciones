@@ -405,19 +405,22 @@ const GestionarMesas = () => {
 
   // BUSCANDO SI HAY UN PROCESO ELECTORAL
   useEffect(() => {
-    // if (ultimoProcesoElectoral.length > 0) {
-    const ultimoProcesoEleccionario = () => {
-      usuarioAxios.get("/api/procesoElectoral").then(async (res) => {
-        setultimoProcesoElectoral(res.data.ultimoProcesoElectoral);
-        // console.log(res.data.ultimoProcesoElectoral[0].registro);
-        const data = await usuarioAxios.get(
-          `/api/mesas/${res.data.ultimoProcesoElectoral[0].registro}`
-        );
-        setMesas(data.data.nombreCadaMesaPorRegistro);
-      });
-    };
-    ultimoProcesoEleccionario();
-    // }
+    try {
+      const ultimoProcesoEleccionario = () => {
+        usuarioAxios.get("/api/procesoElectoral").then(async (res) => {
+          if (res.data.ultimoProcesoElectoral.length > 0) {
+            setultimoProcesoElectoral(res.data.ultimoProcesoElectoral);
+            const data = await usuarioAxios.get(
+              `/api/mesas/${res.data.ultimoProcesoElectoral[0].registro}`
+            );
+            setMesas(data.data.nombreCadaMesaPorRegistro);
+          }
+        });
+      };
+      ultimoProcesoEleccionario();
+    } catch (e) {
+      console.log("Se produjo un error");
+    }
   }, [actualizarLista]);
 
   const obteniendoDatosMesa = async (cu) => {

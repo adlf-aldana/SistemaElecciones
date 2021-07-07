@@ -51,31 +51,35 @@ const Informe = () => {
   };
 
   const obteniendoDatosFrentes = () => {
-    // obtenerVotantes();
-    // obtenerFrentes();
-    // obtenerUniversitarios();
-    if (votantes && estudiantes) {
-      informacionCantidadVotos();
-    }
-    nombreLogoUnico[0].map((frente) => {
-      cantVotosFrente.map((cantidad) => {
-        if (frente.id[0] === cantidad._id) {
-          setDatosFrente((dato) => [
-            ...dato,
-            {
-              nombreFrente: frente._id,
-              cantVotos: cantidad.total,
-              porcentaje: (
-                (cantidad.total * 100) /
-                estudiantesPorRegistro.length
-              )
-                // cantidades.totalUniversitarios
-                .toFixed(2),
-            },
-          ]);
-        }
+    try {
+      // obtenerVotantes();
+      // obtenerFrentes();
+      // obtenerUniversitarios();
+      if (votantes && estudiantes) {
+        informacionCantidadVotos();
+      }
+      nombreLogoUnico[0].map((frente) => {
+        cantVotosFrente.map((cantidad) => {
+          if (frente.id[0] === cantidad._id) {
+            setDatosFrente((dato) => [
+              ...dato,
+              {
+                nombreFrente: frente._id,
+                cantVotos: cantidad.total,
+                porcentaje: (
+                  (cantidad.total * 100) /
+                  estudiantesPorRegistro.length
+                )
+                  // cantidades.totalUniversitarios
+                  .toFixed(2),
+              },
+            ]);
+          }
+        });
       });
-    });
+    } catch (e) {
+      console.log("Se produjo un error");
+    }
   };
   const [datosGraficos, setDatosGraficos] = useState(0);
 
