@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import usuarioAxios from "../../../config/axios";
 import ListaProcesosEleccionarios from "./ListaProcesosEleccionarios";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
 
 const ProcesoEleccionario = () => {
   const [alerta, setalerta] = useState();
@@ -20,6 +22,118 @@ const ProcesoEleccionario = () => {
     const values = [...datosForm];
     values[index][event.target.name] = event.target.value;
     setdatosForm(values);
+  };
+
+  const cerrarActaPDF = () => {
+    let datos = [];
+    for (let i = 0; i < ProcesosElectorales[0].cargo.length; i++) {
+      datos.push({
+        nombre: ProcesosElectorales[0].nombre[i],
+        apellido: ProcesosElectorales[0].apellido[i],
+        cargo: ProcesosElectorales[0].cargo[i],
+        ci: ProcesosElectorales[0].ci[i],
+      });
+    }
+
+    try {
+      const doc = new jsPDF({
+        orientation: "landscape",
+        format: "letter",
+      });
+
+      const widthPage = doc.internal.pageSize.getWidth();
+
+      doc.text("CIERRE DE ACTA", widthPage / 2, 10);
+      doc.autoTable({
+        head: [
+          [
+            { content: "Nombre (s)" },
+            { content: "Apellido (s)" },
+            { content: "Cargo" },
+            { content: "C.I." },
+          ],
+        ],
+      });
+      datos.map((datoEstudiante) => {
+        doc.autoTable({
+          columnStyles: {
+            0: { cellWidth: 83 },
+            1: { cellWidth: 80 },
+            2: { cellWidth: 55 },
+          },
+          body: [
+            [
+              datoEstudiante.nombre,
+              datoEstudiante.apellido,
+              datoEstudiante.cargo,
+              datoEstudiante.ci,
+            ],
+          ],
+        });
+      });
+
+      doc.save("aperturaActa.pdf");
+    } catch (e) {
+      console.log(e);
+      setTimeout(() => {
+        setalerta({});
+      }, 3000);
+      setalerta({
+        categoria: "danger",
+        msg: "Error: No se pudo crear el acta de apertura",
+      });
+    }
+  };
+
+  const aperturaActaPDF = () => {
+    try {
+      const doc = new jsPDF({
+        orientation: "landscape",
+        format: "letter",
+      });
+
+      const widthPage = doc.internal.pageSize.getWidth();
+
+      doc.text("APERTURA DE ACTA", widthPage / 2, 10);
+      doc.autoTable({
+        head: [
+          [
+            { content: "Nombre (s)" },
+            { content: "Apellido (s)" },
+            { content: "Cargo" },
+            { content: "C.I." },
+          ],
+        ],
+      });
+      datosForm.map((datoEstudiante) => {
+        doc.autoTable({
+          columnStyles: {
+            0: { cellWidth: 83 },
+            1: { cellWidth: 80 },
+            2: { cellWidth: 55 },
+          },
+          body: [
+            [
+              datoEstudiante.nombre,
+              datoEstudiante.apellido,
+              datoEstudiante.cargo,
+              datoEstudiante.ci,
+            ],
+          ],
+        });
+      });
+
+      doc.save("aperturaActa.pdf");
+    } catch (e) {
+      console.log(e);
+      setTimeout(() => {
+        setalerta({});
+      }, 3000);
+      setalerta({
+        categoria: "danger",
+        msg: "Error: No se pudo crear el acta de apertura",
+      });
+    }
   };
 
   const onSubmit = async (e) => {
@@ -45,17 +159,19 @@ const ProcesoEleccionario = () => {
       //   });
       //   console.log(datosForm);
       await usuarioAxios.post("/api/procesoElectoral/", datosForm);
+      aperturaActaPDF();
       setactualizarLista(!actualizarLista);
     }
   };
 
   const cerrarProceso = async (id) => {
-    try {
-      await usuarioAxios.put(`/api/procesoElectoral/${id}`, false);
-      setactualizarLista(!actualizarLista);
-    } catch (error) {
-      console.log(error.response);
-    }
+    // try {
+    //   await usuarioAxios.put(`/api/procesoElectoral/${id}`, false);
+    cerrarActaPDF();
+    //   setactualizarLista(!actualizarLista);
+    // } catch (error) {
+    //   console.log(error.response);
+    // }
   };
 
   const agregarInput = () => {
@@ -79,6 +195,8 @@ const ProcesoEleccionario = () => {
       console.log(error.response);
     }
   }, [actualizarLista]);
+
+  useEffect(() => {}, []);
 
   return (
     <>

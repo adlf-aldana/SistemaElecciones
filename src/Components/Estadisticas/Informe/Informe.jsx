@@ -334,28 +334,28 @@ const Informe = () => {
                   <div className="col">
                     <div className="row-md-12">
                       <button
-                        className="btn btn-success mr-3"
+                        className="btn btn-success mr-2"
                         onClick={() => generarPDF()}
                       >
                         Generar Reporte
                       </button>
 
                       <button
-                        className="btn btn-success mr-3"
+                        className="btn btn-success mr-2"
                         onClick={() => reporteVotaronPDF()}
                       >
                         Reporte emitieron su voto
                       </button>
 
                       <button
-                        className="btn btn-success"
+                        className="btn btn-success mr-2"
                         onClick={() => reporteRechazadosPDF()}
                       >
                         Reporte votantes rechazados
                       </button>
 
                       <button
-                        className="btn btn-success"
+                        className="btn btn-success mr-2"
                         onClick={() => reporteNoVotaronPDf()}
                       >
                         Reporte no emitieron su voto
