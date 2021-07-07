@@ -1,4 +1,4 @@
-import * as crypto from 'crypto-js'
+// import * as crypto from 'crypto-js'
 const Tabla = ({ datosFrente }) => {
   return (
     <div className="container">

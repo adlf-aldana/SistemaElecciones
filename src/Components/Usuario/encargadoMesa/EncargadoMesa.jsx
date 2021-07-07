@@ -82,7 +82,7 @@ const EncargadoMesa = () => {
         const votante = {
           cu: estudiante.cu,
           encargadoMesa: true,
-          descripcionProblemaEncargadoMesa: "",
+          // descripcionProblemaEncargadoMesa: "",
           estadoEncargadoMesa: true,
           _idFrente: null,
         };
@@ -101,7 +101,7 @@ const EncargadoMesa = () => {
         console.log("aca2");
         const votante = {
           cu: autorizandoVotante.cu,
-          descripcionProblemaVerificadorVotante: "",
+          // descripcionProblemaVerificadorVotante: "",
           verificadorVotante: true,
           estadoVerificadorVotante: true,
           _idFrente: null,

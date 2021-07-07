@@ -14,6 +14,8 @@ import FrenteContext from "../../../context/frentes/FrentesContext";
 import UniversitarioContext from "../../../context/universitarios/UniversitarioContext";
 import usuarioAxios from "../../../config/axios";
 
+import * as crypto from "crypto-js";
+
 const Informe = () => {
   // Set the fonts to use
   PdfMakeWrapper.setFonts(pdfFonts);
@@ -123,7 +125,7 @@ const Informe = () => {
     });
   };
 
-  const listaVotaciones = (votaron) => {
+  const reporteVotaronPDF = () => {
     const doc = new jsPDF({
       orientation: "landscape",
       format: "letter",
@@ -140,77 +142,147 @@ const Informe = () => {
           { content: "Carrera" },
           { content: "Cargo" },
           { content: "C.U." },
-          { content: "Descripción Encargado de Mesa" },
-          { content: "Descripción Verificador Votante" },
-          // { content: "Nombre Frente" },
         ],
       ],
     });
-    votaron
-      ? datosVotante.map((datoEstudiante) => {
-          datoEstudiante.nombreFrente
-            ? doc.autoTable({
-                columnStyles: {
-                  0: { cellWidth: 30 },
-                  1: { cellWidth: 25 },
-                  2: { cellWidth: 20 },
-                  3: { cellWidth: 20 },
-                  4: { cellWidth: 15 },
-                  5: { cellWidth: 51 },
-                  6: { cellWidth: 75 },
-                  // 7: { cellWidth: 28 },
-                },
-                body: [
-                  [
-                    datoEstudiante.nombre,
-                    datoEstudiante.apellidos,
-                    datoEstudiante.carrera,
-                    datoEstudiante.cargo,
-                    datoEstudiante.cu,
-                    datoEstudiante.descripcionProblemaEncargadoMesa,
-                    datoEstudiante.descripcionProblemaVerificadorVotante,
-                    // crypto.AES.decrypt(
-                    //   datoEstudiante.nombreFrente,
-                    //   "palabraClave"
-                    // ).toString(crypto.enc.Utf8),
-                  ],
-                ],
-              })
-            : doc.autoTable({});
-        })
-      : datosVotante.map((datoEstudiante) => {
-          datoEstudiante.nombreFrente === null
-            ? doc.autoTable({
-                columnStyles: {
-                  0: { cellWidth: 30 },
-                  1: { cellWidth: 25 },
-                  2: { cellWidth: 20 },
-                  3: { cellWidth: 20 },
-                  4: { cellWidth: 15 },
-                  5: { cellWidth: 51 },
-                  6: { cellWidth: 75 },
-                  // 7: { cellWidth: 28 },
-                },
-                body: [
-                  [
-                    datoEstudiante.nombre,
-                    datoEstudiante.apellidos,
-                    datoEstudiante.carrera,
-                    datoEstudiante.cargo,
-                    datoEstudiante.cu,
-                    datoEstudiante.descripcionProblemaEncargadoMesa,
-                    datoEstudiante.descripcionProblemaVerificadorVotante,
-                    // crypto.AES.decrypt(
-                    //   datoEstudiante.nombreFrente,
-                    //   "palabraClave"
-                    // ).toString(crypto.enc.Utf8),
-                  ],
-                ],
-              })
-            : doc.autoTable({});
-        });
+    datosVotante.map((datoEstudiante) => {
+      datoEstudiante.nombreFrente
+        ? doc.autoTable({
+            columnStyles: {
+              0: { cellWidth: 65 },
+              1: { cellWidth: 55 },
+              2: { cellWidth: 60 },
+              3: { cellWidth: 40 },
+            },
+            body: [
+              [
+                datoEstudiante.nombre,
+                datoEstudiante.apellidos,
+                datoEstudiante.carrera,
+                datoEstudiante.cargo,
+                datoEstudiante.cu,
+              ],
+            ],
+          })
+        : doc.autoTable({});
+    });
+
     doc.save("listaVotaciones.pdf");
   };
+
+  const reporteRechazadosPDF = () => {
+    const doc = new jsPDF({
+      orientation: "landscape",
+      format: "letter",
+    });
+
+    const widthPage = doc.internal.pageSize.getWidth();
+
+    doc.text("LISTA DE VOTANTES RECHAZADOS", widthPage / 2, 10);
+    doc.autoTable({
+      head: [
+        [
+          { content: "Nombre (s)" },
+          { content: "Apellido (s)" },
+          { content: "Carrera" },
+          { content: "Cargo" },
+          { content: "C.U." },
+          { content: "Descripción Encargado de Mesa" },
+          { content: "Descripción Verificador Votante" },
+        ],
+      ],
+    });
+    datosVotante.map((datoEstudiante) => {
+      datoEstudiante.nombreFrente === null
+        ? doc.autoTable({
+            columnStyles: {
+              0: { cellWidth: 30 },
+              1: { cellWidth: 25 },
+              2: { cellWidth: 20 },
+              3: { cellWidth: 20 },
+              4: { cellWidth: 15 },
+              5: { cellWidth: 71 },
+            },
+            body: [
+              [
+                datoEstudiante.nombre,
+                datoEstudiante.apellidos,
+                datoEstudiante.carrera,
+                datoEstudiante.cargo,
+                datoEstudiante.cu,
+                datoEstudiante.descripcionProblemaEncargadoMesa,
+                datoEstudiante.descripcionProblemaVerificadorVotante,
+              ],
+            ],
+          })
+        : doc.autoTable({});
+    });
+    doc.save("listaRechazados.pdf");
+  };
+
+  const reporteNoVotaronPDf = () => {
+    let dato = estudiantes;
+    votantes.map((votante) => {
+      dato = dato.filter(
+        (estudiante) =>
+          crypto.AES.decrypt(estudiante.cu, "palabraClave").toString(
+            crypto.enc.Utf8
+          ) !== votante.cu
+      );
+    });
+
+    const doc = new jsPDF({
+      orientation: "landscape",
+      format: "letter",
+    });
+
+    const widthPage = doc.internal.pageSize.getWidth();
+
+    doc.text("LISTA DE NO VOTANTES", widthPage / 2, 10);
+    doc.autoTable({
+      head: [
+        [
+          { content: "Nombre (s)" },
+          { content: "Apellido (s)" },
+          { content: "Carrera" },
+          { content: "Cargo" },
+          { content: "C.U." },
+        ],
+      ],
+    });
+    dato.map((datoEstudiante) => {
+      doc.autoTable({
+        columnStyles: {
+          0: { cellWidth: 65 },
+          1: { cellWidth: 65 },
+          2: { cellWidth: 50 },
+          3: { cellWidth: 40 },
+        },
+        body: [
+          [
+            crypto.AES.decrypt(datoEstudiante.nombre, "palabraClave").toString(
+              crypto.enc.Utf8
+            ),
+            crypto.AES.decrypt(
+              datoEstudiante.apellidos,
+              "palabraClave"
+            ).toString(crypto.enc.Utf8),
+            crypto.AES.decrypt(datoEstudiante.carrera, "palabraClave").toString(
+              crypto.enc.Utf8
+            ),
+            crypto.AES.decrypt(datoEstudiante.cargo, "palabraClave").toString(
+              crypto.enc.Utf8
+            ),
+            crypto.AES.decrypt(datoEstudiante.cu, "palabraClave").toString(
+              crypto.enc.Utf8
+            ),
+          ],
+        ],
+      });
+    });
+    doc.save("listaNoVotantes.pdf");
+  };
+
   useEffect(() => {
     obtenerVotantes();
     obtenerFrentes();
@@ -270,16 +342,23 @@ const Informe = () => {
 
                       <button
                         className="btn btn-success mr-3"
-                        onClick={() => listaVotaciones(true)}
+                        onClick={() => reporteVotaronPDF()}
                       >
-                        Reporte de los que votaron
+                        Reporte emitieron su voto
                       </button>
 
                       <button
                         className="btn btn-success"
-                        onClick={() => listaVotaciones(false)}
+                        onClick={() => reporteRechazadosPDF()}
                       >
-                        Reporte de los que no votaron
+                        Reporte votantes rechazados
+                      </button>
+
+                      <button
+                        className="btn btn-success"
+                        onClick={() => reporteNoVotaronPDf()}
+                      >
+                        Reporte no emitieron su voto
                       </button>
                     </div>
                     <br />
