@@ -72,7 +72,7 @@ const ProcesoEleccionario = () => {
         });
       });
 
-      doc.save("aperturaActa.pdf");
+      doc.save("cierreActa.pdf");
     } catch (e) {
       console.log(e);
       setTimeout(() => {
@@ -165,13 +165,14 @@ const ProcesoEleccionario = () => {
   };
 
   const cerrarProceso = async (id) => {
-    // try {
-    //   await usuarioAxios.put(`/api/procesoElectoral/${id}`, false);
-    cerrarActaPDF();
-    //   setactualizarLista(!actualizarLista);
-    // } catch (error) {
-    //   console.log(error.response);
-    // }
+    try {
+      usuarioAxios
+        .put(`/api/procesoElectoral/${id}`, false)
+        .then((res) => cerrarActaPDF());
+      setactualizarLista(!actualizarLista);
+    } catch (error) {
+      console.log(error.response);
+    }
   };
 
   const agregarInput = () => {
@@ -186,10 +187,15 @@ const ProcesoEleccionario = () => {
     ]);
   };
 
+  const backup = async () => {
+    await usuarioAxios.post("/api/backupRestore");
+  };
+
   useEffect(async () => {
     try {
       const res = await usuarioAxios.get("/api/procesoElectoral");
       setultimoProcesoElectoral(res.data.ultimoProcesoElectoral);
+      console.log(res.data.procesosElectorales);
       setProcesosElectorales(res.data.procesosElectorales);
     } catch (error) {
       console.log(error.response);
@@ -218,11 +224,14 @@ const ProcesoEleccionario = () => {
           ultimoProcesoElectoral[0].estado ? (
             <div className="text-center">
               <h4>Se está realizando un proceso electoral</h4>
+              <button className="btn btn-primary" onClick={() => backup()}>
+                Realizar Backup
+              </button>
               <p>Fecha de Apertura: {ultimoProcesoElectoral[0].registro}</p>
               <button
                 type="button"
                 className="btn btn-danger"
-                onClick={() => cerrarProceso(ultimoProcesoElectoral[0]._id)}
+                onClick={() => cerrarProceso(ultimoProcesoElectoral[0])}
               >
                 Cerrar Proceso Electoral
               </button>
@@ -230,7 +239,9 @@ const ProcesoEleccionario = () => {
           ) : (
             <form onSubmit={onSubmit}>
               <h4 className="text-center mt-4">REGISTRO DE LOS PRESENTES</h4>
-
+              <button type="button" className="btn btn-primary" onClick={() => backup()}>
+                Realizar Backup
+              </button>
               {datosForm.map((dato, index) => (
                 <div className="row mt-3" key={index}>
                   <div className="col">
@@ -416,7 +427,7 @@ const ProcesoEleccionario = () => {
           </form>
         )}
       </div>
-      <ListaProcesosEleccionarios ProcesosElectorales={ProcesosElectorales} />
+      {/* <ListaProcesosEleccionarios ProcesosElectorales={ProcesosElectorales} /> */}
     </>
   );
 };

@@ -1,9 +1,43 @@
-import React from "react";
+import React, { useContext, useState } from "react";
+
+import FrentesContext from "../../../context/frentes/FrentesContext";
+import UniversitarioContext from "../../../context/universitarios/UniversitarioContext";
+import VotanteContext from "../../../context/votante/votanteContext";
 
 const ListaProcesosEleccionarios = ({ ProcesosElectorales }) => {
-  const imprimirReporte = (proceso) => {
+  const frentesContext = useContext(FrentesContext);
+  const { frentes, obtenerFrentes } = frentesContext;
+  const universitarioContext = useContext(UniversitarioContext);
+  const { obtenerUniversitarios, estudiantesPorRegistro,estudiantesSinAdmin, } =
+    universitarioContext;
+
+    const votanteContext = useContext(VotanteContext);
+  const { obtenerVotantes, cantVotosFrente, votantes } = votanteContext;
+  const [ultimoProcesoElectoral, setultimoProcesoElectoral] = useState([]);
+  const [cantidades, setcantidades] = useState({
+    totalUniversitarios: null,
+    votaron: null,
+    noVotaron: null,
+  });
+  const informacionCantidadVotos = () => {
+    setcantidades({
+      totalUniversitarios: estudiantesSinAdmin.length,
+      votaron: votantes.length,
+      noVotaron: estudiantesSinAdmin.length - votantes.length,
+    });
   };
-  
+
+  const imprimirReporte = (proceso) => {
+    // console.log(proceso);
+    // const procesoElectoral = {
+    //   {ultimoProcesoElectoral[0]: {registro: proceso._id}}
+    // }
+    obtenerUniversitarios(proceso);
+    obtenerFrentes(proceso);
+    console.log(frentes);
+    console.log(estudiantesPorRegistro);
+  };
+
   return (
     <>
       <div className="container mt-5">

@@ -36,8 +36,11 @@ const FrentesState = (props) => {
   const obtenerFrentes = async (ultimoProcesoElectoral) => {
     try {
       // const res = await usuarioAxios.get("/api/frente_universitario");
+      const reg = ultimoProcesoElectoral[0]
+        ? ultimoProcesoElectoral[0].registro
+        : ultimoProcesoElectoral._id
       const registro = await usuarioAxios.get(
-        "/api/frente_universitario/" + ultimoProcesoElectoral[0].registro
+        "/api/frente_universitario/" + reg
       );
       dispatch({
         type: OBTENER_FRENTES,

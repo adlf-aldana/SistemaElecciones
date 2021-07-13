@@ -1,8 +1,11 @@
 import React, { Fragment, useEffect } from "react";
-import * as  crypto from 'crypto-js'
+import * as crypto from "crypto-js";
 
 const ListaFrente = ({ frentes, eliminar, editar }) => {
   const URL = process.env.REACT_APP_BACKEND_URL;
+
+  // console.log(`${URL}/${frentes[0].logoFrente[0]}`);
+  console.log(`${URL}`);
   return (
     <Fragment>
       <div className="container mt-5">
@@ -49,7 +52,7 @@ const ListaFrente = ({ frentes, eliminar, editar }) => {
                     </button>
                     <button
                       className="btn btn-danger"
-                      onClick={() => eliminar(frente._id)}
+                      onClick={() => eliminar(frente.id)}
                     >
                       Eliminar
                     </button>

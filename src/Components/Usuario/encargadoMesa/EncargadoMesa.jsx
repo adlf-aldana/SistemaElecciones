@@ -84,7 +84,7 @@ const EncargadoMesa = () => {
           encargadoMesa: true,
           // descripcionProblemaEncargadoMesa: "",
           estadoEncargadoMesa: true,
-          _idFrente: null,
+          // _idFrente: null,
         };
         const res = await encargadoHabilitaVotante(votante);
         if (res) {
@@ -104,7 +104,7 @@ const EncargadoMesa = () => {
           // descripcionProblemaVerificadorVotante: "",
           verificadorVotante: true,
           estadoVerificadorVotante: true,
-          _idFrente: null,
+          // _idFrente: null,
         };
         const res = await actualizarVotante(autorizandoVotante._id, votante);
         if (res) {
@@ -134,7 +134,7 @@ const EncargadoMesa = () => {
           descripcionProblemaEncargadoMesa: descripcion,
           encargadoMesa: true,
           estadoEncargadoMesa: false,
-          _idFrente: null,
+          // _idFrente: null,
         };
         const res = await encargadoHabilitaVotante(votante);
         if (res) {
@@ -158,7 +158,7 @@ const EncargadoMesa = () => {
           descripcionProblemaVerificadorVotante: descripcion,
           verificadorVotante: true,
           estadoVerificadorVotante: false,
-          _idFrente: null,
+          // _idFrente: null,
         };
         const res = await actualizarVotante(autorizandoVotante._id, votante);
         if (res) {

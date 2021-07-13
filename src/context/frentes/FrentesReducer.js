@@ -52,6 +52,7 @@ export default (state, action) => {
           cuEncargado: "",
           celularEncargado: "",
           logoFrente: "",
+          cargo: "",
         },
         estudiante: null,
       };

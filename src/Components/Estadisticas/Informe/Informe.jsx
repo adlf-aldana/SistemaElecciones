@@ -175,53 +175,60 @@ const Informe = () => {
   };
 
   const reporteRechazadosPDF = () => {
-    const doc = new jsPDF({
-      orientation: "landscape",
-      format: "letter",
-    });
-
-    const widthPage = doc.internal.pageSize.getWidth();
-
-    doc.text("LISTA DE VOTANTES RECHAZADOS", widthPage / 2, 10);
-    doc.autoTable({
-      head: [
-        [
-          { content: "Nombre (s)" },
-          { content: "Apellido (s)" },
-          { content: "Carrera" },
-          { content: "Cargo" },
-          { content: "C.U." },
-          { content: "Descripción Encargado de Mesa" },
-          { content: "Descripción Verificador Votante" },
+    const datos = datosVotante.filter(
+      (dato) =>
+        (dato.nombreFrente !== null || dato.nombreFrente !== undefined) &&
+        (dato.descripcionProblemaEncargadoMesa ||
+          dato.descripcionProblemaVerificadorVotante)
+    );
+    console.log(datos);
+    try {
+      const doc = new jsPDF({
+        orientation: "landscape",
+        format: "letter",
+      });
+      const widthPage = doc.internal.pageSize.getWidth();
+      doc.text("LISTA DE VOTANTES RECHAZADOS", widthPage / 2, 10);
+      doc.autoTable({
+        head: [
+          [
+            { content: "Nombre (s)" },
+            { content: "Apellido (s)" },
+            { content: "Carrera" },
+            { content: "Cargo" },
+            { content: "C.U." },
+            { content: "Descripción Encargado de Mesa" },
+            { content: "Descripción Verificador Votante" },
+          ],
         ],
-      ],
-    });
-    datosVotante.map((datoEstudiante) => {
-      datoEstudiante.nombreFrente === null
-        ? doc.autoTable({
-            columnStyles: {
-              0: { cellWidth: 30 },
-              1: { cellWidth: 25 },
-              2: { cellWidth: 20 },
-              3: { cellWidth: 20 },
-              4: { cellWidth: 15 },
-              5: { cellWidth: 71 },
-            },
-            body: [
-              [
-                datoEstudiante.nombre,
-                datoEstudiante.apellidos,
-                datoEstudiante.carrera,
-                datoEstudiante.cargo,
-                datoEstudiante.cu,
-                datoEstudiante.descripcionProblemaEncargadoMesa,
-                datoEstudiante.descripcionProblemaVerificadorVotante,
-              ],
+      });
+      datos.map((datoEstudiante) => {
+        doc.autoTable({
+          columnStyles: {
+            0: { cellWidth: 30 },
+            1: { cellWidth: 25 },
+            2: { cellWidth: 20 },
+            3: { cellWidth: 20 },
+            4: { cellWidth: 15 },
+            5: { cellWidth: 71 },
+          },
+          body: [
+            [
+              datoEstudiante.nombre,
+              datoEstudiante.apellidos,
+              datoEstudiante.carrera,
+              datoEstudiante.cargo,
+              datoEstudiante.cu,
+              datoEstudiante.descripcionProblemaEncargadoMesa,
+              datoEstudiante.descripcionProblemaVerificadorVotante,
             ],
-          })
-        : doc.autoTable({});
-    });
-    doc.save("listaRechazados.pdf");
+          ],
+        });
+      });
+      doc.save("listaRechazados.pdf");
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const reporteNoVotaronPDf = () => {

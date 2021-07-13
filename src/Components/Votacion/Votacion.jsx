@@ -24,6 +24,7 @@ const Votacion = () => {
   const [alerta, setalerta] = useState()
 
   const btnVotar = async (frente) => {
+    console.log(frente);
     const votante = {
       cu: usuario.cu,
       _idFrente: frente.id[0],

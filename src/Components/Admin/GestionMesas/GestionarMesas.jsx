@@ -37,8 +37,6 @@ const GestionarMesas = () => {
   const [alerta, setalerta] = useState();
   const [mesas, setMesas] = useState();
   const [ultimoProcesoElectoral, setultimoProcesoElectoral] = useState([]);
-  const [datosEncargadoMesa, setdatosEncargadoMesa] = useState([]);
-  const [datosVerificador, setdatosVerificador] = useState([]);
   const [datosEstudiante, setdatosEstudiante] = useState([]);
   // const [addPassword, setaddPassword] = useState(false);
   // const [dospasswords, setdospasswords] = useState(0);
@@ -267,135 +265,136 @@ const GestionarMesas = () => {
   };
 
   const listaMesasPDF = () => {
-    console.log(mesas);
-    console.log(datosEstudiante);
-    // console.log(datosEncargadoMesa);
-    // console.log(datosVerificador);
-
-    let datosPDF = [];
-    // Todos los estudiantes de todas las mesas
-    datosEstudiante.map((res) => {
-      // Por cantidad de mesas
-      for (let i = 0; i < mesas.length; i++) {
-        // Por cada mesa
-        for (let j = 0; j < mesas[i].cargo.length; j++) {
-          if (
-            res.cu ===
-            crypto.AES.decrypt(
-              mesas[i].cuEncargado[j],
-              "palabraClave"
-            ).toString(crypto.enc.Utf8)
-          ) {
-            datosPDF.push({
-              mesa: mesas[i]._id,
-              nombre: res.nombre,
-              apellidos: res.apellidos,
-              cu: res.cu,
-              cargo: mesas[i].cargo[j],
-              celular: crypto.AES.decrypt(
-                mesas[i].celularEncargado[j],
+    try {
+      let datosPDF = [];
+      // Todos los estudiantes de todas las mesas
+      datosEstudiante.map((res) => {
+        // Por cantidad de mesas
+        for (let i = 0; i < mesas.length; i++) {
+          // Por cada mesa
+          for (let j = 0; j < mesas[i].cargo.length; j++) {
+            if (
+              res.cu ===
+              crypto.AES.decrypt(
+                mesas[i].cuEncargado[j],
                 "palabraClave"
-              ).toString(crypto.enc.Utf8),
-            });
-            // console.log(mesas[i]._id);
-            // console.log(res.nombre);
-            // console.log(res.apellidos);
-            // console.log(res.cu);
-            // console.log(mesas[i].cargo[j]);
-            // console.log(mesas[i].celularEncargado[j]);
-          }
+              ).toString(crypto.enc.Utf8)
+            ) {
+              datosPDF.push({
+                mesa: mesas[i]._id,
+                nombre: res.nombre,
+                apellidos: res.apellidos,
+                cu: res.cu,
+                cargo: mesas[i].cargo[j],
+                celular: crypto.AES.decrypt(
+                  mesas[i].celularEncargado[j],
+                  "palabraClave"
+                ).toString(crypto.enc.Utf8),
+              });
+              // console.log(mesas[i]._id);
+              // console.log(res.nombre);
+              // console.log(res.apellidos);
+              // console.log(res.cu);
+              // console.log(mesas[i].cargo[j]);
+              // console.log(mesas[i].celularEncargado[j]);
+            }
 
-          if (res.cu === mesas[i].cuEncargadoMesa[j] && j < 1) {
-            datosPDF.push({
-              mesa: mesas[i]._id,
-              nombre: res.nombre,
-              apellidos: res.apellidos,
-              cu: res.cu,
-              cargo: mesas[i].cargoEncargadoMesa[j],
-              celular: mesas[i].celularEncargadoMesa[j],
-            });
+            if (res.cu === mesas[i].cuEncargadoMesa[j] && j < 1) {
+              datosPDF.push({
+                mesa: mesas[i]._id,
+                nombre: res.nombre,
+                apellidos: res.apellidos,
+                cu: res.cu,
+                cargo: mesas[i].cargoEncargadoMesa[j],
+                celular: mesas[i].celularEncargadoMesa[j],
+              });
 
-            // console.log(mesas[i]._id);
-            // console.log(res.nombre);
-            // console.log(res.apellidos);
-            // console.log(res.cu);
-            // console.log(mesas[i].cargoEncargadoMesa[j]);
-            // console.log(mesas[i].celularEncargadoMesa[j]);
-          }
+              // console.log(mesas[i]._id);
+              // console.log(res.nombre);
+              // console.log(res.apellidos);
+              // console.log(res.cu);
+              // console.log(mesas[i].cargoEncargadoMesa[j]);
+              // console.log(mesas[i].celularEncargadoMesa[j]);
+            }
 
-          if (res.cu === mesas[i].cuVerificador[j] && j < 1) {
-            datosPDF.push({
-              mesa: mesas[i]._id,
-              nombre: res.nombre,
-              apellidos: res.apellidos,
-              cu: res.cu,
-              cargo: mesas[i].cargoVerificador[j],
-              celular: mesas[i].celularVerificador[j],
-            });
-            // console.log(mesas[i]._id);
-            // console.log(res.nombre);
-            // console.log(res.apellidos);
-            // console.log(res.cu);
-            // console.log(mesas[i].cargoVerificador[j]);
-            // console.log(mesas[i].celularVerificador[j]);
+            if (res.cu === mesas[i].cuVerificador[j] && j < 1) {
+              datosPDF.push({
+                mesa: mesas[i]._id,
+                nombre: res.nombre,
+                apellidos: res.apellidos,
+                cu: res.cu,
+                cargo: mesas[i].cargoVerificador[j],
+                celular: mesas[i].celularVerificador[j],
+              });
+              // console.log(mesas[i]._id);
+              // console.log(res.nombre);
+              // console.log(res.apellidos);
+              // console.log(res.cu);
+              // console.log(mesas[i].cargoVerificador[j]);
+              // console.log(mesas[i].celularVerificador[j]);
+            }
           }
         }
-      }
-    });
+      });
 
-    console.log(datosPDF);
+      const doc = new jsPDF({
+        orientation: "landscape",
+        format: "letter",
+      });
 
-    const doc = new jsPDF({
-      orientation: "landscape",
-      format: "letter",
-    });
+      const widthPage = doc.internal.pageSize.getWidth();
 
-    const widthPage = doc.internal.pageSize.getWidth();
+      doc.text("LISTA DE MESAS", widthPage / 2, 10);
 
-    doc.text("LISTA DE MESAS", widthPage / 2, 10);
-
-    doc.autoTable({
-      startY: 25,
-      head: [
-        [
-          { content: "N° Mesa" },
-          { content: "Nombre" },
-          { content: "Apellidos" },
-          { content: "Cargo" },
-          { content: "Celular" },
-          { content: "C.U." },
-        ],
-      ],
-    });
-
-    mesas.map((mesa) => {
-      console.log(mesa.cargo.length);
-      for (let i = 0; i < mesa.cargo.length; i++) {}
-    });
-
-    datosPDF.map((mesa) => {
       doc.autoTable({
-        columnStyles: {
-          0: { cellWidth: 45 },
-          1: { cellWidth: 47 },
-          2: { cellWidth: 50 },
-          3: { cellWidth: 40 },
-          4: { cellWidth: 40 },
-          5: { cellWidth: 40 },
-        },
-        body: [
+        startY: 25,
+        head: [
           [
-            mesa.mesa,
-            mesa.nombre,
-            mesa.apellidos,
-            mesa.cargo,
-            mesa.celular,
-            mesa.cu,
+            { content: "N° Mesa" },
+            { content: "Nombre" },
+            { content: "Apellidos" },
+            { content: "Cargo" },
+            { content: "Celular" },
+            { content: "C.U." },
           ],
         ],
       });
-    });
-    doc.save("listaMesas.pdf");
+
+      mesas.map((mesa) => {
+        console.log(mesa.cargo.length);
+        for (let i = 0; i < mesa.cargo.length; i++) {}
+      });
+
+      datosPDF.map((mesa) => {
+        doc.autoTable({
+          columnStyles: {
+            0: { cellWidth: 45 },
+            1: { cellWidth: 47 },
+            2: { cellWidth: 50 },
+            3: { cellWidth: 40 },
+            4: { cellWidth: 40 },
+            5: { cellWidth: 40 },
+          },
+          body: [
+            [
+              mesa.mesa,
+              mesa.nombre,
+              mesa.apellidos,
+              mesa.cargo,
+              mesa.celular,
+              mesa.cu,
+            ],
+          ],
+        });
+      });
+      doc.save("listaMesas.pdf");
+    } catch (error) {
+      console.log(error);
+      alerta({
+        msg: "Aun no hay estudiantes registrados",
+        categoria: "danger",
+      });
+    }
   };
 
   // const agregarPassword = () => {

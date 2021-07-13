@@ -42,14 +42,6 @@ const RegistroFrente = () => {
 
   const { nombreFrente } = datosForm;
 
-  // const handleChange = ( event) => {
-  //   console.log(event.target.value);
-  //   // setdatosForm({
-  //   //   ...datosForm,
-  //   //   [e.target.name]: e.target.value,
-  //   // });
-  // };
-
   const handleChange = (index, event) => {
     const values = [...datosForm];
     values[index][event.target.name] = event.target.value;
@@ -63,6 +55,12 @@ const RegistroFrente = () => {
       datosForm[0].logoFrente === ""
     ) {
       mostrarAlerta("Error: Todos los campos deben estar llenos", "danger");
+      return;
+    }
+    if (
+      datosForm.length < 2
+    ) {
+      mostrarAlerta("Error: Debe haber más de dos encargados", "danger");
       return;
     }
     // if (
@@ -131,14 +129,19 @@ const RegistroFrente = () => {
     // } else {
     agregarFrente(dataimg);
     mostrarAlerta("Guardado Existoso", "success");
+    // limpiarInputs();
     // }
   };
 
-  const eliminar = async (id) => {
-    if (window.confirm("¿Esta seguro de eliminar?")) {
-      eliminarFrente(id);
-      mostrarAlerta("Eliminado Existoso", "success");
-    }
+  const eliminar = async (ids) => {
+    try {
+      if (window.confirm("¿Esta seguro de eliminar?")) {
+        ids.map((id) => {
+          eliminarFrente(id);
+        });
+        mostrarAlerta("Eliminado Existoso", "success");
+      }
+    } catch (error) {}
   };
 
   const editar = (id) => {
@@ -186,80 +189,96 @@ const RegistroFrente = () => {
   };
 
   const cargandoDatosFrente = () => {
-    console.log(frentes);
     const datos = [];
     frentes[0] &&
-      frentes[0].map(async frente => datos.push(await obteniendoDatosVotante(frente)));
+      frentes[0].map(async (frente) =>
+        datos.push(await obteniendoDatosVotante(frente))
+      );
     setdatosFrentes(datos);
   };
 
   const listaFrentes = () => {
-    const doc = new jsPDF({
-      orientation: "landscape",
-      format: "letter",
-    });
+    try {
+      const doc = new jsPDF({
+        orientation: "landscape",
+        format: "letter",
+      });
 
-    const widthPage = doc.internal.pageSize.getWidth();
+      const widthPage = doc.internal.pageSize.getWidth();
 
-    doc.text("LISTA DE FRENTES", widthPage / 2, 10);
-    doc.text(
-      `Fecha Proceso Electoral ${frentesPorRegistro[0].registro}`,
-      widthPage / 12,
-      20
-    );
-    doc.autoTable({
-      startY: 25,
-      head: [
-        [
-          { content: "Nombre Frente" },
-          { content: "Cargo" },
-          { content: "Nombre" },
-          { content: "Apellido" },
-          { content: "Celular" },
-          { content: "C.U." },
-        ],
-      ],
-    });
-    datosFrentes.map((frente) => {
+      doc.text("LISTA DE FRENTES", widthPage / 2, 10);
+      doc.text(
+        `Fecha Proceso Electoral ${frentesPorRegistro[0].registro}`,
+        widthPage / 12,
+        20
+      );
       doc.autoTable({
-        columnStyles: {
-          0: { cellWidth: 65 },
-          1: { cellWidth: 40 },
-          2: { cellWidth: 40 },
-          3: { cellWidth: 40 },
-          4: { cellWidth: 40 },
-        },
-        body: [
+        startY: 25,
+        head: [
           [
-            frente.nombreFrente,
-            frente.cargoFrente,
-            frente.nombre,
-            frente.apellidos,
-            crypto.AES.decrypt(
-              frente.celularEncargado,
-              "palabraClave"
-            ).toString(crypto.enc.Utf8),
-            crypto.AES.decrypt(frente.cuEncargado, "palabraClave").toString(
-              crypto.enc.Utf8
-            ),
-
-            // crypto.AES.decrypt(frente.nombreFrente, "palabraClave").toString(
-            //   crypto.enc.Utf8
-            // ),
-            // frente.nombre,
-            // frente.apellidos,
-            // crypto.AES.decrypt(frente.cuEncargado, "palabraClave").toString(
-            //   crypto.enc.Utf8
-            // ),
-            // crypto.AES.decrypt(
-            //   frente.celularEncargado,
-            //   "palabraClave"
-            // ).toString(crypto.enc.Utf8),
+            { content: "Nombre Frente" },
+            { content: "Cargo" },
+            { content: "Nombre" },
+            { content: "Apellido" },
+            { content: "Celular" },
+            { content: "C.U." },
           ],
         ],
       });
+      datosFrentes.map((frente) => {
+        doc.autoTable({
+          columnStyles: {
+            0: { cellWidth: 65 },
+            1: { cellWidth: 40 },
+            2: { cellWidth: 40 },
+            3: { cellWidth: 40 },
+            4: { cellWidth: 40 },
+          },
+          body: [
+            [
+              frente.nombreFrente,
+              frente.cargoFrente,
+              frente.nombre,
+              frente.apellidos,
+              crypto.AES.decrypt(
+                frente.celularEncargado,
+                "palabraClave"
+              ).toString(crypto.enc.Utf8),
+              crypto.AES.decrypt(frente.cuEncargado, "palabraClave").toString(
+                crypto.enc.Utf8
+              ),
+
+              // crypto.AES.decrypt(frente.nombreFrente, "palabraClave").toString(
+              //   crypto.enc.Utf8
+              // ),
+              // frente.nombre,
+              // frente.apellidos,
+              // crypto.AES.decrypt(frente.cuEncargado, "palabraClave").toString(
+              //   crypto.enc.Utf8
+              // ),
+              // crypto.AES.decrypt(
+              //   frente.celularEncargado,
+              //   "palabraClave"
+              // ).toString(crypto.enc.Utf8),
+            ],
+          ],
+        });
+      });
+      doc.save("listaFrentes.pdf");
+    } catch (error) {
+      console.log(error);
+      mostrarAlerta("Aun no hay Frentes registrados", "danger");
+    }
+  };
+
+  const limpiarInputs = () => {
+    setdatosForm({
+      nombreFrente: "",
+      cuEncargado: "",
+      celularEncargado: "",
+      logoFrente: "",
+      cargo: "",
     });
-    doc.save("listaFrentes.pdf");
   };
 
   const agregarInput = () => {
@@ -439,7 +458,6 @@ const RegistroFrente = () => {
               </div>
             </div> */}
                 {/* {datosForm ? <p>{datosForm[0].nombreFrente}</p> : <p>nad</p>} */}
-
                 {datosForm.map((dato, index) => (
                   <div className="row mt-3" key={index}>
                     <div className="col">
