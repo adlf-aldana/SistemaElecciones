@@ -76,6 +76,7 @@ const VotanteState = (props) => {
         descripcionProblemaEncargadoMesa:
           res.data.votante[0].descripcionProblemaEncargadoMesa,
         _idFrente: res.data.votante[0]._idFrente,
+        numMesa: res.data.votante[0].numMesa,
       };
 
       dispatch({
@@ -107,7 +108,6 @@ const VotanteState = (props) => {
       limpiarDatos();
       return true;
     } catch (e) {
-      console.log(e.response);
       let alerta = null;
       if (e.response !== undefined) {
         alerta = {

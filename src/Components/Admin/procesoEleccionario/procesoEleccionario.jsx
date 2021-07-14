@@ -195,7 +195,6 @@ const ProcesoEleccionario = () => {
     try {
       const res = await usuarioAxios.get("/api/procesoElectoral");
       setultimoProcesoElectoral(res.data.ultimoProcesoElectoral);
-      console.log(res.data.procesosElectorales);
       setProcesosElectorales(res.data.procesosElectorales);
     } catch (error) {
       console.log(error.response);

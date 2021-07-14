@@ -41,6 +41,7 @@ const Informe = () => {
   const [datosFrente, setDatosFrente] = useState([]);
   const [datosVotante, setdatosVotante] = useState([]);
   const [ultimoProcesoElectoral, setultimoProcesoElectoral] = useState([]);
+  const [mesas, setMesas] = useState();
 
   const informacionCantidadVotos = () => {
     setcantidades({
@@ -294,6 +295,74 @@ const Informe = () => {
     doc.save("listaNoVotantes.pdf");
   };
 
+  const reportePorMesasPDF = () => {
+    let votos = [];
+    let i=0;
+    let j=0;
+
+    mesas.map((mesa) => {
+      i=0;
+      j=0;
+      votantes.map((votante) => {
+        if (mesa._id.toString() === votante.numMesa) {
+          if (votante.encargadoMesa || votante.verificadorVotante) {
+            i++;
+            // votos.push({
+            //   numMesa: mesa._id,
+            //   validos: 1,
+            // });
+          } else {
+            j++;
+            // votos.push({
+            //   numMesa: mesa._id,
+            //   noValidos: 1,
+            // });
+          }
+          
+        }
+      });
+      votos.push({
+        numMesa: mesa._id,
+        validos: i,
+        noValidos: j
+      })
+    });
+    
+    console.log(votos);
+
+
+
+
+    const doc = new jsPDF({
+      orientation: "landscape",
+      format: "letter",
+    });
+
+    const widthPage = doc.internal.pageSize.getWidth();
+
+    doc.text("LISTA DE VOTACIONES POR MESAS", widthPage / 2, 10);
+    doc.autoTable({
+      head: [
+        [
+          { content: "Num. Mesa" },
+          { content: "Votaron" },
+          { content: "Rechazados" },
+        ],
+      ],
+    });
+    votos.map((voto) => {
+      doc.autoTable({
+        columnStyles: {
+          0: { cellWidth: 90 },
+          1: { cellWidth: 70 },
+        },
+        body: [[voto.numMesa, voto.validos, voto.noValidos]],
+      });
+    });
+
+    doc.save("VotosPorMesas.pdf");
+  };
+
   useEffect(() => {
     obtenerVotantes();
     obtenerFrentes();
@@ -310,6 +379,25 @@ const Informe = () => {
     //   });
     // };
     // ultimoProcesoEleccionario();
+  }, []);
+
+  useEffect(() => {
+    try {
+      const ultimoProcesoEleccionario = () => {
+        usuarioAxios.get("/api/procesoElectoral").then(async (res) => {
+          if (res.data.ultimoProcesoElectoral.length > 0) {
+            setultimoProcesoElectoral(res.data.ultimoProcesoElectoral);
+            const data = await usuarioAxios.get(
+              `/api/mesas/${res.data.ultimoProcesoElectoral[0].registro}`
+            );
+            setMesas(data.data.nombreCadaMesaPorRegistro);
+          }
+        });
+      };
+      ultimoProcesoEleccionario();
+    } catch (e) {
+      console.log("Se produjo un error");
+    }
   }, []);
 
   useEffect(() => {
@@ -370,6 +458,13 @@ const Informe = () => {
                         onClick={() => reporteNoVotaronPDf()}
                       >
                         Reporte no emitieron su voto
+                      </button>
+
+                      <button
+                        className="btn btn-success mr-2"
+                        onClick={() => reportePorMesasPDF()}
+                      >
+                        Reporte por mesas
                       </button>
                     </div>
                     <br />

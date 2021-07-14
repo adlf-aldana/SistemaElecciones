@@ -21,10 +21,9 @@ const Votacion = () => {
   const [confirmado, setconfirmado] = useState(false);
   const [ultimoProcesoElectoral, setultimoProcesoElectoral] = useState([]);
   const [estudiante, setestudiante] = useState();
-  const [alerta, setalerta] = useState()
+  const [alerta, setalerta] = useState();
 
   const btnVotar = async (frente) => {
-    console.log(frente);
     const votante = {
       cu: usuario.cu,
       _idFrente: frente.id[0],
@@ -38,7 +37,6 @@ const Votacion = () => {
   };
 
   const generarCertificadoPDF = () => {
-
     try {
       const doc = new jsPDF({
         orientation: "landscape",
@@ -48,6 +46,10 @@ const Votacion = () => {
       const widthPage = doc.internal.pageSize.getWidth();
 
       doc.text(`CERTIFICADO DE SUFRAGIO 2021`, widthPage / 3, 10);
+      doc.text(`ELECCION DE CENTRO DE ESTUDIANTES`, widthPage / 3.5, 20);
+      doc.text(`FACULTAD DE TECNOLOGIA`, widthPage / 3, 30);
+      doc.text(`PRESIDENTE COMITE ELECTORAL`, widthPage / 2, 190);
+      doc.text('Fecha y Hora:'+new Date().toString().substr(3,22), widthPage /1.98, 200);
       // doc.text(
       //   `Fecha Proceso Electoral ${estudiantesPorRegistro[0].registro}`,
       //   widthPage / 12,
@@ -55,7 +57,7 @@ const Votacion = () => {
       // );
 
       doc.autoTable({
-        startY: 25,
+        startY: 35,
         head: [
           [
             { content: "Nombre (s)" },
@@ -89,9 +91,12 @@ const Votacion = () => {
     } catch (error) {
       console.log(error);
       setTimeout(() => {
-      setalerta(null);       
+        setalerta(null);
       }, 3000);
-      setalerta({msg: "Aun no hay estudiantes registrados"}, {categoria: "danger"});
+      setalerta(
+        { msg: "Aun no hay estudiantes registrados" },
+        { categoria: "danger" }
+      );
     }
   };
 
@@ -117,9 +122,7 @@ const Votacion = () => {
   return (
     <Fragment>
       {alerta ? (
-        <div className={`alert alert-${alerta.categoria}`}>
-          {alerta.msg}
-        </div>
+        <div className={`alert alert-${alerta.categoria}`}>{alerta.msg}</div>
       ) : null}
       {ultimoProcesoElectoral.length > 0 ? (
         ultimoProcesoElectoral[0].estado ? (
@@ -135,6 +138,7 @@ const Votacion = () => {
                 <>
                   <h3 className="text-center mt-5">Usted ya realizó su voto</h3>
                   <button
+                    type="button"
                     className="btn btn-success mt-3"
                     onClick={() => generarCertificadoPDF()}
                   >

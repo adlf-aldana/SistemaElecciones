@@ -35,6 +35,7 @@ const EncargadoMesa = () => {
   const [motivoRechazo, setmotivoRechazo] = useState({ descripcion: "" });
   const { descripcion } = motivoRechazo;
   const [mesaHabilitada, setmesaHabilitada] = useState(false);
+  const [numMesa, setNumMesa] = useState(false);
 
   const handleMotivo = (e) => {
     setmotivoRechazo({
@@ -69,22 +70,20 @@ const EncargadoMesa = () => {
   useEffect(() => {
     if (usuario) {
       usuarioAxios.get(`/api/mesas/${usuario.cu}`).then((res) => {
-        console.log(res.data);
         setmesaHabilitada(res.data.mesaAbierta[0].habilitado);
+        setNumMesa(res.data.mesaAbierta[0].mesa);
       });
     }
   }, []);
 
   const confirmar = async () => {
     if (usuario) {
-      // if (usuario.cargo === "Encargado de Mesa") {
       if (usuario.cargoLogin === "Encargado de Mesa") {
         const votante = {
           cu: estudiante.cu,
           encargadoMesa: true,
-          // descripcionProblemaEncargadoMesa: "",
           estadoEncargadoMesa: true,
-          // _idFrente: null,
+          numMesa: numMesa,
         };
         const res = await encargadoHabilitaVotante(votante);
         if (res) {
@@ -96,25 +95,30 @@ const EncargadoMesa = () => {
           });
           limpiarUniversitarioBuscado();
         }
-        // } else if (usuario.cargo === "Verificador de Votante") {
       } else if (usuario.cargoLogin === "Verificador de Votante") {
-        console.log("aca2");
-        const votante = {
-          cu: autorizandoVotante.cu,
-          // descripcionProblemaVerificadorVotante: "",
-          verificadorVotante: true,
-          estadoVerificadorVotante: true,
-          // _idFrente: null,
-        };
-        const res = await actualizarVotante(autorizandoVotante._id, votante);
-        if (res) {
-          setmotivoRechazo({
-            descripcion: "",
-          });
-          setdataForm({
-            cuUniversitario: "",
-          });
-          limpiarUniversitarioBuscado();
+        // VIENDO SI EL VOTANTE PERTENECE A LA MESA DEL VERIFICADOR
+        if (autorizandoVotante.numMesa === numMesa.toString()) {
+          const votante = {
+            cu: autorizandoVotante.cu,
+            verificadorVotante: true,
+            estadoVerificadorVotante: true,
+            numMesa: numMesa,
+          };
+          const res = await actualizarVotante(autorizandoVotante._id, votante);
+          if (res) {
+            setmotivoRechazo({
+              descripcion: "",
+            });
+            setdataForm({
+              cuUniversitario: "",
+            });
+            limpiarUniversitarioBuscado();
+          }
+        } else {
+          mostrarAlerta(
+            'El universitario no pertenece a esta mesa',
+            'danger'
+          )
         }
       }
     }
@@ -122,7 +126,6 @@ const EncargadoMesa = () => {
 
   const rechazar = async () => {
     if (usuario) {
-      // if (usuario.cargo === "Encargado de Mesa") {
       if (usuario.cargoLogin === "Encargado de Mesa") {
         if (!descripcion)
           return mostrarAlerta(
@@ -134,7 +137,7 @@ const EncargadoMesa = () => {
           descripcionProblemaEncargadoMesa: descripcion,
           encargadoMesa: true,
           estadoEncargadoMesa: false,
-          // _idFrente: null,
+          numMesa: numMesa,
         };
         const res = await encargadoHabilitaVotante(votante);
         if (res) {
@@ -146,7 +149,6 @@ const EncargadoMesa = () => {
           });
           limpiarUniversitarioBuscado();
         }
-        // } else if (usuario.cargo === "Verificador de Votante") {
       } else if (usuario.cargoLogin === "Verificador de Votante") {
         if (!descripcion)
           return mostrarAlerta(
@@ -158,7 +160,7 @@ const EncargadoMesa = () => {
           descripcionProblemaVerificadorVotante: descripcion,
           verificadorVotante: true,
           estadoVerificadorVotante: false,
-          // _idFrente: null,
+          numMesa: numMesa,
         };
         const res = await actualizarVotante(autorizandoVotante._id, votante);
         if (res) {
