@@ -191,6 +191,10 @@ const ProcesoEleccionario = () => {
     await usuarioAxios.post("/api/backupRestore");
   };
 
+  const restaurar = async () => {
+    await usuarioAxios.get("/api/backupRestore");
+  };
+
   useEffect(async () => {
     try {
       const res = await usuarioAxios.get("/api/procesoElectoral");
@@ -238,8 +242,12 @@ const ProcesoEleccionario = () => {
           ) : (
             <form onSubmit={onSubmit}>
               <h4 className="text-center mt-4">REGISTRO DE LOS PRESENTES</h4>
-              <button type="button" className="btn btn-primary" onClick={() => backup()}>
-                Realizar Backup
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={() => restaurar()}
+              >
+                Restaurar Backup
               </button>
               {datosForm.map((dato, index) => (
                 <div className="row mt-3" key={index}>

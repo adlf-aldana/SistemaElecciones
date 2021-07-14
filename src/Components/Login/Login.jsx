@@ -25,6 +25,10 @@ const Login = (props) => {
     });
   };
 
+  const restaurar = async () => {
+    await usuarioAxios.get("/api/backupRestore");
+  };
+
   const onSubmit = (e) => {
     e.preventDefault();
     if (cu.trim() === "" || password.trim() === "") {
@@ -86,6 +90,9 @@ const Login = (props) => {
             </div>
           ) : null}
           <div className="card-body">
+          <button className="btn btn-primary" onClick={() => restaurar()}>
+                Restaurar Backup
+              </button>
             <form onSubmit={onSubmit}>
               <h3 className="text-center m-3">INICIAR SESION</h3>
               <div className="row">
