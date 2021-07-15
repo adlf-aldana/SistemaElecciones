@@ -291,12 +291,6 @@ const GestionarMesas = () => {
                   "palabraClave"
                 ).toString(crypto.enc.Utf8),
               });
-              // console.log(mesas[i]._id);
-              // console.log(res.nombre);
-              // console.log(res.apellidos);
-              // console.log(res.cu);
-              // console.log(mesas[i].cargo[j]);
-              // console.log(mesas[i].celularEncargado[j]);
             }
 
             if (res.cu === mesas[i].cuEncargadoMesa[j] && j < 1) {
@@ -308,13 +302,6 @@ const GestionarMesas = () => {
                 cargo: mesas[i].cargoEncargadoMesa[j],
                 celular: mesas[i].celularEncargadoMesa[j],
               });
-
-              // console.log(mesas[i]._id);
-              // console.log(res.nombre);
-              // console.log(res.apellidos);
-              // console.log(res.cu);
-              // console.log(mesas[i].cargoEncargadoMesa[j]);
-              // console.log(mesas[i].celularEncargadoMesa[j]);
             }
 
             if (res.cu === mesas[i].cuVerificador[j] && j < 1) {
@@ -326,12 +313,6 @@ const GestionarMesas = () => {
                 cargo: mesas[i].cargoVerificador[j],
                 celular: mesas[i].celularVerificador[j],
               });
-              // console.log(mesas[i]._id);
-              // console.log(res.nombre);
-              // console.log(res.apellidos);
-              // console.log(res.cu);
-              // console.log(mesas[i].cargoVerificador[j]);
-              // console.log(mesas[i].celularVerificador[j]);
             }
           }
         }
@@ -397,11 +378,6 @@ const GestionarMesas = () => {
     }
   };
 
-  // const agregarPassword = () => {
-  //   setaddPassword(!addPassword);
-  //   setdospasswords(dospasswords + 1);
-  // };
-
   // BUSCANDO SI HAY UN PROCESO ELECTORAL
   useEffect(() => {
     try {
@@ -426,9 +402,6 @@ const GestionarMesas = () => {
     usuarioAxios
       .get(
         `/api/lista_estudiantes/` + cu
-        // crypto.AES.decrypt(mesa.cuEncargado[i], "palabraClave").toString(
-        //   crypto.enc.Utf8
-        // )
       )
       .then((res) => {
         return res.data.estudiante;

@@ -18,6 +18,8 @@ const ProcesoEleccionario = () => {
     },
   ]);
 
+  const [mesas, setMesas] = useState();
+
   const handleChange = (index, event) => {
     const values = [...datosForm];
     values[index][event.target.name] = event.target.value;
@@ -166,6 +168,19 @@ const ProcesoEleccionario = () => {
 
   const cerrarProceso = async (id) => {
     try {
+      for (let i = 0; i < mesas.length; i++) {
+        if (mesas[i].habilitado[0]) {
+          setTimeout(() => {
+            setalerta({});
+          }, 5000);
+          setalerta({
+            categoria: "danger",
+            msg: "Error: Asegurese de cerrar todas las mesas y de sacar todos los reportes",
+          });
+          return;
+        }
+      }
+
       usuarioAxios
         .put(`/api/procesoElectoral/${id}`, false)
         .then((res) => cerrarActaPDF());
@@ -215,7 +230,25 @@ const ProcesoEleccionario = () => {
     }
   }, [actualizarLista]);
 
-  useEffect(() => {}, []);
+  // BUSCANDO SI HAY UN PROCESO ELECTORAL
+  useEffect(() => {
+    try {
+      const ultimoProcesoEleccionario = () => {
+        usuarioAxios.get("/api/procesoElectoral").then(async (res) => {
+          if (res.data.ultimoProcesoElectoral.length > 0) {
+            setultimoProcesoElectoral(res.data.ultimoProcesoElectoral);
+            const data = await usuarioAxios.get(
+              `/api/mesas/${res.data.ultimoProcesoElectoral[0].registro}`
+            );
+            setMesas(data.data.nombreCadaMesaPorRegistro);
+          }
+        });
+      };
+      ultimoProcesoEleccionario();
+    } catch (e) {
+      console.log("Se produjo un error");
+    }
+  }, []);
 
   return (
     <>
@@ -225,13 +258,6 @@ const ProcesoEleccionario = () => {
         {alerta ? (
           <div className={`alert alert-${alerta.categoria}`}>{alerta.msg}</div>
         ) : null}
-
-        {/*<button
-            className="btn btn-success mr-3"
-            onClick={() => listaFrentes()}
-          >
-            Reporte Lista de Frentes
-          </button> */}
 
         {ultimoProcesoElectoral.length > 0 ? (
           ultimoProcesoElectoral[0].estado ? (

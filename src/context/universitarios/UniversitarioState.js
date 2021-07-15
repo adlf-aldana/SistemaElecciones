@@ -48,16 +48,17 @@ const UniversitarioState = (props) => {
   const obtenerUniversitarios = async (ultimoProcesoElectoral) => {
     try {
       const res = await usuarioAxios.get("/api/lista_estudiantes");
+      dispatch({
+        type: OBTENER_UNIVERSITARIOS,
+        payload: res.data,
+      });
+      
       const reg = ultimoProcesoElectoral[0]
         ? ultimoProcesoElectoral[0].registro
         : ultimoProcesoElectoral._id
       const registro = await usuarioAxios.get(
         "/api/lista_estudiantes/" + reg
       );
-      dispatch({
-        type: OBTENER_UNIVERSITARIOS,
-        payload: res.data,
-      });
       dispatch({
         type: OBTENER_ESTUDIANTE_REGISTRO,
         payload: registro.data.registroUniversitario,

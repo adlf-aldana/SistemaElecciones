@@ -13,13 +13,18 @@ const ListarMesas = ({ actualizarLista, eliminar, setMesas, mesas }) => {
   const { estudiantes, obtenerUniversitarios } = universitarioContext;
 
   // HABILITA O DESHABILITA UNA MESA PARA VOTAR
-  const habilitarMesa = async (habilitado, ids) => {
+  const habilitarMesa = async (habilitado, ids, numMesa) => {
     try {
       ids.map(async (id) => {
         const res = await usuarioAxios.put(`/api/mesas/${id}`, habilitado);
         setMesas(res.data.numMesa);
       });
+
+      if (habilitado[0]) {
+        reporte(numMesa);
+      }
     } catch (error) {
+      console.log(error);
       console.log(error.response);
     }
   };
@@ -59,7 +64,6 @@ const ListarMesas = ({ actualizarLista, eliminar, setMesas, mesas }) => {
                 celular: res.celularEncargado[i],
               });
             }
-
             if (
               crypto.AES.decrypt(estudiante.cu, "palabraClave").toString(
                 crypto.enc.Utf8
@@ -118,7 +122,6 @@ const ListarMesas = ({ actualizarLista, eliminar, setMesas, mesas }) => {
       if (votante.numMesa === mesa.toString()) {
         // for (let i = 0; i < res.cuEncargado.length; i++) {
         estudiantes.forEach((estudiante) => {
-          // console.log(votante);
 
           // COMPARAMOS LOS DATOS DE ESTUDIANTES DE TODAS LAS MESAS SOLO CON EL DE LA MESA QUE DIMOS CLICK
           if (
@@ -177,7 +180,7 @@ const ListarMesas = ({ actualizarLista, eliminar, setMesas, mesas }) => {
 
     const widthPage = doc.internal.pageSize.getWidth();
 
-    doc.text("LISTA DE VOTACIONES DE LA MESA " + mesa, widthPage / 2, 10);
+    doc.text("CIERRE DE LA MESA " + mesa, widthPage / 2, 10);
     doc.text("ENCARGADOS DE MESA", widthPage / 2, 18);
     doc.autoTable({
       startY: 23,
@@ -267,14 +270,18 @@ const ListarMesas = ({ actualizarLista, eliminar, setMesas, mesas }) => {
                   {mesa.habilitado[0] ? (
                     <button
                       className="btn btn-primary mr-2"
-                      onClick={() => habilitarMesa(mesa.habilitado, mesa.id)}
+                      onClick={() =>
+                        habilitarMesa(mesa.habilitado, mesa.id, mesa._id)
+                      }
                     >
                       Deshabilitar
                     </button>
                   ) : (
                     <button
                       className="btn btn-primary mr-2"
-                      onClick={() => habilitarMesa(mesa.habilitado, mesa.id)}
+                      onClick={() =>
+                        habilitarMesa(mesa.habilitado, mesa.id, mesa._id)
+                      }
                     >
                       Habilitar
                     </button>
@@ -292,13 +299,13 @@ const ListarMesas = ({ actualizarLista, eliminar, setMesas, mesas }) => {
                   >
                     Eliminar
                   </button>
-                  <button
+                  {/* <button
                     type="button"
                     className="btn btn-info mr-2"
                     onClick={() => reporte(mesa._id)}
                   >
                     Reporte
-                  </button>
+                  </button> */}
                 </td>
               </tr>
             ))
