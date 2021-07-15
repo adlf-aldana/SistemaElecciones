@@ -188,11 +188,21 @@ const ProcesoEleccionario = () => {
   };
 
   const backup = async () => {
-    await usuarioAxios.post("/api/backupRestore");
+    try {
+      await usuarioAxios.post("/api/backupRestore");
+      alert("Copia de seguridad correctamente");
+    } catch (e) {
+      alert("No se realizó la copia de seguridad");
+    }
   };
 
   const restaurar = async () => {
-    await usuarioAxios.get("/api/backupRestore");
+    try {
+      await usuarioAxios.get("/api/backupRestore");
+      alert("Restauracion correctamente");
+    } catch (e) {
+      alert("No se realizó la Restauración");
+    }
   };
 
   useEffect(async () => {

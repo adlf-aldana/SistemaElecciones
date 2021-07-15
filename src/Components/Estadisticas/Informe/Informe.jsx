@@ -305,7 +305,7 @@ const Informe = () => {
       j=0;
       votantes.map((votante) => {
         if (mesa._id.toString() === votante.numMesa) {
-          if (votante.encargadoMesa || votante.verificadorVotante) {
+          if (votante.estadoEncargadoMesa || votante.estadoVerificadorVotante) {
             i++;
             // votos.push({
             //   numMesa: mesa._id,
