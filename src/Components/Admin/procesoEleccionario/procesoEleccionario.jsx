@@ -165,9 +165,9 @@ const ProcesoEleccionario = () => {
       setactualizarLista(!actualizarLista);
     }
   };
-
   const cerrarProceso = async (id) => {
     try {
+      // COMPROBAMOS QUE TODAS LAS MESAS ESTEN CERRADAS
       for (let i = 0; i < mesas.length; i++) {
         if (mesas[i].habilitado[0]) {
           setTimeout(() => {
@@ -180,11 +180,20 @@ const ProcesoEleccionario = () => {
           return;
         }
       }
+      if (
+        window.confirm(
+          "Se cerrará el Proceso Electoral. ADVERTENCIA: ¡SE ELIMINARA TODOS LOS DATOS!. ¿Desea continuar?"
+        )
+      ) {
+        // Generando cierre de Acta PDF
+        usuarioAxios
+          .put(`/api/procesoElectoral/${id}`, false)
+          .then((res) => cerrarActaPDF());
+        setactualizarLista(!actualizarLista);
 
-      usuarioAxios
-        .put(`/api/procesoElectoral/${id}`, false)
-        .then((res) => cerrarActaPDF());
-      setactualizarLista(!actualizarLista);
+        // Eliminando todos los datos menos a los administradores
+        usuarioAxios.delete("/api/procesoElectoral/");
+      }
     } catch (error) {
       console.log(error.response);
     }
