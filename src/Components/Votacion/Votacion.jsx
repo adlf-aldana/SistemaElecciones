@@ -6,6 +6,7 @@ import Cards from "../Usuario/encargadoMesa/Cards";
 import AuthContext from "../../context/autenticacion/authContext";
 import usuarioAxios from "../../config/axios";
 import jsPDF from "jspdf";
+import emailjs from "emailjs-com";
 
 const Votacion = () => {
   const URL = process.env.REACT_APP_BACKEND_URL;
@@ -14,7 +15,12 @@ const Votacion = () => {
   const { nombreLogoUnico, obtenerFrentes, estudiantesPorRegistro } =
     frentesContext;
   const votanteContext = useContext(VotanteContext);
-  const { actualizarVotante, datosVotante, obtenerVotante } = votanteContext;
+  const {
+    actualizarVotante,
+    datosVotante,
+    obtenerVotante,
+    encargadoHabilitaVotante,
+  } = votanteContext;
   const authContext = useContext(AuthContext);
   const { usuario } = authContext;
 
@@ -22,12 +28,14 @@ const Votacion = () => {
   const [ultimoProcesoElectoral, setultimoProcesoElectoral] = useState([]);
   const [estudiante, setestudiante] = useState();
   const [alerta, setalerta] = useState();
+  const [codigoVotacion, setcodigoVotacion] = useState();
+  const [habilitando, sethabilitando] = useState(false);
+  const [PinHabilitado, setPinHabilitado] = useState(false);
 
   const btnVotar = async (frente) => {
     const votante = {
       cu: usuario.cu,
       _idFrente: frente.id[0],
-      // _idFrente: frente._id,
     };
     actualizarVotante(datosVotante._id, votante);
     setTimeout(() => {
@@ -49,7 +57,11 @@ const Votacion = () => {
       doc.text(`ELECCION DE CENTRO DE ESTUDIANTES`, widthPage / 3.5, 20);
       doc.text(`FACULTAD DE TECNOLOGIA`, widthPage / 3, 30);
       doc.text(`PRESIDENTE COMITE ELECTORAL`, widthPage / 2, 190);
-      doc.text('Fecha y Hora:'+new Date().toString().substr(3,22), widthPage /1.98, 200);
+      doc.text(
+        "Fecha y Hora:" + new Date().toString().substr(3, 22),
+        widthPage / 1.98,
+        200
+      );
       // doc.text(
       //   `Fecha Proceso Electoral ${estudiantesPorRegistro[0].registro}`,
       //   widthPage / 12,
@@ -100,6 +112,96 @@ const Votacion = () => {
     }
   };
 
+  const solicitarPin = async () => {
+    try {
+      const codigo = Math.floor(Math.random() * 1000000);
+      const dataMessage = {
+        cu: usuario.cu,
+        user_email: "adlf.aldana@gmail.com",
+        codigo,
+        numMesa: "00000",
+      };
+
+      // await actualizarVotante(datosVotante._id, dataMessage);
+      // const votante = {
+      //   cu: estudiante.cu,
+      //   encargadoMesa: true,
+      //   estadoEncargadoMesa: true,
+      //   numMesa: numMesa,
+      // };
+      const res = await encargadoHabilitaVotante(dataMessage);
+      setPinHabilitado(true);
+      // emailjs
+      //   .send(
+      //     "service_f7ywpid",
+      //     "template_l6m613p",
+      //     dataMessage,
+      //     "user_dYyaZkOb03UJgrvZhvmmV"
+      //   )
+      //   .then(
+      //     (result) => {
+      //       setTimeout(() => {
+      //         setalerta({});
+      //       }, 3000);
+      //       setalerta({
+      //         categoria: "success",
+      //         msg: "Se envió el código a su correo electrónico",
+      //       });
+      //       console.log(result.text);
+      //     },
+      //     (error) => {
+      //       console.log(error.text);
+      //       setTimeout(() => {
+      //         setalerta({});
+      //       }, 3000);
+      //       setalerta({
+      //         categoria: "success",
+      //         msg: "Se produjo un error, vuelva a intentarlo más tarde",
+      //       });
+      //     }
+      //   );
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleChange = (e) => {
+    setcodigoVotacion({
+      ...codigoVotacion,
+      [e.target.name]: e.target.value,
+    });
+  };
+  const confirmarPin = () => {
+    if(!codigoVotacion){
+      setTimeout(() => {
+        setalerta({});
+      }, 3000);
+      setalerta({
+        categoria: "danger",
+        msg: "Introduzca un código",
+      });
+      return;
+    }
+    if (codigoVotacion.codigo.toString() === datosVotante.codigo.toString()) {
+      const habilitando = {
+        encargadoMesa: true,
+        estadoEncargadoMesa: true,
+        verificadorVotante: true,
+        estadoVerificadorVotante: true,
+      };
+      actualizarVotante(datosVotante._id, habilitando);
+      sethabilitando(true);
+    } else {
+      setTimeout(() => {
+        setalerta({});
+      }, 3000);
+      setalerta({
+        categoria: "danger",
+        msg: "Código incorrecto",
+      });
+    }
+  };
+
   useEffect(() => {
     if (usuario) {
       obtenerVotante(usuario.cu);
@@ -118,7 +220,7 @@ const Votacion = () => {
       });
     };
     ultimoProcesoEleccionario();
-  }, [confirmado]);
+  }, [confirmado, habilitando, PinHabilitado]);
   return (
     <Fragment>
       {alerta ? (
@@ -135,8 +237,8 @@ const Votacion = () => {
               </>
             ) : datosVotante ? (
               datosVotante._idFrente ? (
-                <>
-                  <h3 className="text-center mt-5">Usted ya realizó su voto</h3>
+                <div className="text-center">
+                  <h3 className="mt-5">Usted ya realizó su voto</h3>
                   <button
                     type="button"
                     className="btn btn-success mt-3"
@@ -144,7 +246,7 @@ const Votacion = () => {
                   >
                     Generar Certificado
                   </button>
-                </>
+                </div>
               ) : datosVotante.estadoEncargadoMesa &&
                 datosVotante.estadoVerificadorVotante ? (
                 <div className="container mt-4">
@@ -191,14 +293,68 @@ const Votacion = () => {
                   </div>
                 </div>
               ) : (
-                <h3 className="text-center mt-5">
-                  Usted aún no esta habilitado para votar
-                </h3>
+                <div className="text-center mt-5 container">
+                  <h3>Usted aún no esta habilitado para votar</h3>
+
+                  {PinHabilitado ? (
+                    <>
+                      <input
+                        type="number"
+                        placeholder="Introduzca su código"
+                        className="form-control mt-3"
+                        name="codigo"
+                        onChange={(event) => handleChange(event)}
+                      />
+                      <button
+                        type="button"
+                        className="btn btn-success mt-3"
+                        onClick={() => confirmarPin()}
+                      >
+                        Confirmar
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      type="button"
+                      className="btn btn-primary mt-3"
+                      onClick={() => solicitarPin()}
+                    >
+                      Solicitar Código
+                    </button>
+                  )}
+                </div>
               )
             ) : (
-              <h3 className="text-center mt-5">
-                Usted aún no esta habilitado para votar
-              </h3>
+              <div className="text-center mt-5 container">
+                <h3>Usted aún no esta habilitado para votar</h3>
+
+                {PinHabilitado ? (
+                  <>
+                    <input
+                      type="number"
+                      placeholder="Introduzca su código"
+                      className="form-control mt-3"
+                      name="codigo"
+                      onChange={(event) => handleChange(event)}
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-success mt-3"
+                      onClick={() => confirmarPin()}
+                    >
+                      Confirmar
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    type="button"
+                    className="btn btn-primary mt-3"
+                    onClick={() => solicitarPin()}
+                  >
+                    Solicitar Código
+                  </button>
+                )}
+              </div>
             )}
 
             {/* {confirmado ? (
@@ -281,7 +437,7 @@ const Votacion = () => {
           </h3>
         )
       ) : (
-        <h3 className="text-center mt-5">No ningún Proceso Electoral</h3>
+        <h3 className="text-center mt-5">No hay ningún Proceso Electoral</h3>
       )}
     </Fragment>
   );

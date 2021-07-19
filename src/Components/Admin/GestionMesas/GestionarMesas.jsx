@@ -171,10 +171,10 @@ const GestionarMesas = () => {
         });
       });
 
-      usuarioAxios.put(`/api/lista_estudiantes/${datos[0].cuEncargadoMesa}`, {
+      await usuarioAxios.put(`/api/lista_estudiantes/${datos[0].cuEncargadoMesa}`, {
         cargoLogin: datos[0].cargoEncargadoMesa,
       });
-      usuarioAxios.put(`/api/lista_estudiantes/${datos[0].cuVerificador}`, {
+      await usuarioAxios.put(`/api/lista_estudiantes/${datos[0].cuVerificador}`, {
         cargoLogin: datos[0].cargoVerificador,
       });
       // GUARDANDO CONTRASEÑA EN UNIVERSITARIOS
