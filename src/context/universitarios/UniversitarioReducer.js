@@ -63,6 +63,7 @@ export default (state, action) => {
           ci: "",
           carrera: "",
           cargo: "",
+          email: ""
         },
       };
     case LIMPIAR_MENSAJE:

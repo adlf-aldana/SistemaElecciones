@@ -61,6 +61,7 @@ const UniversitarioIndex = () => {
     cargo,
     password,
     confirPassword,
+    email
   } = datosEstudiantes;
 
   // SUBMIT FORM
@@ -72,7 +73,8 @@ const UniversitarioIndex = () => {
       apellidos.trim() === "" ||
       carrera.trim() === "" ||
       cargo.trim() === "" ||
-      ci.trim() === ""
+      ci.trim() === "" ||
+      email.trim() === "" 
     ) {
       return mostrarAlerta("Todos los campos deben estar llenos", "danger");
     }
@@ -127,6 +129,8 @@ const UniversitarioIndex = () => {
 
   // EDITAR DATOS
   const editarUniversitario = (datos) => {
+    console.log(datos
+      );
     seteditUni(datos);
   };
 
@@ -170,6 +174,7 @@ const UniversitarioIndex = () => {
         ci: editUni.ci,
         carrera: editUni.carrera,
         cargo: editUni.cargo,
+        email: editUni.email,
       });
   }, [mensaje, editUni]);
   useEffect(() => {
@@ -182,6 +187,7 @@ const UniversitarioIndex = () => {
       cargo: "",
       password: "",
       confirPassword: "",
+      email: ""
     });
     seteditUni("");
   }, [datosFormulario]);
