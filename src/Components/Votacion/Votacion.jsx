@@ -114,10 +114,20 @@ const Votacion = () => {
 
   const solicitarPin = async () => {
     try {
+      if (usuario.email === null || usuario.email === undefined) {
+        setTimeout(() => {
+          setalerta({});
+        }, 3000);
+        setalerta({
+          categoria: "success",
+          msg: "No se registro un email a esta cuenta",
+        });
+        return;
+      }
       const codigo = Math.floor(Math.random() * 1000000);
       const dataMessage = {
         cu: usuario.cu,
-        user_email: "adlf.aldana@gmail.com",
+        user_email: usuario.email,
         codigo,
         numMesa: "00000",
       };
@@ -131,35 +141,35 @@ const Votacion = () => {
       // };
       const res = await encargadoHabilitaVotante(dataMessage);
       setPinHabilitado(true);
-      // emailjs
-      //   .send(
-      //     "service_f7ywpid",
-      //     "template_l6m613p",
-      //     dataMessage,
-      //     "user_dYyaZkOb03UJgrvZhvmmV"
-      //   )
-      //   .then(
-      //     (result) => {
-      //       setTimeout(() => {
-      //         setalerta({});
-      //       }, 3000);
-      //       setalerta({
-      //         categoria: "success",
-      //         msg: "Se envió el código a su correo electrónico",
-      //       });
-      //       console.log(result.text);
-      //     },
-      //     (error) => {
-      //       console.log(error.text);
-      //       setTimeout(() => {
-      //         setalerta({});
-      //       }, 3000);
-      //       setalerta({
-      //         categoria: "success",
-      //         msg: "Se produjo un error, vuelva a intentarlo más tarde",
-      //       });
-      //     }
-      //   );
+      emailjs
+        .send(
+          "service_f7ywpid",
+          "template_l6m613p",
+          dataMessage,
+          "user_dYyaZkOb03UJgrvZhvmmV"
+        )
+        .then(
+          (result) => {
+            setTimeout(() => {
+              setalerta({});
+            }, 3000);
+            setalerta({
+              categoria: "success",
+              msg: "Se envió el código a su correo electrónico",
+            });
+            console.log(result.text);
+          },
+          (error) => {
+            console.log(error.text);
+            setTimeout(() => {
+              setalerta({});
+            }, 3000);
+            setalerta({
+              categoria: "success",
+              msg: "Se produjo un error, vuelva a intentarlo más tarde",
+            });
+          }
+        );
     } catch (e) {
       console.log(e);
     }
@@ -172,7 +182,7 @@ const Votacion = () => {
     });
   };
   const confirmarPin = () => {
-    if(!codigoVotacion){
+    if (!codigoVotacion) {
       setTimeout(() => {
         setalerta({});
       }, 3000);

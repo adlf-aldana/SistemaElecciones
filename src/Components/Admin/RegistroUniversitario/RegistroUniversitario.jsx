@@ -12,9 +12,9 @@ const RegistroUniversitario = ({
   limpiarFormulario,
   alerta,
   editUni,
-  mostrarAlerta
+  mostrarAlerta,
 }) => {
-  const { nombre, apellidos, cu, ci, carrera, cargo } = datosEstudiantes;
+  const { nombre, apellidos, cu, ci, carrera, cargo, email } = datosEstudiantes;
   const universitarioContext = useContext(UniversitarioContext);
   const { estudiantesPorRegistro } = universitarioContext;
 
@@ -40,6 +40,7 @@ const RegistroUniversitario = ({
           [
             { content: "Nombre (s)" },
             { content: "Apellido (s)" },
+            { content: "Correo Electrónico" },
             { content: "Carrera" },
             { content: "Cargo" },
             { content: "Carnet Universitario" },
@@ -50,11 +51,12 @@ const RegistroUniversitario = ({
       estudiantesPorRegistro.map((estudiante) => {
         doc.autoTable({
           columnStyles: {
-            0: { cellWidth: 38 },
-            1: { cellWidth: 40 },
-            2: { cellWidth: 30 },
-            3: { cellWidth: 25 },
-            3: { cellWidth: 40 },
+            0: { cellWidth: 30 },
+            1: { cellWidth: 33 },
+            2: { cellWidth: 50 },
+            3: { cellWidth: 23 },
+            4: { cellWidth: 23 },
+            5: { cellWidth: 50 },
           },
           body: [
             [
@@ -64,6 +66,7 @@ const RegistroUniversitario = ({
               crypto.AES.decrypt(estudiante.apellidos, "palabraClave").toString(
                 crypto.enc.Utf8
               ),
+              estudiante.email,
               crypto.AES.decrypt(estudiante.carrera, "palabraClave").toString(
                 crypto.enc.Utf8
               ),
@@ -83,10 +86,7 @@ const RegistroUniversitario = ({
       doc.save("listaEstudiantes.pdf");
     } catch (error) {
       console.log(error);
-      mostrarAlerta(
-        "Aun no hay estudiantes registrados",
-        "danger"
-      );
+      mostrarAlerta("Aun no hay estudiantes registrados", "danger");
     }
   };
 
@@ -132,6 +132,18 @@ const RegistroUniversitario = ({
               onChange={handleForm}
               value={apellidos}
               maxLength={30}
+            />
+          </div>
+
+          <div className="col">
+            <label htmlFor="">Correo Electronico: *</label>
+            <input
+              type="text"
+              name="email"
+              placeholder="Correo Electronico"
+              className="form-control"
+              onChange={handleForm}
+              value={email}
             />
           </div>
         </div>
