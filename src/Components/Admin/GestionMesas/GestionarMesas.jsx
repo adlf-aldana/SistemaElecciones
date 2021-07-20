@@ -13,6 +13,7 @@ const GestionarMesas = () => {
 
   const [datosForm, setdatosForm] = useState([
     {
+      id: "",
       mesa: "",
       cargo: "",
       cuEncargado: null,
@@ -33,13 +34,11 @@ const GestionarMesas = () => {
     passwordVerificadorMesa: "",
   });
   const [actualizarLista, setactualizarLista] = useState(false);
-  const [editMesa, seteditMesa] = useState();
+  const [editMesa, seteditMesa] = useState([]);
   const [alerta, setalerta] = useState();
   const [mesas, setMesas] = useState();
   const [ultimoProcesoElectoral, setultimoProcesoElectoral] = useState([]);
   const [datosEstudiante, setdatosEstudiante] = useState([]);
-  // const [addPassword, setaddPassword] = useState(false);
-  // const [dospasswords, setdospasswords] = useState(0);
 
   const handleChange = (index, event) => {
     const values = [...datosForm];
@@ -65,62 +64,13 @@ const GestionarMesas = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    // VALIDANDO DATOS DE ENCARGADO DE MESA
-    if (
-      datoEncargadoMesa.cargo === "" ||
-      datoEncargadoMesa.cuEncargado === "" ||
-      datoEncargadoMesa.celularEncargado === "" ||
-      datoEncargadoMesa.passwordEncargadoMesa === ""
-    ) {
-      setTimeout(() => {
-        setalerta({});
-      }, 3000);
-      setalerta({
-        categoria: "danger",
-        msg: "Error: Todos los campos deben estar llenos",
-      });
-      return;
-    }
-
-    // VALIDANDO DATOS DE VERIFICADOR DE VOTANTE
-    if (
-      datoVerificadorMesa.cargo === "" ||
-      datoVerificadorMesa.cuEncargado === "" ||
-      datoVerificadorMesa.celularEncargado === "" ||
-      datoVerificadorMesa.passwordEncargadoMesa === ""
-    ) {
-      setTimeout(() => {
-        setalerta({});
-      }, 3000);
-      setalerta({
-        categoria: "danger",
-        msg: "Error: Todos los campos deben estar llenos",
-      });
-      return;
-    }
-
-    // VALIDANDO NUMERO DE MESA
-    if (datosForm) {
-      if (datosForm[0].mesa === "" || datosForm[0].mesa === null) {
-        setTimeout(() => {
-          setalerta({});
-        }, 3000);
-        setalerta({
-          categoria: "danger",
-          msg: "Error: Todos los campos deben estar llenos",
-        });
-        return;
-      }
-    }
-
-    // VALIDANDO OTROS CAMPOS DE DATOS DE OTRAS PERSONAS
-    let j = 0;
-    for (let i = 0; i < datosForm.length; i++) {
-      // datosForm.map((form) => {
+    if (editMesa.length > 0) {
+      //EDITANDO
+      // VALIDANDO DATOS DE ENCARGADO DE MESA
       if (
-        datosForm[i].cargo === "" ||
-        datosForm[i].cuEncargado === "" ||
-        datosForm[i].celularEncargado === ""
+        datoEncargadoMesa.cargo === "" ||
+        datoEncargadoMesa.cuEncargado === "" ||
+        datoEncargadoMesa.celularEncargado === ""
       ) {
         setTimeout(() => {
           setalerta({});
@@ -131,75 +81,253 @@ const GestionarMesas = () => {
         });
         return;
       }
-
-      if (datosForm[i].password !== null && j > 1) {
+      // VALIDANDO DATOS DE VERIFICADOR DE VOTANTE
+      if (
+        datoVerificadorMesa.cargo === "" ||
+        datoVerificadorMesa.cuEncargado === "" ||
+        datoVerificadorMesa.celularEncargado === ""
+      ) {
         setTimeout(() => {
           setalerta({});
         }, 3000);
         setalerta({
           categoria: "danger",
-          msg: "Error: Solo dos encargados pueden tener password",
+          msg: "Error: Todos los campos deben estar llenos",
         });
         return;
       }
-
-      if (datosForm.password !== "") {
-        j++;
+      // VALIDANDO NUMERO DE MESA
+      if (datosForm) {
+        if (datosForm[0].mesa === "" || datosForm[0].mesa === null) {
+          setTimeout(() => {
+            setalerta({});
+          }, 3000);
+          setalerta({
+            categoria: "danger",
+            msg: "Error: Todos los campos deben estar llenos",
+          });
+          return;
+        }
       }
-    }
-    // // });
+      // VALIDANDO OTROS CAMPOS DE DATOS DE OTRAS PERSONAS
+      let j = 0;
+      for (let i = 0; i < datosForm.length; i++) {
+        // datosForm.map((form) => {
+        if (
+          datosForm[i].cargo === "" ||
+          datosForm[i].cuEncargado === "" ||
+          datosForm[i].celularEncargado === ""
+        ) {
+          setTimeout(() => {
+            setalerta({});
+          }, 3000);
+          setalerta({
+            categoria: "danger",
+            msg: "Error: Todos los campos deben estar llenos",
+          });
+          return;
+        }
+        // if (datosForm[i].password !== null && j > 1) {
+        //   setTimeout(() => {
+        //     setalerta({});
+        //   }, 3000);
+        //   setalerta({
+        //     categoria: "danger",
+        //     msg: "Error: Solo dos encargados pueden tener password",
+        //   });
+        //   return;
+        // }
+        // if (datosForm.password !== "") {
+        //   j++;
+        // }
+      }
 
-    try {
-      let datos = [];
-      datosForm.map((form) => {
-        datos.push({
-          mesa: datosForm[0].mesa,
-          cargo: form.cargo,
-          cuEncargado: form.cuEncargado,
-          celularEncargado: form.celularEncargado,
-          habilitado: false,
-          registro: ultimoProcesoElectoral[0].registro,
-
-          cargoEncargadoMesa: datoEncargadoMesa.cargoEncargadoMesa,
-          cuEncargadoMesa: datoEncargadoMesa.cuEncargadoMesa,
-          celularEncargadoMesa: datoEncargadoMesa.celularEncargadoMesa,
-          passwordEncargadoMesa: datoEncargadoMesa.passwordEncargadoMesa,
-          cargoVerificador: datoVerificadorMesa.cargoVerificador,
-          cuVerificador: datoVerificadorMesa.cuVerificadorMesa,
-          celularVerificador: datoVerificadorMesa.celularVerificadorMesa,
-          passwordVerificador: datoVerificadorMesa.passwordVerificadorMesa,
+      try {
+        let datos = [];
+        datosForm.map((form) => {
+          datos.push({
+            id: form.id,
+            mesa: datosForm[0].mesa,
+            cargo: form.cargo,
+            cuEncargado: form.cuEncargado,
+            celularEncargado: form.celularEncargado,
+            habilitado: false,
+            registro: ultimoProcesoElectoral[0].registro,
+            cargoEncargadoMesa: datoEncargadoMesa.cargoEncargadoMesa,
+            cuEncargadoMesa: datoEncargadoMesa.cuEncargadoMesa,
+            celularEncargadoMesa: datoEncargadoMesa.celularEncargadoMesa,
+            cargoVerificador: datoVerificadorMesa.cargoVerificador,
+            cuVerificador: datoVerificadorMesa.cuVerificadorMesa,
+            celularVerificador: datoVerificadorMesa.celularVerificadorMesa,
+          });
         });
-      });
+        await usuarioAxios.put(
+          `/api/lista_estudiantes/${datos[0].cuEncargadoMesa}`,
+          {
+            cargoLogin: datos[0].cargoEncargadoMesa,
+          }
+        );
+        await usuarioAxios.put(
+          `/api/lista_estudiantes/${datos[0].cuVerificador}`,
+          {
+            cargoLogin: datos[0].cargoVerificador,
+          }
+        );
+        await usuarioAxios.put(`/api/mesas/0`, datos);
 
-      await usuarioAxios.put(`/api/lista_estudiantes/${datos[0].cuEncargadoMesa}`, {
-        cargoLogin: datos[0].cargoEncargadoMesa,
-      });
-      await usuarioAxios.put(`/api/lista_estudiantes/${datos[0].cuVerificador}`, {
-        cargoLogin: datos[0].cargoVerificador,
-      });
-      // GUARDANDO CONTRASEÑA EN UNIVERSITARIOS
-      await usuarioAxios.post("/api/mesas/", datos);
-
-      setTimeout(() => {
-        setalerta({});
-      }, 3000);
-      setalerta({
-        categoria: "success",
-        msg: "Guardado Correctamente",
-      });
-
-      // PARA ACTUALIZAR LA LISTA DE MESAS EN EL USE EFFECT
-      setactualizarLista(!actualizarLista);
-      limpiarDatos();
-    } catch (e) {
-      console.log(e.response);
-      setTimeout(() => {
-        setalerta({});
-      }, 3000);
-      setalerta({
-        categoria: "danger",
-        msg: e.response.data.msg,
-      });
+        setTimeout(() => {
+          setalerta({});
+        }, 3000);
+        setalerta({
+          categoria: "success",
+          msg: "Editado Correctamente",
+        });
+        // PARA ACTUALIZAR LA LISTA DE MESAS EN EL USE EFFECT
+        setactualizarLista(!actualizarLista);
+        limpiarDatos();
+        seteditMesa([]);
+      } catch (e) {
+        console.log(e.response);
+        setTimeout(() => {
+          setalerta({});
+        }, 3000);
+        setalerta({
+          categoria: "danger",
+          msg: e.response.data.msg,
+        });
+      }
+    } else {
+      // VALIDANDO DATOS DE ENCARGADO DE MESA
+      if (
+        datoEncargadoMesa.cargo === "" ||
+        datoEncargadoMesa.cuEncargado === "" ||
+        datoEncargadoMesa.celularEncargado === "" ||
+        datoEncargadoMesa.passwordEncargadoMesa === ""
+      ) {
+        setTimeout(() => {
+          setalerta({});
+        }, 3000);
+        setalerta({
+          categoria: "danger",
+          msg: "Error: Todos los campos deben estar llenos",
+        });
+        return;
+      }
+      // VALIDANDO DATOS DE VERIFICADOR DE VOTANTE
+      if (
+        datoVerificadorMesa.cargo === "" ||
+        datoVerificadorMesa.cuEncargado === "" ||
+        datoVerificadorMesa.celularEncargado === "" ||
+        datoVerificadorMesa.passwordEncargadoMesa === ""
+      ) {
+        setTimeout(() => {
+          setalerta({});
+        }, 3000);
+        setalerta({
+          categoria: "danger",
+          msg: "Error: Todos los campos deben estar llenos",
+        });
+        return;
+      }
+      // VALIDANDO NUMERO DE MESA
+      if (datosForm) {
+        if (datosForm[0].mesa === "" || datosForm[0].mesa === null) {
+          setTimeout(() => {
+            setalerta({});
+          }, 3000);
+          setalerta({
+            categoria: "danger",
+            msg: "Error: Todos los campos deben estar llenos",
+          });
+          return;
+        }
+      }
+      // VALIDANDO OTROS CAMPOS DE DATOS DE OTRAS PERSONAS
+      let j = 0;
+      for (let i = 0; i < datosForm.length; i++) {
+        // datosForm.map((form) => {
+        if (
+          datosForm[i].cargo === "" ||
+          datosForm[i].cuEncargado === "" ||
+          datosForm[i].celularEncargado === ""
+        ) {
+          setTimeout(() => {
+            setalerta({});
+          }, 3000);
+          setalerta({
+            categoria: "danger",
+            msg: "Error: Todos los campos deben estar llenos",
+          });
+          return;
+        }
+        if (datosForm[i].password !== null && j > 1) {
+          setTimeout(() => {
+            setalerta({});
+          }, 3000);
+          setalerta({
+            categoria: "danger",
+            msg: "Error: Solo dos encargados pueden tener password",
+          });
+          return;
+        }
+        if (datosForm.password !== "") {
+          j++;
+        }
+      }
+      try {
+        let datos = [];
+        datosForm.map((form) => {
+          datos.push({
+            mesa: datosForm[0].mesa,
+            cargo: form.cargo,
+            cuEncargado: form.cuEncargado,
+            celularEncargado: form.celularEncargado,
+            habilitado: false,
+            registro: ultimoProcesoElectoral[0].registro,
+            cargoEncargadoMesa: datoEncargadoMesa.cargoEncargadoMesa,
+            cuEncargadoMesa: datoEncargadoMesa.cuEncargadoMesa,
+            celularEncargadoMesa: datoEncargadoMesa.celularEncargadoMesa,
+            passwordEncargadoMesa: datoEncargadoMesa.passwordEncargadoMesa,
+            cargoVerificador: datoVerificadorMesa.cargoVerificador,
+            cuVerificador: datoVerificadorMesa.cuVerificadorMesa,
+            celularVerificador: datoVerificadorMesa.celularVerificadorMesa,
+            passwordVerificador: datoVerificadorMesa.passwordVerificadorMesa,
+          });
+        });
+        await usuarioAxios.put(
+          `/api/lista_estudiantes/${datos[0].cuEncargadoMesa}`,
+          {
+            cargoLogin: datos[0].cargoEncargadoMesa,
+          }
+        );
+        await usuarioAxios.put(
+          `/api/lista_estudiantes/${datos[0].cuVerificador}`,
+          {
+            cargoLogin: datos[0].cargoVerificador,
+          }
+        );
+        // GUARDANDO CONTRASEÑA EN UNIVERSITARIOS
+        await usuarioAxios.post("/api/mesas/", datos);
+        setTimeout(() => {
+          setalerta({});
+        }, 3000);
+        setalerta({
+          categoria: "success",
+          msg: "Guardado Correctamente",
+        });
+        // PARA ACTUALIZAR LA LISTA DE MESAS EN EL USE EFFECT
+        setactualizarLista(!actualizarLista);
+        limpiarDatos();
+      } catch (e) {
+        console.log(e.response);
+        setTimeout(() => {
+          setalerta({});
+        }, 3000);
+        setalerta({
+          categoria: "danger",
+          msg: e.response.data.msg,
+        });
+      }
     }
   };
 
@@ -399,14 +527,74 @@ const GestionarMesas = () => {
   }, [actualizarLista]);
 
   const obteniendoDatosMesa = async (cu) => {
-    usuarioAxios
-      .get(
-        `/api/lista_estudiantes/` + cu
-      )
-      .then((res) => {
-        return res.data.estudiante;
-      });
+    usuarioAxios.get(`/api/lista_estudiantes/` + cu).then((res) => {
+      return res.data.estudiante;
+    });
   };
+
+  const editarMesa = (mesa) => {
+    let data = [];
+    mesas.map((res) => {
+      if (res._id === mesa._id) {
+        for (let i = 0; i < res.cargo.length; i++) {
+          data.push({
+            id: res.id[i],
+            cargo: res.cargo[i],
+            cargoEncargadoMesa: res.cargoEncargadoMesa[0],
+            cargoVerificador: res.cargoVerificador[0],
+            celularEncargado: crypto.AES.decrypt(
+              res.celularEncargado[i],
+              "palabraClave"
+            ).toString(crypto.enc.Utf8),
+            celularEncargadoMesa: res.celularEncargadoMesa[0],
+            celularVerificador: res.celularVerificador[i],
+            cuEncargado: crypto.AES.decrypt(
+              res.cuEncargado[i],
+              "palabraClave"
+            ).toString(crypto.enc.Utf8),
+            cuEncargadoMesa: res.cuEncargadoMesa[0],
+            cuVerificador: res.cuVerificador[i],
+            habilitado: res.habilitado[i],
+            id: res.id[i],
+            mesa: res._id,
+          });
+        }
+      }
+    });
+
+    seteditMesa(data);
+  };
+
+  useEffect(() => {
+    let datos = [];
+    if (editMesa.length !== 0) {
+      editMesa.map((editar) => {
+        if (editar) {
+          datos.push(editar);
+        }
+      });
+      setdatosForm(datos);
+      // datos.map((dato) => {
+      //   console.log(dato);
+      //   // setdatosForm({
+      //   //   mesa: dato.mesa,
+      //   //   cargo: dato.cargo,
+      //   //   cuEncargado: dato.cuEncargado,
+      //   //   celularEncargado: dato.celularEncargado,
+      //   // });
+      // });
+      setdatoVerificadorMesa({
+        cargoVerificador: "Verificador de Votante",
+        cuVerificadorMesa: datos[0].cuVerificador,
+        celularVerificadorMesa: datos[0].celularVerificador,
+      });
+      setdatoEncargadoMesa({
+        cargoEncargadoMesa: "Encargado de Mesa",
+        cuEncargadoMesa: datos[0].cuEncargadoMesa,
+        celularEncargadoMesa: datos[0].celularEncargadoMesa,
+      });
+    }
+  }, [editMesa]);
 
   useEffect(() => {
     var data = [];
@@ -437,7 +625,6 @@ const GestionarMesas = () => {
                 data.push(res.data.estudiante);
               });
           }
-          // setdatoEncargadoMesa(data);
 
           if (mesa.cuVerificador) {
             usuarioAxios
@@ -446,7 +633,6 @@ const GestionarMesas = () => {
                 data.push(res.data.estudiante);
               });
           }
-          // setdatosVerificador(data);
           setdatosEstudiante(data);
         });
       }
@@ -682,7 +868,7 @@ const GestionarMesas = () => {
                   >
                     Limpiar
                   </button>
-                  {editMesa ? (
+                  {editMesa.length > 0 ? (
                     <button className="btn btn-warning m-1" type="submit">
                       Editar
                     </button>
@@ -723,6 +909,7 @@ const GestionarMesas = () => {
                 eliminar={eliminar}
                 setMesas={setMesas}
                 mesas={mesas}
+                editarMesa={editarMesa}
               />
             </>
           ) : (

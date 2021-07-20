@@ -6,7 +6,7 @@ import * as crypto from "crypto-js";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 
-const ListarMesas = ({ actualizarLista, eliminar, setMesas, mesas }) => {
+const ListarMesas = ({ actualizarLista, eliminar, setMesas, mesas, editarMesa }) => {
   const votanteContext = useContext(VotanteContext);
   const { obtenerVotantes, votantes } = votanteContext;
   const universitarioContext = useContext(UniversitarioContext);
@@ -122,7 +122,6 @@ const ListarMesas = ({ actualizarLista, eliminar, setMesas, mesas }) => {
       if (votante.numMesa === mesa.toString()) {
         // for (let i = 0; i < res.cuEncargado.length; i++) {
         estudiantes.forEach((estudiante) => {
-
           // COMPARAMOS LOS DATOS DE ESTUDIANTES DE TODAS LAS MESAS SOLO CON EL DE LA MESA QUE DIMOS CLICK
           if (
             crypto.AES.decrypt(estudiante.cu, "palabraClave").toString(
@@ -289,7 +288,7 @@ const ListarMesas = ({ actualizarLista, eliminar, setMesas, mesas }) => {
 
                   <button
                     className="btn btn-warning mr-2"
-                    //   onClick={() => editar(frente._id)}
+                    onClick={() => editarMesa(mesa)}
                   >
                     Editar
                   </button>
