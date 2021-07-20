@@ -5,7 +5,6 @@ const ListaFrente = ({ frentes, eliminar, editar }) => {
   const URL = process.env.REACT_APP_BACKEND_URL;
 
   // console.log(`${URL}/${frentes[0].logoFrente[0]}`);
-  console.log(`${URL}`);
   return (
     <Fragment>
       <div className="container mt-5">

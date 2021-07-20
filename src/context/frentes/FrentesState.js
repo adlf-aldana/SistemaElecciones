@@ -38,7 +38,7 @@ const FrentesState = (props) => {
       // const res = await usuarioAxios.get("/api/frente_universitario");
       const reg = ultimoProcesoElectoral[0]
         ? ultimoProcesoElectoral[0].registro
-        : ultimoProcesoElectoral._id
+        : ultimoProcesoElectoral._id;
       const registro = await usuarioAxios.get(
         "/api/frente_universitario/" + reg
       );
@@ -106,14 +106,32 @@ const FrentesState = (props) => {
         `/api/frente_universitario/${id}`,
         frente
       );
-      dispatch({
-        type: EDITAR_FRENTE,
-        payload: res.data.frente,
-      });
+      console.log(res);
+      // dispatch({
+      //   type: EDITAR_FRENTE,
+      //   payload: res.data.frente,
+      // });
       obtenerFrentes();
       limpiarFormulario();
-    } catch (error) {
-      console.log(error);
+    } catch (e) {
+      console.log(e.response);
+      let alerta = null;
+      if (e.response !== undefined) {
+        alerta = {
+          msg: e.response.data.msg,
+          categoria: "danger",
+        };
+      } else {
+        alerta = {
+          msg: "No se pudo conectar con el servidor",
+          categoria: "danger",
+        };
+      }
+      dispatch({
+        type: ERROR_FRENTE,
+        payload: alerta,
+      });
+      return false;
     }
   };
 

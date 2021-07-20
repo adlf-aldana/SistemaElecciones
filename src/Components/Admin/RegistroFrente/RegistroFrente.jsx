@@ -25,6 +25,7 @@ const RegistroFrente = () => {
     limpiarFormulario,
     busquedaUniversitario,
     limpiarMensaje,
+    actualizarFrente,
   } = frentesContext;
 
   const alertacontext = useContext(alertaContext);
@@ -37,6 +38,7 @@ const RegistroFrente = () => {
   const [imgPreview, setImgPreview] = useState(null);
   const [datosForm, setdatosForm] = useState([datosFormulario]);
   const [ultimoProcesoElectoral, setultimoProcesoElectoral] = useState([]);
+  const [editando, seteditando] = useState(false);
 
   const [datosFrentes, setdatosFrentes] = useState({});
 
@@ -57,80 +59,38 @@ const RegistroFrente = () => {
       mostrarAlerta("Error: Todos los campos deben estar llenos", "danger");
       return;
     }
-    if (
-      datosForm.length < 2
-    ) {
+    if (datosForm.length < 2) {
       mostrarAlerta("Error: Debe haber más de dos encargados", "danger");
       return;
     }
-    // if (
-    //   datosForm[0].nombreFrente.length < 1 ||
-    //   datosForm[0].cuEncargado.length < 6
-    //   // celularEncargado.length < 8
-    // ) {
-    //   mostrarAlerta(
-    //     "Error: Los campos deben ser mayores a 3 caracteres, Carnet Universitario 6 digitos",
-    //     "danger"
-    //   );
-    //   return;
-    // }
-
-    // // if (cuEncargado.length > 6 || celularEncargado.length > 8) {
-    // if (cuEncargado.length > 6) {
-    //   mostrarAlerta(
-    //     "Error: Carnet Universitario Solo debe contener 6 dígitos",
-    //     "danger"
-    //   );
-    //   return;
-    // }
     const dataimg = new FormData();
-    dataimg.append(
-      "nombreFrente",
-      // crypto.AES.encrypt(datosForm[0].nombreFrente, "palabraClave").toString()
-      datosForm[0].nombreFrente
-    );
+    dataimg.append("nombreFrente", datosForm[0].nombreFrente);
     dataimg.append("logoFrente", datosForm[0].logoFrente);
 
     datosForm.map((dato) => {
-      dataimg.append(
-        "cargo",
-        dato.cargo
-        // crypto.AES.encrypt(datosForm.cargo, "palabraClave").toString()
-      );
-      dataimg.append(
-        "cuEncargado",
-        dato.cuEncargado
-        // crypto.AES.encrypt(datosForm.cuEncargado, "palabraClave").toString()
-      );
-      dataimg.append(
-        "celularEncargado",
-        dato.celularEncargado
-
-        // crypto.AES.encrypt(
-        //   datosForm.celularEncargado,
-        //   "palabraClave"
-        // ).toString()
-      );
-      dataimg.append(
-        "registro",
-        ultimoProcesoElectoral[0].registro
-
-        // crypto.AES.encrypt(
-        //   datosForm.celularEncargado,
-        //   "palabraClave"
-        // ).toString()
-      );
+      dataimg.append("id", dato._id ? dato._id : null);
+      dataimg.append("cargo", dato.cargo);
+      dataimg.append("cuEncargado", dato.cuEncargado);
+      dataimg.append("celularEncargado", dato.celularEncargado);
+      dataimg.append("registro", ultimoProcesoElectoral[0].registro);
     });
-    console.log(editUni);
-    // if (editUni[0]._id) {
-    //   console.log(dataimg);
-    //   // actualizarFrente(editUni._id, dataimg);
-    //   mostrarAlerta("Actualizacion Existosa", "success");
-    // } else {
-    agregarFrente(dataimg);
-    mostrarAlerta("Guardado Existoso", "success");
-    // limpiarInputs();
-    // }
+
+    if (editUni.length > 0) {
+      try {
+        const correcto = await actualizarFrente(editUni[0]._id, dataimg);
+        if (correcto !== false) {
+          mostrarAlerta("Actualizacion Existosa", "success");
+          cleanForm();
+          seteditando(true);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    } else {
+      agregarFrente(dataimg);
+      mostrarAlerta("Guardado Existoso", "success");
+      limpiarInputs();
+    }
   };
 
   const eliminar = async (ids) => {
@@ -147,36 +107,28 @@ const RegistroFrente = () => {
   const editar = (id) => {
     let data = [];
 
-    // frentes[0].map(frente=> console.log(frente.nombreFrente))
-    // data.push(
-    //   frentes[0].map((frente) => (frente.nombreFrente === id && frente))
-    // );
-
     frentes[0].map((frente) => {
-      let res = frente.nombreFrente === id ? data.push(frente) : null;
+      // frente.nombreFrente.toString() === id.toString() ? data.push([frente]) : null
+      if (frente.nombreFrente.toString() === id.toString()) {
+        data.push({
+          cargo: frente.cargo,
+          celularEncargado: crypto.AES.decrypt(
+            frente.celularEncargado,
+            "palabraClave"
+          ).toString(crypto.enc.Utf8),
+          cuEncargado: crypto.AES.decrypt(
+            frente.cuEncargado,
+            "palabraClave"
+          ).toString(crypto.enc.Utf8),
+          logoFrente: frente.logoFrente,
+          nombreFrente: frente.nombreFrente,
+          registro: frente.registro,
+          _id: frente._id,
+        });
+      }
     });
-    // datos = {
-    //   _id: datos._id,
-    //   nombreFrente: crypto.AES.decrypt(
-    //     datos.nombreFrente,
-    //     "palabraClave"
-    //   ).toString(crypto.enc.Utf8),
-    //   cargo: crypto.AES.decrypt(datos.cargo, "palabraClave").toString(
-    //     crypto.enc.Utf8
-    //   ),
-    //   cuEncargado: crypto.AES.decrypt(
-    //     datos.cuEncargado,
-    //     "palabraClave"
-    //   ).toString(crypto.enc.Utf8),
-    //   celularEncargado: crypto.AES.decrypt(
-    //     datos.celularEncargado,
-    //     "palabraClave"
-    //   ).toString(crypto.enc.Utf8),
-    //   logoFrente: datos.logoFrente,
-    // };
+
     seteditUni(data);
-    // //   // setImgPreview("http://192.168.0.6:4000/" + datos.logoFrente);
-    // setImgPreview("http://localhost:4000/" + datos.logoFrente);
   };
 
   const cleanForm = () => {
@@ -302,18 +254,8 @@ const RegistroFrente = () => {
       });
       setdatosForm(datos);
       setImgPreview("http://localhost:4000/" + datos[0].logoFrente);
-      // setdatosForm([
-      //   {
-      //     nombreFrente: editUni.nombreFrente,
-      //     cuEncargado: editUni.cuEncargado,
-      //     celularEncargado: editUni.celularEncargado,
-      //     logoFrente: editUni.logoFrente,
-      //     cantVotos: editUni.cantVotos,
-      //     cargo: editUni.cargo,
-      //   },
-      // ]);
     }
-  }, [datosFormulario, editUni]);
+  }, [datosFormulario, editUni, editando]);
   useEffect(() => {
     if (mensaje) {
       mostrarAlerta(mensaje.msg, mensaje.categoria);
@@ -344,7 +286,7 @@ const RegistroFrente = () => {
       });
     };
     ultimoProcesoEleccionario();
-  }, []);
+  }, [editando]);
 
   return (
     <Fragment>
@@ -392,72 +334,7 @@ const RegistroFrente = () => {
                   </div>
                 </div>
 
-                {/* <div className="col">
-            <label htmlFor="">Carnet Universitario del Encagado:</label>
-            <input
-              type="number"
-              name="cuEncargado"
-              placeholder="Carnet Universitario del Encargado"
-              className="form-control"
-              onChange={handleChange}
-              value={cuEncargado}
-            />
-            <button
-              type="button"
-              className="btn btn-success mt-2"
-              onClick={verificarEncargado}
-            >
-              Verificar
-            </button>
-          </div> */}
-
                 <h3 className="text-center">DATOS DE LOS ENCARGADOS</h3>
-
-                {/* <div className="row mt-3">
-              <div className="col">
-                <label htmlFor="">Cargo:</label>
-                <input
-                  type="text"
-                  name="cargo"
-                  placeholder="Cargo"
-                  className="form-control"
-                  onChange={(event) => handleChange(event)}
-                  value={cargo}
-                />
-              </div>
-
-              <div className="col">
-                <label htmlFor="">Carnet Universitario:</label>
-                <input
-                  type="number"
-                  name="cuEncargado"
-                  placeholder="Carnet Universitario"
-                  className="form-control"
-                  onChange={(event) => handleChange(event)}
-                  value={cuEncargado}
-                />
-                <button
-                  type="button"
-                  className="btn btn-success mt-2"
-                  onClick={() => verificarEncargado(cuEncargado)}
-                >
-                  Verificar
-                </button>
-              </div>
-
-              <div className="col">
-                <label htmlFor="">Celular:</label>
-                <input
-                  type="number"
-                  name="celularEncargado"
-                  placeholder="Celular"
-                  className="form-control"
-                  onChange={(event) => handleChange(event)}
-                  value={celularEncargado}
-                />
-              </div>
-            </div> */}
-                {/* {datosForm ? <p>{datosForm[0].nombreFrente}</p> : <p>nad</p>} */}
                 {datosForm.map((dato, index) => (
                   <div className="row mt-3" key={index}>
                     <div className="col">
