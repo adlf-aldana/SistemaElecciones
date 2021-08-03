@@ -296,42 +296,36 @@ const Informe = () => {
   };
 
   const reportePorMesasPDF = () => {
-    let votos = [];
-    let i=0;
-    let j=0;
-
-    mesas.map((mesa) => {
-      i=0;
-      j=0;
-      votantes.map((votante) => {
-        if (mesa._id.toString() === votante.numMesa) {
-          if (votante.estadoEncargadoMesa || votante.estadoVerificadorVotante) {
-            i++;
-            // votos.push({
-            //   numMesa: mesa._id,
-            //   validos: 1,
-            // });
-          } else {
-            j++;
-            // votos.push({
-            //   numMesa: mesa._id,
-            //   noValidos: 1,
-            // });
+    let datosVotanteLinea = [];
+    estudiantes.map((estudiante) => {
+      for (let i = 0; i < votantes.length; i++) {
+        if (
+          crypto.AES.decrypt(estudiante.cu, "palabraClave").toString(
+            crypto.enc.Utf8
+          ) === votantes[i].cu
+        ) {
+          if (votantes[i].numMesa === "00000") {
+            datosVotanteLinea.push({
+              nombre: crypto.AES.decrypt(
+                estudiante.nombre,
+                "palabraClave"
+              ).toString(crypto.enc.Utf8),
+              apellidos: crypto.AES.decrypt(
+                estudiante.apellidos,
+                "palabraClave"
+              ).toString(crypto.enc.Utf8),
+              carrera: crypto.AES.decrypt(
+                estudiante.carrera,
+                "palabraClave"
+              ).toString(crypto.enc.Utf8),
+              cu: crypto.AES.decrypt(estudiante.cu, "palabraClave").toString(
+                crypto.enc.Utf8
+              ),
+            });
           }
-          
         }
-      });
-      votos.push({
-        numMesa: mesa._id,
-        validos: i,
-        noValidos: j
-      })
+      }
     });
-    
-    console.log(votos);
-
-
-
 
     const doc = new jsPDF({
       orientation: "landscape",
@@ -340,27 +334,37 @@ const Informe = () => {
 
     const widthPage = doc.internal.pageSize.getWidth();
 
-    doc.text("LISTA DE VOTACIONES POR MESAS", widthPage / 2, 10);
+    doc.text("LISTA DE VOTANTES EN LINEA", widthPage / 2, 10);
     doc.autoTable({
       head: [
         [
-          { content: "Num. Mesa" },
-          { content: "Votaron" },
-          { content: "Rechazados" },
+          { content: "Nombre (s)" },
+          { content: "Apellido (s)" },
+          { content: "Carrera" },
+          { content: "C.U." },
         ],
       ],
     });
-    votos.map((voto) => {
+
+    datosVotanteLinea.map((datoEstudiante) => {
       doc.autoTable({
         columnStyles: {
-          0: { cellWidth: 90 },
-          1: { cellWidth: 70 },
+          0: { cellWidth: 77 },
+          1: { cellWidth: 81 },
+          2: { cellWidth: 55 },
         },
-        body: [[voto.numMesa, voto.validos, voto.noValidos]],
+        body: [
+          [
+            datoEstudiante.nombre,
+            datoEstudiante.apellidos,
+            datoEstudiante.carrera,
+            datoEstudiante.cu,
+          ],
+        ],
       });
     });
 
-    doc.save("VotosPorMesas.pdf");
+    doc.save("VotosEnLinea.pdf");
   };
 
   useEffect(() => {
@@ -464,7 +468,7 @@ const Informe = () => {
                         className="btn btn-success mr-2"
                         onClick={() => reportePorMesasPDF()}
                       >
-                        Reporte por mesas
+                        Reporte votantes en linea
                       </button>
                     </div>
                     <br />

@@ -22,7 +22,7 @@ const Votacion = () => {
     encargadoHabilitaVotante,
   } = votanteContext;
   const authContext = useContext(AuthContext);
-  const { usuario } = authContext;
+  const { usuario, usuarioAutenticado } = authContext;
 
   const [confirmado, setconfirmado] = useState(false);
   const [ultimoProcesoElectoral, setultimoProcesoElectoral] = useState([]);
@@ -55,7 +55,12 @@ const Votacion = () => {
 
       doc.text(`CERTIFICADO DE SUFRAGIO 2021`, widthPage / 3, 10);
       doc.text(`ELECCION DE CENTRO DE ESTUDIANTES`, widthPage / 3.5, 20);
-      doc.text(`FACULTAD DE TECNOLOGIA`, widthPage / 3, 30);
+      doc.text(`CARRERA DE SISTEMAS, CIENCIAS DE LA COMPUTACION,`, 52, 30);
+      doc.text(
+        `TECNOLOGIA DE LA INFORMACION Y SEGURIDAD, DISEÑO Y ANIMACION DIGITAL`,
+        24,
+        38
+      );
       doc.text(`PRESIDENTE COMITE ELECTORAL`, widthPage / 2, 190);
       doc.text(
         "Fecha y Hora:" + new Date().toString().substr(3, 22),
@@ -69,7 +74,7 @@ const Votacion = () => {
       // );
 
       doc.autoTable({
-        startY: 35,
+        startY: 42,
         head: [
           [
             { content: "Nombre (s)" },
@@ -124,54 +129,102 @@ const Votacion = () => {
         });
         return;
       }
-      const codigo = Math.floor(Math.random() * 1000000);
-      const dataMessage = {
-        cu: usuario.cu,
-        user_email: usuario.email,
-        codigo,
-        numMesa: "00000",
-      };
 
-      // await actualizarVotante(datosVotante._id, dataMessage);
-      // const votante = {
-      //   cu: estudiante.cu,
-      //   encargadoMesa: true,
-      //   estadoEncargadoMesa: true,
-      //   numMesa: numMesa,
-      // };
-      const res = await encargadoHabilitaVotante(dataMessage);
-      setPinHabilitado(true);
-      emailjs
-        .send(
-          "service_f7ywpid",
-          "template_l6m613p",
-          dataMessage,
-          "user_dYyaZkOb03UJgrvZhvmmV"
-        )
-        .then(
-          (result) => {
-            setTimeout(() => {
-              setalerta({});
-            }, 3000);
-            setalerta({
-              categoria: "success",
-              msg: "Se envió el código a su correo electrónico",
-            });
-            console.log(result.text);
-          },
-          (error) => {
-            console.log(error.text);
-            setTimeout(() => {
-              setalerta({});
-            }, 3000);
-            setalerta({
-              categoria: "success",
-              msg: "Se produjo un error, vuelva a intentarlo más tarde",
-            });
-          }
-        );
+      if (datosVotante) {
+        const codigo = Math.floor(Math.random() * 1000000);
+        const dataMessage = {
+          cu: usuario.cu,
+          user_email: usuario.email,
+          codigo,
+          numMesa: "00000",
+        };
+        await actualizarVotante(datosVotante._id, dataMessage);
+        await obtenerVotante(usuario.cu);
+        setPinHabilitado(!habilitando);
+
+        emailjs
+          .send(
+            "service_8wqnh92",
+            "template_g92nzbr",
+            dataMessage,
+            "user_xjBDvVhpA8EbjD7T95xbK"
+          )
+          .then(
+            (result) => {
+              setTimeout(() => {
+                setalerta({});
+              }, 3000);
+              setalerta({
+                categoria: "success",
+                msg: "Se envió el código a su correo electrónico",
+              });
+              console.log(result.text);
+            },
+            (error) => {
+              console.log(error.text);
+              setTimeout(() => {
+                setalerta({});
+              }, 3000);
+              setalerta({
+                categoria: "success",
+                msg: "Se produjo un error, vuelva a intentarlo más tarde",
+              });
+            }
+          );
+      } else {
+        const codigo = Math.floor(Math.random() * 1000000);
+        const dataMessage = {
+          cu: usuario.cu,
+          user_email: usuario.email,
+          codigo,
+          numMesa: "00000",
+        };
+
+        // const codigo = await
+        const votante = {
+          cu: estudiante.cu,
+          encargadoMesa: true,
+          estadoEncargadoMesa: true,
+          descripcionProblemaEncargadoMesa: true,
+          descripcionProblemaVerificadorVotante: true,
+          numMesa: dataMessage.numMesa,
+          codigo,
+        };
+        const res = await encargadoHabilitaVotante(votante);
+        setPinHabilitado(true);
+
+        emailjs
+          .send(
+            "service_8wqnh92",
+            "template_g92nzbr",
+            dataMessage,
+            "user_xjBDvVhpA8EbjD7T95xbK"
+          )
+          .then(
+            (result) => {
+              setTimeout(() => {
+                setalerta({});
+              }, 3000);
+              setalerta({
+                categoria: "success",
+                msg: "Se envió el código a su correo electrónico",
+              });
+              console.log(result.text);
+            },
+            (error) => {
+              console.log(error.text);
+              setTimeout(() => {
+                setalerta({});
+              }, 3000);
+              setalerta({
+                categoria: "success",
+                msg: "Se produjo un error, vuelva a intentarlo más tarde",
+              });
+            }
+          );
+      }
     } catch (e) {
-      console.log(e);
+      console.log("" + e);
     }
   };
 
@@ -182,46 +235,54 @@ const Votacion = () => {
     });
   };
   const confirmarPin = () => {
-    if (!codigoVotacion) {
-      setTimeout(() => {
-        setalerta({});
-      }, 3000);
-      setalerta({
-        categoria: "danger",
-        msg: "Introduzca un código",
-      });
-      return;
-    }
-    if (codigoVotacion.codigo.toString() === datosVotante.codigo.toString()) {
-      const habilitando = {
-        encargadoMesa: true,
-        estadoEncargadoMesa: true,
-        verificadorVotante: true,
-        estadoVerificadorVotante: true,
-      };
-      actualizarVotante(datosVotante._id, habilitando);
-      sethabilitando(true);
-    } else {
-      setTimeout(() => {
-        setalerta({});
-      }, 3000);
-      setalerta({
-        categoria: "danger",
-        msg: "Código incorrecto",
-      });
+    try {
+      if (!codigoVotacion) {
+        setTimeout(() => {
+          setalerta({});
+        }, 3000);
+        setalerta({
+          categoria: "danger",
+          msg: "Introduzca un código",
+        });
+        return;
+      }
+      console.log(datosVotante);
+      if (codigoVotacion.codigo.toString() === datosVotante.codigo.toString()) {
+        const habilitando = {
+          encargadoMesa: true,
+          estadoEncargadoMesa: true,
+          verificadorVotante: true,
+          estadoVerificadorVotante: true,
+        };
+        actualizarVotante(datosVotante._id, habilitando);
+        sethabilitando(true);
+      } else {
+        setTimeout(() => {
+          setalerta({});
+        }, 3000);
+        setalerta({
+          categoria: "danger",
+          msg: "Código incorrecto",
+        });
+      }
+    } catch (e) {
+      console.log("" + e);
     }
   };
 
   useEffect(() => {
     if (usuario) {
-      obtenerVotante(usuario.cu);
-      const obteniendoDatosVotante = () => {
-        usuarioAxios
+      const obteniendoDatosVotante = async () => {
+        await obtenerVotante(usuario.cu);
+
+        await usuarioAxios
           .get(`/api/lista_estudiantes/${usuario.cu}`)
           .then((res) => setestudiante(res.data.estudiante));
       };
       obteniendoDatosVotante();
+      console.log(datosVotante);
     }
+
     // obtenerFrentes();
     const ultimoProcesoEleccionario = () => {
       usuarioAxios.get("/api/procesoElectoral").then((res) => {
@@ -231,6 +292,7 @@ const Votacion = () => {
     };
     ultimoProcesoEleccionario();
   }, [confirmado, habilitando, PinHabilitado]);
+
   return (
     <Fragment>
       {alerta ? (

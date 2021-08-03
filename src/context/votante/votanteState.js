@@ -136,6 +136,7 @@ const VotanteState = (props) => {
 
   const obtenerVotante = async (cu) => {
     try {
+      console.log(cu);
       const res = await usuarioAxios.get("/api/votante/"+cu)
       dispatch({
         type: DATOS_VOTANTE,

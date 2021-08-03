@@ -53,15 +53,17 @@ const ProcesoEleccionario = () => {
             { content: "Apellido (s)" },
             { content: "Cargo" },
             { content: "C.I." },
+            { content: "Firma" },
           ],
         ],
       });
       datos.map((datoEstudiante) => {
         doc.autoTable({
           columnStyles: {
-            0: { cellWidth: 83 },
-            1: { cellWidth: 80 },
-            2: { cellWidth: 55 },
+            0: { cellWidth: 69 },
+            1: { cellWidth: 71 },
+            2: { cellWidth: 42 },
+            3: { cellWidth: 23 },
           },
           body: [
             [
@@ -69,6 +71,7 @@ const ProcesoEleccionario = () => {
               datoEstudiante.apellido,
               datoEstudiante.cargo,
               datoEstudiante.ci,
+              "________________",
             ],
           ],
         });
@@ -104,15 +107,17 @@ const ProcesoEleccionario = () => {
             { content: "Apellido (s)" },
             { content: "Cargo" },
             { content: "C.I." },
+            { content: "Firma" },
           ],
         ],
       });
       datosForm.map((datoEstudiante) => {
         doc.autoTable({
           columnStyles: {
-            0: { cellWidth: 83 },
-            1: { cellWidth: 80 },
-            2: { cellWidth: 55 },
+            0: { cellWidth: 69 },
+            1: { cellWidth: 71 },
+            2: { cellWidth: 42 },
+            3: { cellWidth: 23 },
           },
           body: [
             [
@@ -120,6 +125,7 @@ const ProcesoEleccionario = () => {
               datoEstudiante.apellido,
               datoEstudiante.cargo,
               datoEstudiante.ci,
+              "________________",
             ],
           ],
         });
@@ -214,18 +220,42 @@ const ProcesoEleccionario = () => {
   const backup = async () => {
     try {
       await usuarioAxios.post("/api/backupRestore");
-      alert("Copia de seguridad correctamente");
+      setTimeout(() => {
+        setalerta({});
+      }, 3000);
+      setalerta({
+        categoria: "success",
+        msg: "Copia de seguridad correctamente",
+      });
     } catch (e) {
-      alert("No se realizó la copia de seguridad");
+      setTimeout(() => {
+        setalerta({});
+      }, 3000);
+      setalerta({
+        categoria: "error",
+        msg: "No se realizó la copia de seguridad.\n" + e.response,
+      });
     }
   };
 
   const restaurar = async () => {
     try {
       await usuarioAxios.get("/api/backupRestore");
-      alert("Restauracion correctamente");
+      setTimeout(() => {
+        setalerta({});
+      }, 3000);
+      setalerta({
+        categoria: "success",
+        msg: "Restauración correctamente",
+      });
     } catch (e) {
-      alert("No se realizó la Restauración");
+      setTimeout(() => {
+        setalerta({});
+      }, 3000);
+      setalerta({
+        categoria: "success",
+        msg: "No se realizó la restauración\n" + e.response,
+      });
     }
   };
 
@@ -387,7 +417,13 @@ const ProcesoEleccionario = () => {
         ) : (
           <form onSubmit={onSubmit}>
             <h4 className="text-center mt-4">REGISTRO DE LOS PRESENTES</h4>
-
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() => restaurar()}
+            >
+              Restaurar Backup
+            </button>
             {datosForm.map((dato, index) => (
               <div className="row mt-3" key={index}>
                 <div className="col">

@@ -910,6 +910,7 @@ const GestionarMesas = () => {
                 setMesas={setMesas}
                 mesas={mesas}
                 editarMesa={editarMesa}
+                setactualizarLista={setactualizarLista}
               />
             </>
           ) : (

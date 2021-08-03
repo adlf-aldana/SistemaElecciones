@@ -1,16 +1,29 @@
-import React, { useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import usuarioAxios from "../../../config/axios";
 import VotanteContext from "../../../context/votante/votanteContext";
 import UniversitarioContext from "../../../context/universitarios/UniversitarioContext";
+import FrentesContext from "../../../context/frentes/FrentesContext";
 import * as crypto from "crypto-js";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 
-const ListarMesas = ({ actualizarLista, eliminar, setMesas, mesas, editarMesa }) => {
+const ListarMesas = ({
+  actualizarLista,
+  eliminar,
+  setMesas,
+  mesas,
+  editarMesa,
+  setactualizarLista,
+}) => {
   const votanteContext = useContext(VotanteContext);
   const { obtenerVotantes, votantes } = votanteContext;
   const universitarioContext = useContext(UniversitarioContext);
   const { estudiantes, obtenerUniversitarios } = universitarioContext;
+
+  const frentesContext = useContext(FrentesContext);
+  const { obtenerFrentes, nombreLogoUnico } = frentesContext;
+
+  const [actualizarListaMesas, setactualizarListaMesas] = useState(false);
 
   // HABILITA O DESHABILITA UNA MESA PARA VOTAR
   const habilitarMesa = async (habilitado, ids, numMesa) => {
@@ -21,8 +34,12 @@ const ListarMesas = ({ actualizarLista, eliminar, setMesas, mesas, editarMesa })
       });
 
       if (habilitado[0]) {
-        reporte(numMesa);
+        if (window.confirm("¿Esta seguro de cerrar la mesa?")) {
+          reporte(numMesa);
+        }
       }
+      // setactualizarListaMesas(!actualizarLista);
+      setactualizarLista(!actualizarLista);
     } catch (error) {
       console.log(error);
       console.log(error.response);
@@ -117,10 +134,14 @@ const ListarMesas = ({ actualizarLista, eliminar, setMesas, mesas, editarMesa })
     });
 
     let datosVotantes = [];
+
+    let idFrente = [];
+
     votantes.map((votante) => {
       // COMPARAMOS SI EL VOTANTE VOTO EN DICHA MESA
       if (votante.numMesa === mesa.toString()) {
         // for (let i = 0; i < res.cuEncargado.length; i++) {
+        idFrente.push(votante._idFrente);
         estudiantes.forEach((estudiante) => {
           // COMPARAMOS LOS DATOS DE ESTUDIANTES DE TODAS LAS MESAS SOLO CON EL DE LA MESA QUE DIMOS CLICK
           if (
@@ -172,6 +193,24 @@ const ListarMesas = ({ actualizarLista, eliminar, setMesas, mesas, editarMesa })
       }
     });
 
+    let cantVotosFrente = [];
+    let cant = 0;
+    nombreLogoUnico[0].map((nombreCadaFrente) => {
+
+      for (let i = 0; i <= idFrente.length; i++) {
+        if (nombreCadaFrente.id[0] === idFrente[i]) {
+          cant++;
+        }
+        if (i === idFrente.length) {
+          cantVotosFrente.push({
+            nombreFrente: nombreCadaFrente._id,
+            cantidadVotos: cant,
+          });
+        }
+      }
+      cant = 0;
+    });
+
     const doc = new jsPDF({
       orientation: "landscape",
       format: "letter",
@@ -205,7 +244,7 @@ const ListarMesas = ({ actualizarLista, eliminar, setMesas, mesas, editarMesa })
     });
 
     doc.addPage();
-    doc.text("VOTANTES", widthPage / 2, 15);
+    doc.text("VOTANTES DE LA MESA " + mesa, widthPage / 2, 15);
     doc.autoTable({
       startY: 23,
       head: [
@@ -240,12 +279,42 @@ const ListarMesas = ({ actualizarLista, eliminar, setMesas, mesas, editarMesa })
       });
     });
 
+    doc.addPage();
+    doc.text("TABLA DE RESULTADO DE LA MESA " + mesa, widthPage / 2, 18);
+    doc.autoTable({
+      startY: 23,
+      head: [
+        [
+          { content: "Nombre Frente" },
+          { content: "Cantidad Votos" },
+        ],
+      ],
+    });
+    cantVotosFrente.map((datos) => {
+      doc.autoTable({
+        columnStyles: {
+          0: { cellWidth: 125 },
+        },
+        body: [
+          [
+            datos.nombreFrente,
+            datos.cantidadVotos
+          ],
+        ],
+      });
+    });
+
     doc.save(`votos mesa${mesa}.pdf`);
   };
 
   useEffect(() => {
     obtenerVotantes();
     obtenerUniversitarios();
+    const ultimoProcesoEleccionario = () => {
+      usuarioAxios.get("/api/procesoElectoral").then((res) => {
+        obtenerFrentes(res.data.ultimoProcesoElectoral);
+      });
+    };
   }, []);
 
   return (
@@ -273,7 +342,7 @@ const ListarMesas = ({ actualizarLista, eliminar, setMesas, mesas, editarMesa })
                         habilitarMesa(mesa.habilitado, mesa.id, mesa._id)
                       }
                     >
-                      Deshabilitar
+                      Cerrar Mesa
                     </button>
                   ) : (
                     <button
@@ -282,7 +351,7 @@ const ListarMesas = ({ actualizarLista, eliminar, setMesas, mesas, editarMesa })
                         habilitarMesa(mesa.habilitado, mesa.id, mesa._id)
                       }
                     >
-                      Habilitar
+                      Abrir Mesa
                     </button>
                   )}
 
