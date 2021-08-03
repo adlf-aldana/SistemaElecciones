@@ -50,6 +50,9 @@ const FrentesState = (props) => {
         type: OBTENER_FRENTE_REGISTRO,
         payload: registro.data.registroFrentes,
       });
+
+      return registro;
+
     } catch (error) {
       console.log(error);
     }

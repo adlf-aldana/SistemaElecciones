@@ -149,13 +149,15 @@ const VotanteState = (props) => {
 
   const obtenerVotantes = async () => {
     try {
-      await usuarioAxios.get("/api/votante/").then((res) =>
+      const res = await usuarioAxios.get("/api/votante/")
+      // .then((res) =>
       // console.log(res)
         dispatch({
           type: OBTENER_VOTANTES,
           payload: res.data,
         })
-      );
+      // );
+      return res.data;
     } catch (e) {
       let alerta = null;
       if (e.response !== undefined) {

@@ -271,26 +271,36 @@ const Votacion = () => {
   };
 
   useEffect(() => {
-    if (usuario) {
-      const obteniendoDatosVotante = async () => {
-        await obtenerVotante(usuario.cu);
 
-        await usuarioAxios
-          .get(`/api/lista_estudiantes/${usuario.cu}`)
-          .then((res) => setestudiante(res.data.estudiante));
-      };
-      obteniendoDatosVotante();
-      console.log(datosVotante);
-    }
 
-    // obtenerFrentes();
+    const obteniendoDatosVotante = async () => {
+      try{
+      const user = await usuarioAutenticado();
+      await obtenerVotante(user.cu);
+
+      await usuarioAxios
+        .get(`/api/lista_estudiantes/${user.cu}`)
+        .then((res) => setestudiante(res.data.estudiante));
+      }catch(e){
+        setTimeout(() => {
+          setalerta({});
+        }, 3000);
+        setalerta({
+          categoria: "danger",
+          msg: "No es encontró a universitario",
+        });
+      }
+    };
+    
     const ultimoProcesoEleccionario = () => {
       usuarioAxios.get("/api/procesoElectoral").then((res) => {
         setultimoProcesoElectoral(res.data.ultimoProcesoElectoral);
         obtenerFrentes(res.data.ultimoProcesoElectoral);
       });
     };
+
     ultimoProcesoEleccionario();
+    obteniendoDatosVotante();
   }, [confirmado, habilitando, PinHabilitado]);
 
   return (

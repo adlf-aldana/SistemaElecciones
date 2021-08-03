@@ -51,16 +51,14 @@ const Informe = () => {
     });
   };
 
-  const obteniendoDatosFrentes = () => {
+  const obteniendoDatosFrentes = (todosFrentes, resVotante, unis) => {
     try {
-      // obtenerVotantes();
-      // obtenerFrentes();
-      // obtenerUniversitarios();
       if (votantes && estudiantes) {
         informacionCantidadVotos();
       }
-      nombreLogoUnico[0].map((frente) => {
-        cantVotosFrente.map((cantidad) => {
+
+      todosFrentes.data.nombreCadaFrentePorRegistro.map((frente) => {
+        resVotante.cantPartido.map((cantidad) => {
           if (frente.id[0] === cantidad._id) {
             setDatosFrente((dato) => [
               ...dato,
@@ -69,10 +67,8 @@ const Informe = () => {
                 cantVotos: cantidad.total,
                 porcentaje: (
                   (cantidad.total * 100) /
-                  estudiantesPorRegistro.length
-                )
-                  // cantidades.totalUniversitarios
-                  .toFixed(2),
+                  unis.data.registroUniversitario.length
+                ).toFixed(2),
               },
             ]);
           }
@@ -124,10 +120,12 @@ const Informe = () => {
 
   const consiguiendoDatosVotante = () => {
     const datos = [];
-    votantes.map(async (votante) => {
-      datos.push(await obteniendoDatosVotante(votante));
-      setdatosVotante(datos);
-    });
+    if (votantes) {
+      votantes.map(async (votante) => {
+        datos.push(await obteniendoDatosVotante(votante));
+        setdatosVotante(datos);
+      });
+    }
   };
 
   const reporteVotaronPDF = () => {
@@ -368,63 +366,48 @@ const Informe = () => {
   };
 
   useEffect(() => {
-    obtenerVotantes();
-    obtenerFrentes();
-    obtenerUniversitarios();
-
-    if (frentes && cantVotosFrente) {
-      consiguiendoDatosVotante();
-      obteniendoDatosFrentes();
-    }
-    // const ultimoProcesoEleccionario = () => {
-    //   usuarioAxios.get("/api/procesoElectoral").then((res) => {
-    //     setultimoProcesoElectoral(res.data.ultimoProcesoElectoral);
-    //     obtenerUniversitarios(res.data.ultimoProcesoElectoral);
-    //   });
-    // };
-    // ultimoProcesoEleccionario();
-  }, []);
-
-  useEffect(() => {
-    try {
-      const ultimoProcesoEleccionario = () => {
-        usuarioAxios.get("/api/procesoElectoral").then(async (res) => {
-          if (res.data.ultimoProcesoElectoral.length > 0) {
-            setultimoProcesoElectoral(res.data.ultimoProcesoElectoral);
-            const data = await usuarioAxios.get(
-              `/api/mesas/${res.data.ultimoProcesoElectoral[0].registro}`
-            );
-            setMesas(data.data.nombreCadaMesaPorRegistro);
-          }
-        });
-      };
-      ultimoProcesoEleccionario();
-    } catch (e) {
-      console.log("Se produjo un error");
-    }
-  }, []);
-
-  useEffect(() => {
     if (votantes && estudiantes) {
       informacionCantidadVotos();
     }
   }, [votantes, estudiantes]);
+
   useEffect(() => {
     graficando();
   }, [datosFrente]);
 
   useEffect(() => {
-    // cargandoDatosFrente();
-    // obtenerFrentes();
-    const ultimoProcesoEleccionario = () => {
-      usuarioAxios.get("/api/procesoElectoral").then((res) => {
-        setultimoProcesoElectoral(res.data.ultimoProcesoElectoral);
-        obtenerFrentes(res.data.ultimoProcesoElectoral);
-        obtenerUniversitarios(res.data.ultimoProcesoElectoral);
+    const ultimoProcesoEleccionario = async () => {
+      await usuarioAxios.get("/api/procesoElectoral").then(async (res) => {
+        if (res.data.ultimoProcesoElectoral.length > 0) {
+          setultimoProcesoElectoral(res.data.ultimoProcesoElectoral);
+
+          const data = await usuarioAxios.get(
+            `/api/mesas/${res.data.ultimoProcesoElectoral[0].registro}`
+          );
+          setMesas(data.data.nombreCadaMesaPorRegistro);
+        }
+
+        // await setultimoProcesoElectoral(res.data.ultimoProcesoElectoral);
+        const todosFrentes = await obtenerFrentes(
+          res.data.ultimoProcesoElectoral
+        );
+        const unis = await obtenerUniversitarios(
+          res.data.ultimoProcesoElectoral
+        );
+        const resVotante = await obtenerVotantes();
+
+        if (todosFrentes.data.registroFrentes && resVotante.cantPartido) {
+          consiguiendoDatosVotante();
+          obteniendoDatosFrentes(todosFrentes, resVotante, unis);
+        }
+
+        await obtenerUniversitarios();
       });
     };
+
     ultimoProcesoEleccionario();
   }, []);
+
   return (
     <Fragment>
       <div className="container">
@@ -521,32 +504,3 @@ const Informe = () => {
 };
 
 export default Informe;
-
-{
-  /* 
-<div id="carouselExampleControlsNoTouching" className="carousel slide" data-bs-touch="false" data-bs-interval="false">
-  <div className="carousel-inner">
-    <div className="carousel-item active">
-      <h2>GOLA</h2>
-    </div>
-    <div className="carousel-item">
-    <h2>GEQWE</h2>
-    </div>
-    <div className="carousel-item">
-    <h2>GASDASD</h2>
-    </div>
-  </div>
-  <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="prev">
-    <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span className="visually-hidden">Previous</span>
-  </button>
-  <button className="carousel-control-next" type="button" data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="next">
-    <span className="carousel-control-next-icon" aria-hidden="true"></span>
-    <span className="visually-hidden">Next</span>
-  </button>
-</div> */
-}
-
-{
-  /* <img src="../../../../backend/public/images/df886a9c-2b32-4458-abcc-0a9ffb396909.jpg" width="459" height="500" alt=""/> */
-}

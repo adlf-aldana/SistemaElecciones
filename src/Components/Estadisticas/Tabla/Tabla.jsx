@@ -14,7 +14,7 @@ const Tabla = ({ datosFrente }) => {
         </thead>
         <tbody>
           {datosFrente.map((frente, index) => (
-            <tr key={frente._id}>
+            <tr key={index}>
               <td> {index + 1}</td>
               {/* <td>{crypto.AES.decrypt(frente.nombreFrente, 'palabraClave').toString(crypto.enc.Utf8)}</td> */}
               <td>{frente.nombreFrente}</td>

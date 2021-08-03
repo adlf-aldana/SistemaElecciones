@@ -35,6 +35,7 @@ const AuthState = (props) => {
         type: OBTENER_USUARIO,
         payload: res.data.user,
       });
+      return res.data.user;
     } catch (error) {
       dispatch({
         type: LOGIN_ERROR,

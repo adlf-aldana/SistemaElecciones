@@ -64,6 +64,8 @@ const UniversitarioState = (props) => {
         type: OBTENER_ESTUDIANTE_REGISTRO,
         payload: registro.data.registroUniversitario,
       });
+
+      return registro;
     } catch (e) {
       let alerta = null;
       if (e.response !== undefined) {
