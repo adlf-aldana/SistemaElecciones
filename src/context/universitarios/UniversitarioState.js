@@ -107,7 +107,7 @@ const UniversitarioState = (props) => {
         encryptData
       );
       await axios.post(
-        "http://localhost:4000/api/frente_universitario",
+        "http://localhost:4000/api/lista_estudiantes",
         encryptData
       );
 
@@ -125,12 +125,6 @@ const UniversitarioState = (props) => {
           categoria: "danger",
         };
       }
-      // else {
-      //   alerta = {
-      //     msg: "No se pudo conectar con el servidor",
-      //     categoria: "danger",
-      //   };
-      // }
       dispatch({
         type: ERROR_UNIVERSITARIO,
         payload: alerta,
@@ -143,7 +137,7 @@ const UniversitarioState = (props) => {
     try {
       await usuarioAxios.delete(`/api/lista_estudiantes/${id}`);
 
-      await axios.delete(`http://localhost:4000/api/lista_estudiante/${id}`);
+      await axios.delete(`http://localhost:4000/api/lista_estudiantes/${id}`);
 
       dispatch({
         type: ELIMINAR_UNIVERSITARIO,
@@ -272,11 +266,6 @@ const UniversitarioState = (props) => {
       : votante._idFrente
       ? (resDataFrente = { data: { msg: { nombreFrente: "Votó" } } })
       : (resDataFrente = { data: { msg: { nombreFrente: null } } });
-    // : votante._idFrente !== null
-    // ? (resDataFrente = await usuarioAxios.get(
-    //     "/api/frente_universitario/" + votante._idFrente
-    //   ))
-    // : (resDataFrente = { data: { msg: { nombreFrente: "No votó" } } });
 
     const dataVotante = {
       ...votante,
