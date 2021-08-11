@@ -5,6 +5,8 @@ import UniversitarioReducer from "./UniversitarioReducer";
 
 import * as crypto from "crypto-js";
 
+import axios from "axios";
+
 import {
   OBTENER_UNIVERSITARIOS,
   AGREGAR_UNIVERSITARIO,
@@ -53,13 +55,11 @@ const UniversitarioState = (props) => {
         type: OBTENER_UNIVERSITARIOS,
         payload: res.data,
       });
-      
+
       const reg = ultimoProcesoElectoral[0]
         ? ultimoProcesoElectoral[0].registro
-        : ultimoProcesoElectoral._id
-      const registro = await usuarioAxios.get(
-        "/api/lista_estudiantes/" + reg
-      );
+        : ultimoProcesoElectoral._id;
+      const registro = await usuarioAxios.get("/api/lista_estudiantes/" + reg);
       dispatch({
         type: OBTENER_ESTUDIANTE_REGISTRO,
         payload: registro.data.registroUniversitario,
@@ -74,12 +74,6 @@ const UniversitarioState = (props) => {
           categoria: "danger",
         };
       }
-      // else {
-      //   alerta = {
-      //     msg: "No se pudo conectar con el servidor",
-      //     categoria: "danger",
-      //   };
-      // }
       dispatch({
         type: ERROR_UNIVERSITARIO,
         payload: alerta,
@@ -112,6 +106,11 @@ const UniversitarioState = (props) => {
         "/api/lista_estudiantes",
         encryptData
       );
+      await axios.post(
+        "http://localhost:4000/api/frente_universitario",
+        encryptData
+      );
+
       dispatch({
         type: AGREGAR_UNIVERSITARIO,
         payload: regUniversitario,
@@ -143,6 +142,9 @@ const UniversitarioState = (props) => {
   const eliminarUniversitario = async (id) => {
     try {
       await usuarioAxios.delete(`/api/lista_estudiantes/${id}`);
+
+      await axios.delete(`http://localhost:4000/api/lista_estudiante/${id}`);
+
       dispatch({
         type: ELIMINAR_UNIVERSITARIO,
         payload: id,
@@ -178,6 +180,12 @@ const UniversitarioState = (props) => {
         `/api/lista_estudiantes/${id}`,
         encryptData
       );
+
+      await axios.put(
+        `http://localhost:4000/api/lista_estudiante/${id}`,
+        encryptData
+      );
+
       dispatch({
         type: EDITAR_UNIVERSITARIO,
         payload: data.data.universitario,

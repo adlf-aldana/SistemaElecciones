@@ -39,6 +39,7 @@ const RegistroFrente = () => {
   const [datosForm, setdatosForm] = useState([datosFormulario]);
   const [ultimoProcesoElectoral, setultimoProcesoElectoral] = useState([]);
   const [editando, seteditando] = useState(false);
+  const [cargarPagina, setcargarPagina] = useState(false);
 
   const [datosFrentes, setdatosFrentes] = useState({});
 
@@ -82,6 +83,7 @@ const RegistroFrente = () => {
           mostrarAlerta("Actualizacion Existosa", "success");
           cleanForm();
           seteditando(true);
+          setcargarPagina(!cargarPagina);
         }
       } catch (e) {
         console.log(e);
@@ -89,6 +91,7 @@ const RegistroFrente = () => {
     } else {
       agregarFrente(dataimg);
       mostrarAlerta("Guardado Existoso", "success");
+      setcargarPagina(!cargarPagina);
       limpiarInputs();
     }
   };
@@ -100,6 +103,7 @@ const RegistroFrente = () => {
           eliminarFrente(id);
         });
         mostrarAlerta("Eliminado Existoso", "success");
+        setcargarPagina(!cargarPagina);
       }
     } catch (error) {}
   };
@@ -140,10 +144,10 @@ const RegistroFrente = () => {
     await busquedaUniversitario(cu);
   };
 
-  const cargandoDatosFrente = () => {
+  const cargandoDatosFrente = (registro) => {
     const datos = [];
-    frentes[0] &&
-      frentes[0].map(async (frente) =>
+    registro.data &&
+      registro.data.registroFrentes.map(async (frente) =>
         datos.push(await obteniendoDatosVotante(frente))
       );
     setdatosFrentes(datos);
@@ -199,19 +203,6 @@ const RegistroFrente = () => {
               crypto.AES.decrypt(frente.cuEncargado, "palabraClave").toString(
                 crypto.enc.Utf8
               ),
-
-              // crypto.AES.decrypt(frente.nombreFrente, "palabraClave").toString(
-              //   crypto.enc.Utf8
-              // ),
-              // frente.nombre,
-              // frente.apellidos,
-              // crypto.AES.decrypt(frente.cuEncargado, "palabraClave").toString(
-              //   crypto.enc.Utf8
-              // ),
-              // crypto.AES.decrypt(
-              //   frente.celularEncargado,
-              //   "palabraClave"
-              // ).toString(crypto.enc.Utf8),
             ],
           ],
         });
@@ -224,13 +215,13 @@ const RegistroFrente = () => {
   };
 
   const limpiarInputs = () => {
-    setdatosForm({
-      nombreFrente: "",
-      cuEncargado: "",
-      celularEncargado: "",
-      logoFrente: "",
-      cargo: "",
-    });
+    // setdatosForm({
+    //   nombreFrente: "",
+    //   cuEncargado: "",
+    //   celularEncargado: "",
+    //   logoFrente: "",
+    //   cargo: "",
+    // });
   };
 
   const agregarInput = () => {
@@ -256,12 +247,14 @@ const RegistroFrente = () => {
       setImgPreview("http://localhost:4000/" + datos[0].logoFrente);
     }
   }, [datosFormulario, editUni, editando]);
+
   useEffect(() => {
     if (mensaje) {
       mostrarAlerta(mensaje.msg, mensaje.categoria);
       limpiarMensaje();
     }
   }, [mensaje]);
+
   useEffect(() => {
     setdatosForm([
       {
@@ -276,17 +269,18 @@ const RegistroFrente = () => {
     setImgPreview("");
     seteditUni("");
   }, [datosFormulario]);
+
   useEffect(() => {
-    cargandoDatosFrente();
     // obtenerFrentes();
     const ultimoProcesoEleccionario = () => {
-      usuarioAxios.get("/api/procesoElectoral").then((res) => {
+      usuarioAxios.get("/api/procesoElectoral").then(async (res) => {
         setultimoProcesoElectoral(res.data.ultimoProcesoElectoral);
-        obtenerFrentes(res.data.ultimoProcesoElectoral);
+        const registro = await obtenerFrentes(res.data.ultimoProcesoElectoral);
+        cargandoDatosFrente(registro);
       });
     };
     ultimoProcesoEleccionario();
-  }, [editando]);
+  }, [cargarPagina]);
 
   return (
     <Fragment>
@@ -335,66 +329,68 @@ const RegistroFrente = () => {
                 </div>
 
                 <h3 className="text-center">DATOS DE LOS ENCARGADOS</h3>
-                {datosForm.map((dato, index) => (
-                  <div className="row mt-3" key={index}>
-                    <div className="col">
-                      <label htmlFor="">Cargo:</label>
-                      <input
-                        type="text"
-                        name="cargo"
-                        placeholder="Cargo"
-                        className="form-control"
-                        onChange={(event) => handleChange(index, event)}
-                        value={dato.cargo}
-                      />
-                    </div>
+                {!datosForm
+                  ? null
+                  : datosForm.map((dato, index) => (
+                      <div className="row mt-3" key={index}>
+                        <div className="col">
+                          <label htmlFor="">Cargo:</label>
+                          <input
+                            type="text"
+                            name="cargo"
+                            placeholder="Cargo"
+                            className="form-control"
+                            onChange={(event) => handleChange(index, event)}
+                            value={dato.cargo}
+                          />
+                        </div>
 
-                    <div className="col">
-                      <label htmlFor="">Carnet Universitario:</label>
-                      <input
-                        type="number"
-                        name="cuEncargado"
-                        placeholder="Carnet Universitario"
-                        className="form-control"
-                        onChange={(event) => handleChange(index, event)}
-                        value={
-                          dato.cuEncargado.length > 10
-                            ? crypto.AES.decrypt(
-                                dato.cuEncargado,
-                                "palabraClave"
-                              ).toString(crypto.enc.Utf8)
-                            : dato.cuEncargado
-                        }
-                      />
-                      <button
-                        type="button"
-                        className="btn btn-success mt-2"
-                        onClick={() => verificarEncargado(dato.cuEncargado)}
-                      >
-                        Verificar
-                      </button>
-                    </div>
+                        <div className="col">
+                          <label htmlFor="">Carnet Universitario:</label>
+                          <input
+                            type="number"
+                            name="cuEncargado"
+                            placeholder="Carnet Universitario"
+                            className="form-control"
+                            onChange={(event) => handleChange(index, event)}
+                            value={
+                              dato.cuEncargado.length > 10
+                                ? crypto.AES.decrypt(
+                                    dato.cuEncargado,
+                                    "palabraClave"
+                                  ).toString(crypto.enc.Utf8)
+                                : dato.cuEncargado
+                            }
+                          />
+                          <button
+                            type="button"
+                            className="btn btn-success mt-2"
+                            onClick={() => verificarEncargado(dato.cuEncargado)}
+                          >
+                            Verificar
+                          </button>
+                        </div>
 
-                    <div className="col">
-                      <label htmlFor="">Celular:</label>
-                      <input
-                        type="number"
-                        name="celularEncargado"
-                        placeholder="Celular"
-                        className="form-control"
-                        onChange={(event) => handleChange(index, event)}
-                        value={
-                          dato.celularEncargado.length > 10
-                            ? crypto.AES.decrypt(
-                                dato.celularEncargado,
-                                "palabraClave"
-                              ).toString(crypto.enc.Utf8)
-                            : dato.celularEncargado
-                        }
-                      />
-                    </div>
-                  </div>
-                ))}
+                        <div className="col">
+                          <label htmlFor="">Celular:</label>
+                          <input
+                            type="number"
+                            name="celularEncargado"
+                            placeholder="Celular"
+                            className="form-control"
+                            onChange={(event) => handleChange(index, event)}
+                            value={
+                              dato.celularEncargado.length > 10
+                                ? crypto.AES.decrypt(
+                                    dato.celularEncargado,
+                                    "palabraClave"
+                                  ).toString(crypto.enc.Utf8)
+                                : dato.celularEncargado
+                            }
+                          />
+                        </div>
+                      </div>
+                    ))}
 
                 <div class="col mt-3">
                   <button

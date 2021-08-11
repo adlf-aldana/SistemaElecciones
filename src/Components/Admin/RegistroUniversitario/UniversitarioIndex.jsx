@@ -32,13 +32,12 @@ const UniversitarioIndex = () => {
   const [carnetUniversitario, setCarnetUniversitario] = useState("");
   const [mensajeBusqueda, setMensajeBusqueda] = useState("");
   const [ultimoProcesoElectoral, setultimoProcesoElectoral] = useState([]);
+  const [cargarPagina, setcargarPagina] = useState(false);
 
   // STATE OPCIONES
   const [optionCargo, setoptionCargo] = useState([
     { name: "Administrador" },
     { name: "Estudiante" },
-    // { name: "Encargado de Mesa" },
-    // { name: "Verificador de Votante" },
   ]);
 
   // STATE FORM
@@ -61,7 +60,7 @@ const UniversitarioIndex = () => {
     cargo,
     password,
     confirPassword,
-    email
+    email,
   } = datosEstudiantes;
 
   // SUBMIT FORM
@@ -74,7 +73,7 @@ const UniversitarioIndex = () => {
       carrera.trim() === "" ||
       cargo.trim() === "" ||
       ci.trim() === "" ||
-      email.trim() === "" 
+      email.trim() === ""
     ) {
       return mostrarAlerta("Todos los campos deben estar llenos", "danger");
     }
@@ -110,12 +109,14 @@ const UniversitarioIndex = () => {
     if (editUni.id) {
       actualizarUniversitario(editUni.id, datosEstudiantes);
       mostrarAlerta("Editado correctamenta", "success");
+      setcargarPagina(!cargarPagina);
     } else {
       agregarUniversitario(
         datosEstudiantes,
         ultimoProcesoElectoral[0].registro
       );
       mostrarAlerta("Guardado correctamenta", "success");
+      setcargarPagina(!cargarPagina);
     }
   };
 
@@ -124,13 +125,13 @@ const UniversitarioIndex = () => {
     if (window.confirm("¿Esta seguro de eliminar?")) {
       eliminarUniversitario(id);
       mostrarAlerta("Eliminado correctamenta", "success");
+      setcargarPagina(!cargarPagina);
     }
   };
 
   // EDITAR DATOS
   const editarUniversitario = (datos) => {
-    console.log(datos
-      );
+    console.log(datos);
     seteditUni(datos);
   };
 
@@ -160,7 +161,8 @@ const UniversitarioIndex = () => {
       });
     };
     ultimoProcesoEleccionario();
-  }, []);
+  }, [cargarPagina]);
+
   useEffect(() => {
     if (mensaje) {
       mostrarAlerta(mensaje.msg, mensaje.categoria);
@@ -177,6 +179,7 @@ const UniversitarioIndex = () => {
         email: editUni.email,
       });
   }, [mensaje, editUni]);
+
   useEffect(() => {
     setdatosEstudiantes({
       nombre: "",
@@ -187,7 +190,7 @@ const UniversitarioIndex = () => {
       cargo: "",
       password: "",
       confirPassword: "",
-      email: ""
+      email: "",
     });
     seteditUni("");
   }, [datosFormulario]);

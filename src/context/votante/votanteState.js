@@ -1,5 +1,7 @@
 import React, { useReducer } from "react";
 import usuarioAxios from "../../config/axios";
+import axios from "axios";
+
 import {
   ENCARGADO_HABILITA_VOTANTE,
   AUTORIZANDO_VOTANTE,
@@ -11,6 +13,7 @@ import {
   BUSQUEDA_UNIVERSITARIO,
   LIMPIAR_UNIVERSITARIO_BUSCADO,
   DATOS_VOTANTE,
+  LIMPIAR_VOTANTE,
 } from "../../types";
 
 import votanteContext from "./votanteContext";
@@ -24,12 +27,13 @@ const VotanteState = (props) => {
     votantes: null,
     cantVotosFrente: null,
     estudiante: null,
-    datosVotante: null
+    datosVotante: null,
   };
 
   const encargadoHabilitaVotante = async (votante) => {
     try {
       const res = await usuarioAxios.post("/api/votante", votante);
+      await axios.post(`http://localhost:4000/api/votante/`, votante);
       dispatch({
         type: ENCARGADO_HABILITA_VOTANTE,
         payload: votante,
@@ -101,6 +105,8 @@ const VotanteState = (props) => {
   const actualizarVotante = async (id, votante) => {
     try {
       await usuarioAxios.put(`/api/votante/${id}`, votante);
+      await axios.put(`http://localhost:4000/api/votante/${id}`, votante);
+      await axios.put(`http://localhost:4000/api/votante/${id}`, votante);
       dispatch({
         type: ACTUALIZAR_VOTANTE,
         payload: votante,
@@ -136,26 +142,30 @@ const VotanteState = (props) => {
 
   const obtenerVotante = async (cu) => {
     try {
-      console.log(cu);
-      const res = await usuarioAxios.get("/api/votante/"+cu)
+      const res = await usuarioAxios.get("/api/votante/" + cu);
       dispatch({
         type: DATOS_VOTANTE,
-        payload: res.data.votante
-      })
-    }catch(e){
+        payload: res.data.votante,
+      });
+    } catch (e) {
+      limpiarVotante();
       console.log(e.response);
     }
   };
 
+  const limpiarVotante = () => {
+    dispatch({
+      type: LIMPIAR_VOTANTE,
+    });
+  };
+
   const obtenerVotantes = async () => {
     try {
-      const res = await usuarioAxios.get("/api/votante/")
-      // .then((res) =>
-      // console.log(res)
-        dispatch({
-          type: OBTENER_VOTANTES,
-          payload: res.data,
-        })
+      const res = await usuarioAxios.get("/api/votante/");
+      dispatch({
+        type: OBTENER_VOTANTES,
+        payload: res.data,
+      });
       // );
       return res.data;
     } catch (e) {
@@ -233,7 +243,7 @@ const VotanteState = (props) => {
         obtenerVotantes,
         busquedaUniversitario,
         limpiarUniversitarioBuscado,
-        obtenerVotante
+        obtenerVotante,
       }}
     >
       {props.children}

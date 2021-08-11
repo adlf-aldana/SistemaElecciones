@@ -1,10 +1,8 @@
-import React, { Fragment, useEffect } from "react";
-import * as crypto from "crypto-js";
+import React, { Fragment } from "react";
 
 const ListaFrente = ({ frentes, eliminar, editar }) => {
   const URL = process.env.REACT_APP_BACKEND_URL;
 
-  // console.log(`${URL}/${frentes[0].logoFrente[0]}`);
   return (
     <Fragment>
       <div className="container mt-5">
@@ -14,10 +12,6 @@ const ListaFrente = ({ frentes, eliminar, editar }) => {
             <tr>
               <th>#</th>
               <th>Nombre Frente</th>
-              {/* <th>Nombre Encargado</th>
-              <th>Apellidos Encargado</th> */}
-              {/* <th>C.U. Encargado</th>
-              <th>Celular Encargado</th> */}
               <th>Logo Frente</th>
               <th>Acciones</th>
             </tr>
@@ -27,15 +21,13 @@ const ListaFrente = ({ frentes, eliminar, editar }) => {
               <tr key={frente._id}>
                 <td>{index + 1}</td>
                 <td>{frente._id}</td>
-
-                {/* <td>{crypto.AES.decrypt(frente.nombreFrente,'palabraClave').toString(crypto.enc.Utf8)}</td> */}
-                {/* <td>{crypto.AES.decrypt(frente.cuEncargado,'palabraClave').toString(crypto.enc.Utf8)}</td>
-                <td>{crypto.AES.decrypt(frente.celularEncargado,'palabraClave').toString(crypto.enc.Utf8)}</td> */}
                 <td>
                   <img
-                    // src={`http://localhost:4000${frente.logoFrente}`}
-                    src={`${URL}/${frente.logoFrente[0]}`}
-                    alt=""
+                    src={`http://localhost:4000${frente.logoFrente[index]}`}
+                    // src={`http://localhost:4000/public/images/descarga.png`}
+                    // src={require("./descarga.png").default}
+                    // src={`${URL}/${frente.logoFrente[0]}`}
+                    alt="partido politico"
                     width="80"
                     height="100"
                   />

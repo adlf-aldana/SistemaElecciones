@@ -4,11 +4,12 @@ import FrentesContext from "./FrentesContext";
 import FrentesReducer from "./FrentesReducer";
 
 import usuarioAxios from "../../config/axios";
+import axios from "axios";
+
 import {
   AGREGAR_FRENTE,
   ELIMINAR_FRENTE,
   OBTENER_FRENTES,
-  EDITAR_FRENTE,
   LIMPIAR_FORMULARIO,
   ERROR_FRENTE,
   BUSQUEDA_UNIVERSITARIO,
@@ -35,7 +36,6 @@ const FrentesState = (props) => {
 
   const obtenerFrentes = async (ultimoProcesoElectoral) => {
     try {
-      // const res = await usuarioAxios.get("/api/frente_universitario");
       const reg = ultimoProcesoElectoral[0]
         ? ultimoProcesoElectoral[0].registro
         : ultimoProcesoElectoral._id;
@@ -52,7 +52,6 @@ const FrentesState = (props) => {
       });
 
       return registro;
-
     } catch (error) {
       console.log(error);
     }
@@ -64,6 +63,11 @@ const FrentesState = (props) => {
         "/api/frente_universitario",
         frente
       );
+      await axios.post(
+        "http://localhost:4000/api/frente_universitario",
+        frente
+      );
+
       dispatch({
         type: AGREGAR_FRENTE,
         payload: regFrente.data,
@@ -93,6 +97,10 @@ const FrentesState = (props) => {
   const eliminarFrente = async (id) => {
     try {
       await usuarioAxios.delete(`/api/frente_universitario/${id}`);
+      await axios.delete(
+        `http://localhost:4000/api/frente_universitario/${id}`
+      );
+
       dispatch({
         type: ELIMINAR_FRENTE,
         payload: id,
@@ -109,7 +117,11 @@ const FrentesState = (props) => {
         `/api/frente_universitario/${id}`,
         frente
       );
-      console.log(res);
+      await axios.put(
+        `http://localhost:4000/api/frente_universitario/${id}`,
+        frente
+      );
+
       // dispatch({
       //   type: EDITAR_FRENTE,
       //   payload: res.data.frente,

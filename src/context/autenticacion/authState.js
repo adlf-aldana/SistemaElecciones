@@ -8,7 +8,6 @@ import {
   LOGIN_ERROR,
   CERRAR_SESION,
 } from "../../types";
-import authContext from "./authContext";
 import usuarioAxios from "../../config/axios";
 import tokenAuth from "../../config/token";
 
@@ -46,6 +45,7 @@ const AuthState = (props) => {
   const iniciarSesion = async (datos) => {
     try {
       const res = await usuarioAxios.post("/api/auth", datos);
+
       dispatch({
         type: LOGIN_EXITOSO,
         payload: res.data.token,

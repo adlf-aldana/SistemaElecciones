@@ -56,7 +56,6 @@ const Informe = () => {
       if (votantes && estudiantes) {
         informacionCantidadVotos();
       }
-
       todosFrentes.data.nombreCadaFrentePorRegistro.map((frente) => {
         resVotante.cantPartido.map((cantidad) => {
           if (frente.id[0] === cantidad._id) {
@@ -391,9 +390,11 @@ const Informe = () => {
         const todosFrentes = await obtenerFrentes(
           res.data.ultimoProcesoElectoral
         );
+
         const unis = await obtenerUniversitarios(
           res.data.ultimoProcesoElectoral
         );
+
         const resVotante = await obtenerVotantes();
 
         if (todosFrentes.data.registroFrentes && resVotante.cantPartido) {
