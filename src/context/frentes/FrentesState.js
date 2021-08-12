@@ -39,9 +39,14 @@ const FrentesState = (props) => {
       const reg = ultimoProcesoElectoral[0]
         ? ultimoProcesoElectoral[0].registro
         : ultimoProcesoElectoral._id;
+      // const registro = await usuarioAxios.get(
+      //   "/api/frente_universitario/" + reg
+      // );
+
       const registro = await usuarioAxios.get(
-        "/api/frente_universitario/" + reg
+        "http://localhost:4000/api/frente_universitario/" + reg
       );
+
       dispatch({
         type: OBTENER_FRENTES,
         payload: registro.data,

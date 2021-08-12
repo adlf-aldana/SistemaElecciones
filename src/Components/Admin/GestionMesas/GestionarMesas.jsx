@@ -322,7 +322,7 @@ const GestionarMesas = () => {
         console.log(e.response);
         setTimeout(() => {
           setalerta({});
-        }, 3000);
+        }, 3000);  
         setalerta({
           categoria: "danger",
           msg: e.response.data.msg,

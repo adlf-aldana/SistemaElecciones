@@ -302,9 +302,9 @@ const ProcesoEleccionario = () => {
           ultimoProcesoElectoral[0].estado ? (
             <div className="text-center">
               <h4>Se está realizando un proceso electoral</h4>
-              <button className="btn btn-primary" onClick={() => backup()}>
+              {/* <button className="btn btn-primary" onClick={() => backup()}>
                 Realizar Backup
-              </button>
+              </button> */}
               <p>Fecha de Apertura: {ultimoProcesoElectoral[0].registro}</p>
               <button
                 type="button"
@@ -317,13 +317,13 @@ const ProcesoEleccionario = () => {
           ) : (
             <form onSubmit={onSubmit}>
               <h4 className="text-center mt-4">REGISTRO DE LOS PRESENTES</h4>
-              <button
+              {/* <button
                 type="button"
                 className="btn btn-primary"
                 onClick={() => restaurar()}
               >
                 Restaurar Backup
-              </button>
+              </button> */}
               {datosForm.map((dato, index) => (
                 <div className="row mt-3" key={index}>
                   <div className="col">
