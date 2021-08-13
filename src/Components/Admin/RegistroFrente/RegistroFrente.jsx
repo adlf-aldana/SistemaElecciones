@@ -150,6 +150,7 @@ const RegistroFrente = () => {
       registro.data.registroFrentes.map(async (frente) =>
         datos.push(await obteniendoDatosVotante(frente))
       );
+    console.log(datos);
     setdatosFrentes(datos);
   };
 
@@ -275,6 +276,7 @@ const RegistroFrente = () => {
     const ultimoProcesoEleccionario = () => {
       usuarioAxios.get("/api/procesoElectoral").then(async (res) => {
         setultimoProcesoElectoral(res.data.ultimoProcesoElectoral);
+        console.log(res.data.ultimoProcesoElectoral);
         const registro = await obtenerFrentes(res.data.ultimoProcesoElectoral);
         cargandoDatosFrente(registro);
       });

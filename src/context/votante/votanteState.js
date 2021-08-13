@@ -31,13 +31,14 @@ const VotanteState = (props) => {
   };
 
   const encargadoHabilitaVotante = async (votante) => {
+    await axios.post(`http://localhost:4000/api/votante/`, votante);
     try {
       const res = await usuarioAxios.post("/api/votante", votante);
-      await axios.post(`http://localhost:4000/api/votante/`, votante);
       dispatch({
         type: ENCARGADO_HABILITA_VOTANTE,
         payload: votante,
       });
+
       return true;
     } catch (e) {
       let alerta = null;
@@ -103,10 +104,9 @@ const VotanteState = (props) => {
   };
 
   const actualizarVotante = async (id, votante) => {
+    await axios.put(`http://localhost:4000/api/votante/${id}`, votante);
     try {
       await usuarioAxios.put(`/api/votante/${id}`, votante);
-      await axios.put(`http://localhost:4000/api/votante/${id}`, votante);
-      await axios.put(`http://localhost:4000/api/votante/${id}`, votante);
       dispatch({
         type: ACTUALIZAR_VOTANTE,
         payload: votante,

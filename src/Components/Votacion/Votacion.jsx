@@ -345,7 +345,12 @@ const Votacion = () => {
                           >
                             <img
                               // src={`http://localhost:4000/${frente.logoFrente[0]}`}
-                              src={`${URL}/${frente.logoFrente[0]}`}
+                              src={
+                                `http://localhost:4000/${frente.logoFrente[0]}`
+                                  ? `http://localhost:4000/${frente.logoFrente[0]}`
+                                  : `${URL}/${frente.logoFrente[0]}`
+                              }
+                              // src={`${URL}/${frente.logoFrente[0]}`}
                               alt="..."
                               width="150"
                               height="160"

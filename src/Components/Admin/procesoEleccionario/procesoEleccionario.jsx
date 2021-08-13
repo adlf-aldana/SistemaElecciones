@@ -3,6 +3,7 @@ import usuarioAxios from "../../../config/axios";
 import ListaProcesosEleccionarios from "./ListaProcesosEleccionarios";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
+import axios from "axios";
 
 const ProcesoEleccionario = () => {
   const [alerta, setalerta] = useState();
@@ -167,6 +168,10 @@ const ProcesoEleccionario = () => {
       //   });
       //   console.log(datosForm);
       await usuarioAxios.post("/api/procesoElectoral/", datosForm);
+      await axios.post(
+        "http://localhost:4000/api/procesoElectoral/",
+        datosForm
+      );
       aperturaActaPDF();
       setactualizarLista(!actualizarLista);
     }
@@ -192,6 +197,8 @@ const ProcesoEleccionario = () => {
         )
       ) {
         // Generando cierre de Acta PDF
+        axios.put(`http://localhost:4000/api/procesoElectoral/${id}`, false);
+
         usuarioAxios
           .put(`/api/procesoElectoral/${id}`, false)
           .then((res) => cerrarActaPDF());
@@ -417,13 +424,13 @@ const ProcesoEleccionario = () => {
         ) : (
           <form onSubmit={onSubmit}>
             <h4 className="text-center mt-4">REGISTRO DE LOS PRESENTES</h4>
-            <button
+            {/* <button
               type="button"
               className="btn btn-primary"
               onClick={() => restaurar()}
             >
               Restaurar Backup
-            </button>
+            </button> */}
             {datosForm.map((dato, index) => (
               <div className="row mt-3" key={index}>
                 <div className="col">
