@@ -131,7 +131,6 @@ const UniversitarioIndex = () => {
 
   // EDITAR DATOS
   const editarUniversitario = (datos) => {
-    console.log(datos);
     seteditUni(datos);
   };
 

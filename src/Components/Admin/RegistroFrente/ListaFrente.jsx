@@ -24,14 +24,15 @@ const ListaFrente = ({ frentes, eliminar, editar }) => {
                 <td>
                   <img
                     // src={`http://localhost:4000${frente.logoFrente[index]}`}
-                    src={
-                      `http://localhost:4000/${frente.logoFrente[0]}`
-                        ? `http://localhost:4000/${frente.logoFrente[0]}`
-                        : `${URL}/${frente.logoFrente[0]}`
-                    }
+                    // src={
+                    //   `http://localhost:4000/${frente.logoFrente[0]}`
+                    //     ? `http://localhost:4000/${frente.logoFrente[0]}`
+                    //     : `${URL}/${frente.logoFrente[0]}`
+                    // }
+
                     // src={`http://localhost:4000/public/images/descarga.png`}
                     // src={require("./descarga.png").default}
-                    // src={`${URL}/${frente.logoFrente[0]}`}
+                    src={`${URL}/${frente.logoFrente[0]}`}
                     alt="partido politico"
                     width="80"
                     height="100"

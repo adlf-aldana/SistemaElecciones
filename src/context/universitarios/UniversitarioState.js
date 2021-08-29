@@ -106,10 +106,10 @@ const UniversitarioState = (props) => {
         "/api/lista_estudiantes",
         encryptData
       );
-      await axios.post(
-        "http://localhost:4000/api/lista_estudiantes",
-        encryptData
-      );
+      // await axios.post(
+      //   "http://localhost:4000/api/lista_estudiantes",
+      //   encryptData
+      // );
 
       dispatch({
         type: AGREGAR_UNIVERSITARIO,
@@ -137,7 +137,7 @@ const UniversitarioState = (props) => {
     try {
       await usuarioAxios.delete(`/api/lista_estudiantes/${id}`);
 
-      await axios.delete(`http://localhost:4000/api/lista_estudiantes/${id}`);
+      // await axios.delete(`http://localhost:4000/api/lista_estudiantes/${id}`);
 
       dispatch({
         type: ELIMINAR_UNIVERSITARIO,
@@ -167,7 +167,9 @@ const UniversitarioState = (props) => {
           palabraClave
         ).toString(),
         cargo: crypto.AES.encrypt(universitario.cargo, palabraClave).toString(),
-        password: universitario.password ? universitario.password : null,
+        password: universitario.password
+          ? universitario.password
+          : universitario.ci,
         email: universitario.email,
       };
       const data = await usuarioAxios.put(
@@ -175,10 +177,10 @@ const UniversitarioState = (props) => {
         encryptData
       );
 
-      await axios.put(
-        `http://localhost:4000/api/lista_estudiante/${id}`,
-        encryptData
-      );
+      // await axios.put(
+      //   `http://localhost:4000/api/lista_estudiante/${id}`,
+      //   encryptData
+      // );
 
       dispatch({
         type: EDITAR_UNIVERSITARIO,

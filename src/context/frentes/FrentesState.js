@@ -40,22 +40,25 @@ const FrentesState = (props) => {
         ? ultimoProcesoElectoral[0].registro
         : ultimoProcesoElectoral._id;
 
-      const registroLinea = await usuarioAxios.get(
-        "/api/frente_universitario/" + reg
-      );
-      dispatch({
-        type: OBTENER_FRENTES,
-        payload: registroLinea.data,
-      });
-      dispatch({
-        type: OBTENER_FRENTE_REGISTRO,
-        payload: registroLinea.data.registroFrentes,
-      });
+      // const registroLinea = await usuarioAxios.get(
+      //   "/api/frente_universitario/" + reg
+      // );
+      // dispatch({
+      //   type: OBTENER_FRENTES,
+      //   payload: registroLinea.data,
+      // });
+      // dispatch({
+      //   type: OBTENER_FRENTE_REGISTRO,
+      //   payload: registroLinea.data.registroFrentes,
+      // });
 
       try {
         const registro = await usuarioAxios.get(
-          "http://localhost:4000/api/frente_universitario/" + reg
+          "/api/frente_universitario/" + reg
         );
+        // const registro = await usuarioAxios.get(
+        //   "http://localhost:4000/api/frente_universitario/" + reg
+        // );
         dispatch({
           type: OBTENER_FRENTES,
           payload: registro.data,
@@ -69,7 +72,7 @@ const FrentesState = (props) => {
         console.log("error en localhost");
       }
 
-      return registroLinea;
+      // return registroLinea;
     } catch (error) {
       console.log(error);
     }
@@ -85,10 +88,10 @@ const FrentesState = (props) => {
         type: AGREGAR_FRENTE,
         payload: regFrente.data,
       });
-      await axios.post(
-        "http://localhost:4000/api/frente_universitario",
-        frente
-      );
+      // await axios.post(
+      //   "http://localhost:4000/api/frente_universitario",
+      //   frente
+      // );
 
       obtenerFrentes();
       limpiarFormulario();
@@ -121,9 +124,9 @@ const FrentesState = (props) => {
       });
       obtenerFrentes();
 
-      await axios.delete(
-        `http://localhost:4000/api/frente_universitario/${id}`
-      );
+      // await axios.delete(
+      //   `http://localhost:4000/api/frente_universitario/${id}`
+      // );
     } catch (error) {
       console.log(error);
     }
@@ -142,10 +145,10 @@ const FrentesState = (props) => {
       obtenerFrentes();
       limpiarFormulario();
 
-      await axios.put(
-        `http://localhost:4000/api/frente_universitario/${id}`,
-        frente
-      );
+      // await axios.put(
+      //   `http://localhost:4000/api/frente_universitario/${id}`,
+      //   frente
+      // );
     } catch (e) {
       console.log(e.response);
       let alerta = null;

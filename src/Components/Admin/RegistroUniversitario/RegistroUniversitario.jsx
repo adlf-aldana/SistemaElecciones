@@ -158,6 +158,7 @@ const RegistroUniversitario = ({
               onChange={handleForm}
               value={cu}
             />
+            <p>{cu.length}/6</p>
             <span class="badge bg-light text-dark">Solo números</span>
           </div>
           <div className="col">
@@ -170,6 +171,7 @@ const RegistroUniversitario = ({
               onChange={handleForm}
               value={ci}
             />
+            <p>{ci.length}/7</p>
             <span class="badge bg-light text-dark">Solo números</span>
           </div>
           <div className="col">

@@ -38,6 +38,9 @@ const Informe = () => {
     noVotaron: null,
   });
 
+  const [mesaHabilitada, setmesaHabilitada] = useState(false);
+  const [numMesa, setNumMesa] = useState(false);
+
   const [datosFrente, setDatosFrente] = useState([]);
   const [datosVotante, setdatosVotante] = useState([]);
   const [ultimoProcesoElectoral, setultimoProcesoElectoral] = useState([]);
@@ -59,6 +62,7 @@ const Informe = () => {
       todosFrentes.data.nombreCadaFrentePorRegistro.map((frente) => {
         resVotante.cantPartido.map((cantidad) => {
           if (frente.id[0] === cantidad._id) {
+            console.log(cantidad.total);
             setDatosFrente((dato) => [
               ...dato,
               {
@@ -91,7 +95,7 @@ const Informe = () => {
     // const cantVotos = Object.values(datosFrente).map((key) => key.cantVotos);
     // const porcentaje = Object.values(datosFrente).map((key) => key.porcentaje);
     const doc = new jsPDF({
-      orientation: "landscape",
+      orientation: "portrait",
       format: "letter",
     });
 
@@ -112,7 +116,7 @@ const Informe = () => {
     html2canvas(document.getElementById("grafico")).then(function (canvas) {
       var img = canvas.toDataURL("image/png");
       // doc.addImage(img, "JPEG", 10, 25, widthPage - 15, heightPage - 25);
-      doc.addImage(img, "JPEG", 15, 25, widthPage - 65, heightPage - 25);
+      doc.addImage(img, "JPEG", 45, 25, widthPage - 80, heightPage - 25);
       doc.save("informe.pdf");
     });
   };
@@ -179,7 +183,6 @@ const Informe = () => {
         (dato.descripcionProblemaEncargadoMesa ||
           dato.descripcionProblemaVerificadorVotante)
     );
-    console.log(datos);
     try {
       const doc = new jsPDF({
         orientation: "landscape",
@@ -375,6 +378,15 @@ const Informe = () => {
   }, [datosFrente]);
 
   useEffect(() => {
+    if (usuario) {
+      usuarioAxios.get(`/api/mesas/${usuario.cu}`).then((res) => {
+        setmesaHabilitada(res.data.mesaAbierta[0].habilitado);
+        setNumMesa(res.data.mesaAbierta[0].mesa);
+      });
+    }
+  }, []);
+
+  useEffect(() => {
     const ultimoProcesoEleccionario = async () => {
       await usuarioAxios.get("/api/procesoElectoral").then(async (res) => {
         if (res.data.ultimoProcesoElectoral.length > 0) {
@@ -399,6 +411,9 @@ const Informe = () => {
 
         if (todosFrentes.data.registroFrentes && resVotante.cantPartido) {
           consiguiendoDatosVotante();
+          console.log(todosFrentes);
+          console.log(resVotante);
+          console.log(unis);
           obteniendoDatosFrentes(todosFrentes, resVotante, unis);
         }
 

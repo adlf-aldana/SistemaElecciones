@@ -36,6 +36,7 @@ const EncargadoMesa = () => {
   const { descripcion } = motivoRechazo;
   const [mesaHabilitada, setmesaHabilitada] = useState(false);
   const [numMesa, setNumMesa] = useState(false);
+  const [actualizarDatos, setactualizarDatos] = useState(false);
 
   const handleMotivo = (e) => {
     setmotivoRechazo({
@@ -74,7 +75,7 @@ const EncargadoMesa = () => {
         setNumMesa(res.data.mesaAbierta[0].mesa);
       });
     }
-  }, []);
+  }, [actualizarDatos]);
 
   const confirmar = async () => {
     if (usuario) {
@@ -86,6 +87,7 @@ const EncargadoMesa = () => {
           numMesa: numMesa,
         };
         const res = await encargadoHabilitaVotante(votante);
+        setactualizarDatos(!actualizarDatos);
         if (res) {
           setmotivoRechazo({
             descripcion: "",
@@ -96,6 +98,8 @@ const EncargadoMesa = () => {
           limpiarUniversitarioBuscado();
         }
       } else if (usuario.cargoLogin === "Verificador de Votante") {
+        console.log(autorizandoVotante);
+        console.log(numMesa);
         // VIENDO SI EL VOTANTE PERTENECE A LA MESA DEL VERIFICADOR
         if (autorizandoVotante.numMesa === numMesa.toString()) {
           const votante = {
@@ -105,6 +109,8 @@ const EncargadoMesa = () => {
             numMesa: numMesa,
           };
           const res = await actualizarVotante(autorizandoVotante._id, votante);
+          setactualizarDatos(!actualizarDatos);
+          console.log(res);
           if (res) {
             setmotivoRechazo({
               descripcion: "",
@@ -115,10 +121,7 @@ const EncargadoMesa = () => {
             limpiarUniversitarioBuscado();
           }
         } else {
-          mostrarAlerta(
-            'El universitario no pertenece a esta mesa',
-            'danger'
-          )
+          mostrarAlerta("El universitario no pertenece a esta mesa", "danger");
         }
       }
     }

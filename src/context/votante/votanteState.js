@@ -31,7 +31,7 @@ const VotanteState = (props) => {
   };
 
   const encargadoHabilitaVotante = async (votante) => {
-    await axios.post(`http://localhost:4000/api/votante/`, votante);
+    // await axios.post(`http://localhost:4000/api/votante/`, votante);
     try {
       const res = await usuarioAxios.post("/api/votante", votante);
       dispatch({
@@ -143,6 +143,7 @@ const VotanteState = (props) => {
   const obtenerVotante = async (cu) => {
     try {
       const res = await usuarioAxios.get("/api/votante/" + cu);
+      console.log(res);
       dispatch({
         type: DATOS_VOTANTE,
         payload: res.data.votante,

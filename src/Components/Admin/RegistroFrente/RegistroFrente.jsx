@@ -9,6 +9,7 @@ import UniversitarioContext from "../../../context/universitarios/UniversitarioC
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import usuarioAxios from "../../../config/axios";
+const URL = process.env.REACT_APP_BACKEND_URL;
 
 const RegistroFrente = () => {
   const frentesContext = useContext(FrentesContext);
@@ -183,30 +184,32 @@ const RegistroFrente = () => {
         ],
       });
       datosFrentes.map((frente) => {
-        doc.autoTable({
-          columnStyles: {
-            0: { cellWidth: 65 },
-            1: { cellWidth: 40 },
-            2: { cellWidth: 40 },
-            3: { cellWidth: 40 },
-            4: { cellWidth: 40 },
-          },
-          body: [
-            [
-              frente.nombreFrente,
-              frente.cargoFrente,
-              frente.nombre,
-              frente.apellidos,
-              crypto.AES.decrypt(
-                frente.celularEncargado,
-                "palabraClave"
-              ).toString(crypto.enc.Utf8),
-              crypto.AES.decrypt(frente.cuEncargado, "palabraClave").toString(
-                crypto.enc.Utf8
-              ),
+        if (frente.nombreFrente != "Voto Blanco") {
+          doc.autoTable({
+            columnStyles: {
+              0: { cellWidth: 65 },
+              1: { cellWidth: 40 },
+              2: { cellWidth: 40 },
+              3: { cellWidth: 40 },
+              4: { cellWidth: 40 },
+            },
+            body: [
+              [
+                frente.nombreFrente,
+                frente.cargoFrente,
+                frente.nombre,
+                frente.apellidos,
+                crypto.AES.decrypt(
+                  frente.celularEncargado,
+                  "palabraClave"
+                ).toString(crypto.enc.Utf8),
+                crypto.AES.decrypt(frente.cuEncargado, "palabraClave").toString(
+                  crypto.enc.Utf8
+                ),
+              ],
             ],
-          ],
-        });
+          });
+        }
       });
       doc.save("listaFrentes.pdf");
     } catch (error) {
@@ -245,7 +248,8 @@ const RegistroFrente = () => {
         editar ? datos.push(editar) : console.log("nada");
       });
       setdatosForm(datos);
-      setImgPreview("http://localhost:4000/" + datos[0].logoFrente);
+      // setImgPreview("http://localhost:4000/" + datos[0].logoFrente);
+      setImgPreview(`${URL}/${datos[0].logoFrente}`);
     }
   }, [datosFormulario, editUni, editando]);
 
@@ -364,6 +368,7 @@ const RegistroFrente = () => {
                                 : dato.cuEncargado
                             }
                           />
+                          <p>{dato.cuEncargado.length}/6</p>
                           <button
                             type="button"
                             className="btn btn-success mt-2"

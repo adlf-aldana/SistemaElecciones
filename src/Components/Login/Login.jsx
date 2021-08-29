@@ -82,7 +82,8 @@ const Login = (props) => {
   }, [mensaje, autenticado, props.history, usuario]);
   return (
     <Fragment>
-      <div className="row justify-content-md-center">
+      {/* <div className="row justify-content-md-center content-center"> */}
+      <div className="row justify-content-center content-center">
         <div className="card m-3">
           {alerta ? (
             <div className={`alert alert-${alerta.categoria}`}>

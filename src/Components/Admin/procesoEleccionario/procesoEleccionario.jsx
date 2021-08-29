@@ -46,8 +46,17 @@ const ProcesoEleccionario = () => {
 
       const widthPage = doc.internal.pageSize.getWidth();
 
-      doc.text("CIERRE DE ACTA", widthPage / 2, 10);
+      // doc.text("CIERRE DE ACTA", widthPage / 2, 10);
+      doc.text(`CIERRRE DE ACTA 2021`, widthPage / 3, 10);
+      doc.text(`ELECCION DE CENTRO DE ESTUDIANTES`, widthPage / 3.5, 22);
+      doc.text(`CARRERA DE SISTEMAS, CIENCIAS DE LA COMPUTACION,`, 52, 30);
+      doc.text(
+        `TECNOLOGIA DE LA INFORMACION Y SEGURIDAD, DISEÑO Y ANIMACION DIGITAL`,
+        24,
+        38
+      );
       doc.autoTable({
+        startY: 42,
         head: [
           [
             { content: "Nombre (s)" },
@@ -100,8 +109,17 @@ const ProcesoEleccionario = () => {
 
       const widthPage = doc.internal.pageSize.getWidth();
 
-      doc.text("APERTURA DE ACTA", widthPage / 2, 10);
+      // doc.text("ELECCIONES DE CENTRO DE ESTUDIANTES\n ", widthPage / 2, 10);
+      doc.text(`APERTURA DE ACTA 2021`, widthPage / 3, 10);
+      doc.text(`ELECCION DE CENTRO DE ESTUDIANTES`, widthPage / 3.5, 22);
+      doc.text(`CARRERA DE SISTEMAS, CIENCIAS DE LA COMPUTACION,`, 52, 30);
+      doc.text(
+        `TECNOLOGIA DE LA INFORMACION Y SEGURIDAD, DISEÑO Y ANIMACION DIGITAL`,
+        24,
+        38
+      );
       doc.autoTable({
+        startY: 42,
         head: [
           [
             { content: "Nombre (s)" },
@@ -167,11 +185,12 @@ const ProcesoEleccionario = () => {
       //     // }
       //   });
       //   console.log(datosForm);
+
       await usuarioAxios.post("/api/procesoElectoral/", datosForm);
-      await axios.post(
-        "http://localhost:4000/api/procesoElectoral/",
-        datosForm
-      );
+      // await axios.post(
+      //   "http://localhost:4000/api/procesoElectoral/",
+      //   datosForm
+      // );
       aperturaActaPDF();
       setactualizarLista(!actualizarLista);
     }
@@ -196,8 +215,8 @@ const ProcesoEleccionario = () => {
           "Se cerrará el Proceso Electoral. ADVERTENCIA: ¡SE ELIMINARA TODOS LOS DATOS!. ¿Desea continuar?"
         )
       ) {
-        // Generando cierre de Acta PDF
-        axios.put(`http://localhost:4000/api/procesoElectoral/${id}`, false);
+        // // Generando cierre de Acta PDF
+        // axios.put(`http://localhost:4000/api/procesoElectoral/${id}`, false);
 
         usuarioAxios
           .put(`/api/procesoElectoral/${id}`, false)

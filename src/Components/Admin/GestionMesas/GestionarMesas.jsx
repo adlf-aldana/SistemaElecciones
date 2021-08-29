@@ -322,7 +322,7 @@ const GestionarMesas = () => {
         console.log(e.response);
         setTimeout(() => {
           setalerta({});
-        }, 3000);  
+        }, 3000);
         setalerta({
           categoria: "danger",
           msg: e.response.data.msg,
@@ -516,6 +516,7 @@ const GestionarMesas = () => {
             const data = await usuarioAxios.get(
               `/api/mesas/${res.data.ultimoProcesoElectoral[0].registro}`
             );
+            console.log(data);
             setMesas(data.data.nombreCadaMesaPorRegistro);
           }
         });
@@ -698,6 +699,12 @@ const GestionarMesas = () => {
                       onChange={(event) => handleChangeEncargadoMesa(event)}
                       value={datoEncargadoMesa.cuEncargadoMesa}
                     />
+                    <p>
+                      {datoEncargadoMesa.cuEncargadoMesa
+                        ? datoEncargadoMesa.cuEncargadoMesa.length
+                        : 0}
+                      /6
+                    </p>
                     <button
                       type="button"
                       className="btn btn-success mt-2"
@@ -760,6 +767,10 @@ const GestionarMesas = () => {
                       onChange={(event) => handleChangeVerificadorMesa(event)}
                       value={datoVerificadorMesa.cuVerificadorMesa}
                     />
+                    {datoVerificadorMesa.cuVerificadorMesa
+                      ? datoVerificadorMesa.cuVerificadorMesa.length
+                      : 0}
+                    /6
                     <button
                       type="button"
                       className="btn btn-success mt-2"
@@ -827,6 +838,7 @@ const GestionarMesas = () => {
                         onChange={(event) => handleChange(index, event)}
                         value={dato.cuEncargado}
                       />
+                      <p>{dato.cuEncargado ? dato.cuEncargado.length : 0}/6</p>
                       <button
                         type="button"
                         className="btn btn-success mt-2"

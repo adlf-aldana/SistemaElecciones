@@ -33,8 +33,11 @@ const Votacion = () => {
   const [PinHabilitado, setPinHabilitado] = useState(false);
 
   const btnVotar = async (frente) => {
+    // console.log(frente.id[0]);
     const votante = {
       cu: usuario.cu,
+      estadoEncargadoMesa: true,
+      estadoVerificadorVotante: true,
       _idFrente: frente.id[0],
     };
     actualizarVotante(datosVotante._id, votante);
@@ -184,9 +187,7 @@ const Votacion = () => {
         const votante = {
           cu: estudiante.cu,
           encargadoMesa: true,
-          estadoEncargadoMesa: true,
-          descripcionProblemaEncargadoMesa: true,
-          descripcionProblemaVerificadorVotante: true,
+          verificadorVotante: true,
           numMesa: dataMessage.numMesa,
           codigo,
         };
@@ -345,12 +346,13 @@ const Votacion = () => {
                           >
                             <img
                               // src={`http://localhost:4000/${frente.logoFrente[0]}`}
-                              src={
-                                `http://localhost:4000/${frente.logoFrente[0]}`
-                                  ? `http://localhost:4000/${frente.logoFrente[0]}`
-                                  : `${URL}/${frente.logoFrente[0]}`
-                              }
-                              // src={`${URL}/${frente.logoFrente[0]}`}
+                              // src={
+                              //   `http://localhost:4000/${frente.logoFrente[0]}`
+                              //     ? `http://localhost:4000/${frente.logoFrente[0]}`
+                              //     : `${URL}/${frente.logoFrente[0]}`
+                              // }
+
+                              src={`${URL}/${frente.logoFrente[0]}`}
                               alt="..."
                               width="150"
                               height="160"
@@ -377,7 +379,58 @@ const Votacion = () => {
                 <div className="text-center mt-5 container">
                   <h3>Usted aún no esta habilitado para votar</h3>
 
-                  {PinHabilitado ? (
+                  {
+                    PinHabilitado ? (
+                      <>
+                        <input
+                          type="number"
+                          placeholder="Introduzca su código"
+                          className="form-control mt-3"
+                          name="codigo"
+                          onChange={(event) => handleChange(event)}
+                        />
+                        <button
+                          type="button"
+                          className="btn btn-success mt-3"
+                          onClick={() => confirmarPin()}
+                        >
+                          Confirmar
+                        </button>
+                      </>
+                    ) : !datosVotante ? (
+                      <button
+                        type="button"
+                        className="btn btn-primary mt-3"
+                        onClick={() => solicitarPin()}
+                      >
+                        Solicitar Código
+                      </button>
+                    ) : null
+                    // !datosVotante ? (
+                    //   console.log(datosVotante)
+                    // ) : datosVotante.descripcionProblemaEncargadoMesa.length <
+                    //     1 ||
+                    //   datosVotante.descripcionProblemaVerificadorVotante.length <
+                    //     1 ? (
+                    //   datosVotante.descripcionProblemaEncargadoMesa.length
+                    // ) : (
+                    //   <button
+                    //     type="button"
+                    //     className="btn btn-primary mt-3"
+                    //     onClick={() => solicitarPin()}
+                    //   >
+                    //     Solicitar Código
+                    //   </button>
+                    // )
+                  }
+                </div>
+              )
+            ) : (
+              <div className="text-center mt-5 container">
+                <h3>Usted aún no esta habilitado para votar</h3>
+
+                {
+                  PinHabilitado ? (
                     <>
                       <input
                         type="number"
@@ -394,7 +447,7 @@ const Votacion = () => {
                         Confirmar
                       </button>
                     </>
-                  ) : (
+                  ) : !datosVotante ? (
                     <button
                       type="button"
                       className="btn btn-primary mt-3"
@@ -402,39 +455,26 @@ const Votacion = () => {
                     >
                       Solicitar Código
                     </button>
-                  )}
-                </div>
-              )
-            ) : (
-              <div className="text-center mt-5 container">
-                <h3>Usted aún no esta habilitado para votar</h3>
+                  ) : null
 
-                {PinHabilitado ? (
-                  <>
-                    <input
-                      type="number"
-                      placeholder="Introduzca su código"
-                      className="form-control mt-3"
-                      name="codigo"
-                      onChange={(event) => handleChange(event)}
-                    />
-                    <button
-                      type="button"
-                      className="btn btn-success mt-3"
-                      onClick={() => confirmarPin()}
-                    >
-                      Confirmar
-                    </button>
-                  </>
-                ) : (
-                  <button
-                    type="button"
-                    className="btn btn-primary mt-3"
-                    onClick={() => solicitarPin()}
-                  >
-                    Solicitar Código
-                  </button>
-                )}
+                  // !datosVotante ? (
+                  //   console.log(datosVotante)
+                  // ) : datosVotante.descripcionProblemaEncargadoMesa.length < 1 ||
+                  //   datosVotante.descripcionProblemaVerificadorVotante.length <
+                  //     1 ? (
+                  //   console.log(
+                  //     datosVotante.descripcionProblemaEncargadoMesa.length
+                  //   )
+                  // ) : (
+                  //   <button
+                  //     type="button"
+                  //     className="btn btn-primary mt-3"
+                  //     onClick={() => solicitarPin()}
+                  //   >
+                  //     Solicitar Código
+                  //   </button>
+                  // )
+                }
               </div>
             )}
           </>
